@@ -81,4 +81,4 @@ gem 'omniauth-rails_csrf_protection', '~> 1.0'
 
 gem 'pgcrypto', '~> 0.4.1'
 
-gem "rolify", "~> 6.0"
+gem 'rolify', '~> 6.0'
