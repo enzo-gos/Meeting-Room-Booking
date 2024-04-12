@@ -53,6 +53,14 @@
             </div>
         <%- end %>
     </div>
-    <%= yield %>
+    <section class="bg-sky-700/90 min-h-screen"> 
+        <div class="px-0 py-10 mx-auto max-w-7xl sm:px-4 flex flex-col gap-1">
+            <img class="mx-auto lg:mx-0" width=200 src='https://comana.goldenowl.asia/packs/media/images/logo-light-1288fac6be620e9551c1d0eb40436ca7.svg' alt='golden_owl_logo' />
+            <span class="text-white font-semibold text-lg capitalize mx-auto lg:mx-0">Meeting room system</span>
+        </div>
+        <div class="px-0 pb-10 mx-auto max-w-8xl sm:px-4">
+            <%= yield %>
+        </div>
+    </section>
   </body>
 </html>

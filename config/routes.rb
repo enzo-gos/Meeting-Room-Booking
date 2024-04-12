@@ -13,5 +13,13 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   get "dashboard" => "dashboard#index"
 
-  root "dashboard#index"
+  devise_scope :user do
+    authenticated :user do
+      root 'dashboard#index', as: :authenticated_root
+    end
+
+    unauthenticated do
+      root 'devise/sessions#new', as: :unauthenticated_root
+    end
+  end
 end

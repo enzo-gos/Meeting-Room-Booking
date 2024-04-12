@@ -1,22 +1,27 @@
-<section class="bg-sky-700/90 min-h-screen"> 
-  <div class="px-0 py-10 mx-auto max-w-7xl sm:px-4">
-    <img class="mx-auto lg:mx-0" width=200 src='https://comana.goldenowl.asia/packs/media/images/logo-light-1288fac6be620e9551c1d0eb40436ca7.svg' alt='golden_owl_logo' />
-  </div>
-  <div class="px-0 pb-10 mx-auto max-w-8xl sm:px-4">
-    <div class="w-full px-4 py-6 mx-auto mt-8 mb-6 bg-white rounded-none shadow-xl sm:rounded-lg sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12 sm:px-6">
-      <h1 class="mb-8 text-2xl font-semibold text-left text-gray-900">Forgot your password ?</h1>
-      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }, html: { class: "mb-8 space-y-4" }) do |f| %>
-        <div class="mx-auto">
-          <div class="flex gap-1.5 flex-col">
-            <%= f.label :email, class: "form-label" %>
-            <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "example.gos@gmail.com", inputmode: "email", required: true, class: "form-input" %>
-          </div>
+<div class="w-full px-4 py-6 mx-auto mt-8 mb-6 bg-white rounded-none shadow-xl sm:rounded-lg sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12 sm:px-6">
+  <h1 class="mb-8 text-2xl font-semibold text-left text-gray-900">Forgot your password ?</h1>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }, html: { class: "mb-8 space-y-4" }) do |f| %>
+    <div class="mx-auto">
+      <div class="flex gap-1.5 flex-col">
+        <div class="flex justify-between items-center">
+          <%= f.label :email, class: "form-label after:ml-0.5 after:text-red-500 after:content-['*']" %>
+          <%- if resource.errors.any? %>
+            <p class="mt-1 text-sm text-red-500 flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 flex-shrink-0">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+              </svg>
+              <%= resource.errors.full_messages.to_sentence %>
+            </p>
+          <% end %>
         </div>
-        <%= f.submit "Continue", class: "btn-submit" %>
-      <% end %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "example.gos@gmail.com", inputmode: "email", required: true, class: "form-input #{
+          'border-red-500 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-80' if resource.errors.any?
+        }" %>
+      </div>
     </div>
-    <p class="mb-4 text-sm text-center text-gray-100 font-medium">
-      Already has account? <%= link_to "Login", session_path(resource_name), class: "text-purple-200 underline hover:text-white" %>
-    </p>
-  </div>
-</section>
+    <%= f.submit "Continue", class: "btn-submit" %>
+  <% end %>
+</div>
+<p class="mb-4 text-sm text-center text-gray-100 font-medium">
+  Already has account? <%= link_to "Login", session_path(resource_name), class: "text-purple-200 underline hover:text-white" %>
+</p>
