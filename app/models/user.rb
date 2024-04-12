@@ -7,10 +7,10 @@ class User < ApplicationRecord
   has_many :roles, through: :user_roles
   has_many :teams, through: :user_teams
 
-  def self.from_google(u)
+  def self.from_google(user_params)
     role = Role.find_or_create_by(name: 'USER')
 
-    new_user = create_with(uid: u[:uid], provider: 'google').find_or_create_by!(email: u[:email])
+    new_user = create_with(uid: user_params[:uid], provider: 'google').find_or_create_by!(email: user_params[:email])
     UserRole.create(role_id: role.id, user_id: new_user.id)
 
     new_user
