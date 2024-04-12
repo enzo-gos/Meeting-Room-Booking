@@ -113,6 +113,9 @@ GEM
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.0)
       net-http
+    ffi (1.16.3)
+    font-awesome-sass (6.5.2)
+      sassc (~> 2.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashie (5.0.0)
@@ -140,6 +143,8 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
+    material_icons (4.0.0)
+      railties (>= 3.2)
     matrix (0.4.2)
     mini_mime (1.1.5)
     minitest (5.22.3)
@@ -255,6 +260,8 @@ GEM
     rexml (3.2.6)
     rolify (6.0.1)
     rubyzip (2.3.2)
+    sassc (2.4.0)
+      ffi (~> 1.9)
     selenium-webdriver (4.19.0)
       base64 (~> 0.2)
       rexml (~> 3.2, >= 3.2.5)
@@ -330,8 +337,10 @@ DEPENDENCIES
   debug
   devise (~> 4.9)
   dotenv
+  font-awesome-sass (~> 6.5)
   importmap-rails
   jbuilder
+  material_icons (~> 4.0)
   omniauth-google-oauth2 (~> 1.1)
   omniauth-rails_csrf_protection (~> 1.0)
   pg (~> 1.1)

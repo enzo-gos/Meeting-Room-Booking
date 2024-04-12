@@ -9,9 +9,9 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <script src="https://unpkg.com/alpinejs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://unpkg.com/@ryangjchandler/alpine-tooltip@1.2.0/dist/cdn.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-tooltip@2.0.0/dist/cdn.min.js"></script>
   </head>
 
   <body class="auth-layout">
@@ -24,12 +24,12 @@
                 <div>
                     <h4 class="font-bold">Action Failed</h4>
                     <div class="mt-1">
-                    <p><%= alert %></p>
+                        <p><%= alert %></p>
                     </div>
                 </div>
                 <button class="ml-4" x-on:click="showAlert = false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                     </svg>
                 </button>
             </div>
@@ -47,13 +47,13 @@
                 </div>
                 <button class="ml-4" x-on:click="showAlert = false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                     </svg>
                 </button>
             </div>
         <%- end %>
     </div>
-    <section class="bg-sky-700/90 min-h-screen"> 
+    <section class="bg-primary-700/90 min-h-screen"> 
         <div class="px-0 py-10 mx-auto max-w-7xl sm:px-4 flex flex-col gap-1">
             <img class="mx-auto lg:mx-0" width=200 src='https://comana.goldenowl.asia/packs/media/images/logo-light-1288fac6be620e9551c1d0eb40436ca7.svg' alt='golden_owl_logo' />
             <span class="text-white font-semibold text-lg capitalize mx-auto lg:mx-0">Meeting room system</span>

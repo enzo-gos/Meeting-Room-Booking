@@ -1,0 +1,60 @@
+doctype html
+html[lang="en"]
+  head
+    title
+      | Golden Meeting Room
+    meta[name="viewport" content="width=device-width,initial-scale=1"]
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_importmap_tags
+    script[src="https://unpkg.com/alpinejs"]
+    link[rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"]
+    script[src="https://unpkg.com/@ryangjchandler/alpine-tooltip@1.2.0/dist/cdn.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"]
+  body
+    div.flex
+      .flex-shrink-0.w-64.h-screen.bg-gray-white.border-r.px-2.py-4.flex.flex-col.shadow-md.overflow-y-auto.border-gray-200/60
+        div.py-6.pb-8
+          img.block.mx-auto src='https://comana.goldenowl.asia/packs/media/images/logo-wing-121cc1b6074afdcca9f74bd8c4863e80.png' width=80 alt='golden_owl_logo'
+        
+        b.font-medium.text-sm.text-gray-600.my-2.mx-1 Main menu
+
+        div.flex.flex-col.gap-2
+          a.px-5.py-4.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:space_dashboard).outlined
+            span Dashboard
+
+          a.px-5.py-4.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:meeting_room).outlined
+            span Meeting Room
+
+          a.px-5.py-4.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:schedule).outlined
+            span Schedule
+        
+        div.border-t.my-2
+
+        b.font-medium.text-sm.text-gray-600.my-2.mx-1 Management
+
+        div.flex.flex-col.gap-2
+          a.px-5.py-4.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:people).outlined
+            span Employees
+
+          a.px-5.py-4.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:room_preferences).outlined
+            span.mr-auto Rooms
+            = mi.shape(:keyboard_arrow_right).outlined
+
+        div.border-t.my-2
+
+        div.flex.items-center.gap-1.justify-center.text-sm.mt-4.xl:mt-auto
+          | Copyright  
+          = mi.shape(:copyright).outlined.md_18
+          | 2024
+      div.w-full
+        nav.flex.w-full.bg-white.px-4.py-6.border
+        .overflow-x-auto.overflow-y-auto 
+          = yield
+

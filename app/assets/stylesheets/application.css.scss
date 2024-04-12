@@ -1,4 +1,22 @@
 /*
+*= require material_icons
+*/
+/*
+*= require material_icons.outlined
+*/
+/*
+*= require material_icons.sharp
+*/
+/*
+*= require material_icons.round
+*/
+/*
+*= require material_icons.twotone
+*/
+/*
+*= require material_icons.helpers
+*/
+/*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
@@ -13,6 +31,8 @@
  *= require_tree .
  *= require_self
  */
+
+@import "font-awesome";
 
 .auth-layout {
   background-repeat: no-repeat;
