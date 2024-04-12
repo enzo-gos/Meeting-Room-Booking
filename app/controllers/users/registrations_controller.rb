@@ -9,12 +9,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     super
-    return unless resource.save
-
-    admin_role = Role.find_or_create_by(name: 'ADMIN')
-    user_role = Role.find_or_create_by(name: 'USER')
-    UserRole.create(role_id: admin_role.id, user_id: resource.id)
-    UserRole.create(role_id: user_role.id, user_id: resource.id)
+    resource.add_role(:admin)
   end
 
   # GET /resource/edit
