@@ -5,14 +5,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
-  # def new
-  #   super
-  # end
+  def new
+    super
+  end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    super
+    if resource.save
+      role = Role.find_or_create_by(name: 'ADMIN')
+      UserRole.create(role_id: role.id, user_id: resource.id)
+    end
+  end
 
   # GET /resource/edit
   # def edit

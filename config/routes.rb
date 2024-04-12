@@ -5,7 +5,8 @@ Rails.application.routes.draw do
     :sign_up => 'register'
   },
   controllers: {
-    omniauth_callbacks: 'users/omniauth_callbacks'
+    omniauth_callbacks: 'users/omniauth_callbacks',
+    registrations: 'users/registrations'
   }
 
 

@@ -8,6 +8,11 @@ class User < ApplicationRecord
   has_many :teams, through: :user_teams
 
   def self.from_google(u)
-    create_with(uid: u[:uid], provider: 'google', password: Devise.friendly_token[0, 20]).find_or_create_by!(email: u[:email])
+    role = Role.find_or_create_by(name: 'USER')
+
+    new_user = create_with(uid: u[:uid], provider: 'google', password: Devise.friendly_token[0, 20]).find_or_create_by!(email: u[:email])
+    UserRole.create(role_id: role.id, user_id: new_user.id)
+
+    new_user
   end
 end

@@ -78,3 +78,5 @@ gem "slim", "~> 5.2"
 gem "omniauth-google-oauth2", "~> 1.1"
 
 gem "omniauth-rails_csrf_protection", "~> 1.0"
+
+gem "pgcrypto", "~> 0.4.1"
