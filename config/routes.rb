@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     authenticated :user do
+      get 'user/profile' => 'user#profile'
       root 'dashboard#index', as: :authenticated_root
     end
 

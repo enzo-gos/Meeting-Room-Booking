@@ -1,0 +1,14 @@
+div.flex
+	div.flex
+		.rounded-full
+		- if @user_profile.avatar
+			img width=120 height=120 alt='avatar' 
+		- else
+		end 
+		= simple_form_for @user_profile, url: :user_profile, html: { class: 'flex flex-col gap-6' } do |f|
+			= f.input :email, label: 'Email', label_html: { class: 'form-label mb-2' }, input_html: { class: 'form-input' }
+			= f.input :current_password, label: 'Current Password', label_html: { class: 'form-label' }, input_html: { class: 'form-input', placeholder: '••••••••' }
+			= f.input :password, label: 'Password', label_html: { class: 'form-label mb-2' }, input_html: { class: 'form-input', placeholder: '••••••••' }	
+			= f.input :confirm_password, label: 'Confirm Password', label_html: { class: 'form-label mb-2' }, input_html: { class: 'form-input', placeholder: '••••••••' }
+			/ = f.input :email, label: 'Enter your email'
+			= f.button :submit, 'Save', class: 'btn-submit'
