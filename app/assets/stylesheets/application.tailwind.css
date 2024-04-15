@@ -43,12 +43,12 @@
     @apply w-full 
       py-3
       mt-1 
-      bg-sky-900 
+      bg-primary-900 
       text-white 
       font-semibold 
       cursor-pointer
       rounded-md 
-      hover:bg-sky-800;
+      hover:bg-primary-800;
     transition: all 0.2s ease;
   }
 

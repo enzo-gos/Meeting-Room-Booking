@@ -82,3 +82,11 @@ gem 'omniauth-rails_csrf_protection', '~> 1.0'
 gem 'pgcrypto', '~> 0.4.1'
 
 gem 'rolify', '~> 6.0'
+
+gem 'font-awesome-sass', '~> 6.5'
+
+gem 'material_icons', '~> 4.0'
+
+gem 'breadcrumbs_on_rails', '~> 4.1'
+
+gem 'simple_form', '~> 5.3'

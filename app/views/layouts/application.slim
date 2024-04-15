@@ -1,0 +1,81 @@
+doctype html
+html[lang="en"]
+  head
+    title
+      | Golden Meeting Room
+    meta[name="viewport" content="width=device-width,initial-scale=1"]
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_importmap_tags
+    script[src="https://unpkg.com/alpinejs"]
+    link[rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"]
+    script[src="https://unpkg.com/@ryangjchandler/alpine-tooltip@1.2.0/dist/cdn.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"]
+  body
+    div x-data="{ sidebarOpen: false }"
+      .fixed.left-0.h-screen.bg-gray-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.transition-all.border-gray-200/60 :class="{'w-64': sidebarOpen, 'w-[72px]': !sidebarOpen}"
+        div.py-2.pb-6
+          img.block.mx-auto :class="{'w-[80px]': sidebarOpen, 'w-[50px]': !sidebarOpen}" src='https://comana.goldenowl.asia/packs/media/images/logo-wing-121cc1b6074afdcca9f74bd8c4863e80.png' alt='golden_owl_logo'
+        
+        b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Main menu
+
+        div.flex.flex-col.gap-2
+          a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:space_dashboard).outlined
+            span.whitespace-nowrap x-show="sidebarOpen" Dashboard
+
+          a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:meeting_room).outlined
+            span.whitespace-nowrap x-show="sidebarOpen" Meeting Room
+
+          a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:schedule).outlined
+            span.whitespace-nowrap x-show="sidebarOpen" Schedule
+        
+        div.border-t.my-2
+
+        b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
+
+        div.flex.flex-col.gap-2
+          a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:people).outlined
+            span.whitespace-nowrap x-show="sidebarOpen" Employees
+
+          a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = mi.shape(:room_preferences).outlined
+            span.mr-auto.whitespace-nowrap x-show="sidebarOpen" Rooms
+            span.whitespace-nowrap x-show="sidebarOpen"
+              = mi.shape(:keyboard_arrow_right).outlined
+
+        div.border-t.my-2
+
+        div.flex.items-center.gap-1.justify-center.text-sm.mt-4.xl:mt-auto.whitespace-nowrap x-show="sidebarOpen"
+          | Copyright  
+          = mi.shape(:copyright).outlined.md_18
+          | 2024
+   
+      div.w-auto.transition-all :class="{'ml-64': sidebarOpen, 'ml-[72px]': !sidebarOpen}"
+        nav.flex.items-center.w-full.bg-white.p-2.px-4.border-b
+          button.flex.items-center.justify-center.border.rounded-full.p-2.hover:bg-gray-200/60.cursor-pointer @click="sidebarOpen = !sidebarOpen"
+            = mi.shape(:menu).outlined.md_18
+
+          b.text-xl.font-semibold.ml-6.text-gray-700
+            = render_breadcrumbs :separator => ' / '
+          
+          div.relative.ml-auto x-data="{ settingOpen: false }" @click.away="settingOpen = false"
+            
+            div.rounded-full.border.overflow-hidden.w-11.h-11.cursor-pointer @click="settingOpen = !settingOpen"
+              img.block width=50 height=50 src='https://comana.goldenowl.asia/packs/media/images/avatar-b0696fe53c597b8a1f2c6581759a4216.png' alt='Avatar'
+            
+            div.absolute.right-0.bg-white.border.rounded-md.min-w-44.shadow-md.top-full.mt-1 x-show="settingOpen" x-cloak="visible"
+              a.flex.items-center.whitespace-nowrap.p-4.gap-2.cursor-pointer.hover:bg-gray-200/60 href='/user/profile'
+                = mi.shape(:account_circle).outlined
+                | My Profile
+
+              div.flex.items-center.whitespace-nowrap.p-4.gap-2.cursor-pointer.hover:bg-gray-200/60
+                = mi.shape(:exit_to_app).outlined
+                = button_to "Logout", destroy_user_session_path, method: :delete
+                
+        div.p-4
+          = yield
