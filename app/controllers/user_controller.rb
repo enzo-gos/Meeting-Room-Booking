@@ -11,7 +11,9 @@ class UserController < ApplicationController
     if @user_profile.update(user_profile_params)
       bypass_sign_in @user_profile
 
-      render :index, notice: 'Profile updated successfully.', status: :created
+      flash.now[:notice] = 'Profile updated successfully.'
+
+      render :index, status: :created
     else
       @user_profile.errors.add(:current_password, 'is incorrect')
       render :index, status: :unprocessable_entity

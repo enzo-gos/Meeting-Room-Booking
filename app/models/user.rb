@@ -10,7 +10,7 @@ class User < ApplicationRecord
          omniauth_providers: [:google_oauth2]
 
   validate :current_password_is_correct,
-  if: :validate_password?, on: :update
+           if: :validate_password?, on: :update
 
   has_many :teams, through: :user_teams
 
@@ -20,7 +20,7 @@ class User < ApplicationRecord
 
   def current_password_is_correct
     if User.find(id).valid_password?(current_password) == false
-      errors.add("Current password is incorrect.")
+      errors.add('Current password is incorrect.')
     end
   end
 
