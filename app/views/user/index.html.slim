@@ -6,9 +6,13 @@ div.flex.gap-4.items-start
 					span.mb-5 Avatar
 					div.avatar.dropzone.dropzone-default.dz-clickable data-controller='dropzone' data-dropzone-max-file-size='5' data-dropzone-max-files='1' data-dropzone-accepted-files='image/jpg,image/png,image/jpg'
 						.block.m-auto.text-center.text-gray-400.pointer-events-none.absolute.left-1/2.top-1/2.-translate-x-1/2.-translate-y-1/2
-							div = mi.shape(:add_photo_alternate).round.md_48
-							div.whitespace-nowrap
-								| Drag & drop here
+							- if @user_profile.avatar.persisted?
+								div.rounded-full.w-52.h-52.overflow-hidden
+									= image_tag(@user_profile.avatar, class: 'w-full')
+							- else
+								div = mi.shape(:add_photo_alternate).	round.md_48
+								div.whitespace-nowrap
+									| Drag & drop here
 						= f.input :avatar, label_html: { class: 'hidden' }, input_html: { data: { dropzone_target: 'input' }, class: 'hidden', disabled: true, direct_upload: true }
 				div.flex.flex-col.gap-5.w-full
 					= f.input :email, label: 'Email', input_html: { class: 'form-input', readonly: true }
