@@ -9,13 +9,13 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-
   get "up" => "rails/health#show", as: :rails_health_check
   get "dashboard" => "dashboard#index"
+  get 'user/profile' => 'user#index'
+  patch 'user/profile' => 'user#update'
 
   devise_scope :user do
     authenticated :user do
-      get 'user/profile' => 'user#profile'
       root 'dashboard#index', as: :authenticated_root
     end
 
