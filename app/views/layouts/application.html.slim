@@ -9,12 +9,14 @@ html[lang="en"]
     = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
-    script[src="https://unpkg.com/alpinejs"]
+    script[src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"]
     link[rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"]
     script[src="https://unpkg.com/@ryangjchandler/alpine-tooltip@1.2.0/dist/cdn.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"]
-  body
+    script[src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"]
+    link[rel="stylesheet" href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" type="text/css"]
+  body.bg-slate-100/50
     div x-data="{ sidebarOpen: false }"
-      .fixed.left-0.h-screen.bg-gray-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.transition-all.border-gray-200/60 :class="{'w-64': sidebarOpen, 'w-[72px]': !sidebarOpen}"
+      .fixed.left-0.h-screen.bg-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.transition-all.border-gray-200/60 :class="{'w-64': sidebarOpen, 'w-[72px]': !sidebarOpen}"
         div.py-2.pb-6
           img.block.mx-auto :class="{'w-[80px]': sidebarOpen, 'w-[50px]': !sidebarOpen}" src='https://comana.goldenowl.asia/packs/media/images/logo-wing-121cc1b6074afdcca9f74bd8c4863e80.png' alt='golden_owl_logo'
         
@@ -76,6 +78,6 @@ html[lang="en"]
               div.flex.items-center.whitespace-nowrap.p-4.gap-2.cursor-pointer.hover:bg-gray-200/60
                 = mi.shape(:exit_to_app).outlined
                 = button_to "Logout", destroy_user_session_path, method: :delete
-                
-        div.p-4
-          = yield
+        div.w-full.min-h-screen.overflow-x-auto        
+          div.main-content
+            = yield
