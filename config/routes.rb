@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :meeting_room_management, path: 'rooms'
+  end
+
   devise_for :users, path: '/user', path_names: {
     :sign_in => 'login',
     :sign_out => 'logout',
@@ -10,7 +14,9 @@ Rails.application.routes.draw do
   }
 
   get "up" => "rails/health#show", as: :rails_health_check
+
   get "dashboard" => "dashboard#index"
+
   get 'user/profile' => 'user#index'
   patch 'user/profile' => 'user#update'
 

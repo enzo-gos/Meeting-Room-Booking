@@ -1,0 +1,60 @@
+div.fixed.top-10.right-10.shadow-md.rounded-md.z-max
+	- if notice
+		.flex.rounded-md.bg-primary-50.p-4.text-sm.text-primary-500 [x-cloak x-show="showAlert" x-data="{ showAlert: true }"]
+			svg.mr-3.h-5.w-5.flex-shrink-0[xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor"]
+				path[fill-rule="evenodd" d="M19 10.5a8.5 8.5 0 11-17 0 8.5 8.5 0 0117 0zM8.25 9.75A.75.75 0 019 9h.253a1.75 1.75 0 011.709 2.13l-.46 2.066a.25.25 0 00.245.304H11a.75.75 0 010 1.5h-.253a1.75 1.75 0 01-1.709-2.13l.46-2.066a.25.25 0 00-.245-.304H9a.75.75 0 01-.75-.75zM10 7a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"]
+			div
+				h4.font-bold
+					| Information
+				.mt-1
+					p
+					= notice
+			button.ml-4[x-on:click="showAlert = false"]
+				svg.h-5.w-5[xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor"]
+					path[d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"]
+div.flex.items-center.gap-4
+	.w-full.relative
+		.pointer-events-none.absolute.inset-y-0.left-0.flex.items-center.px-3.text-gray-600
+			= mi.shape(:search).round.md_24
+		input.block.w-full.py-3.rounded-md.border-gray-300.pl-11.shadow-sm.focus:border-primary-400.focus:ring.focus:ring-primary-200.focus:ring-opacity-50.disabled:cursor-not-allowed.disabled:bg-gray-50.disabled:text-gray-500[type="email" placeholder="Search for anything..."]
+	
+	a(class='ml-auto border bg-primary-800 p-4 px-4 text-white rounded text-sm flex items-center gap-2 font-semibold transition-all my-4 hover:bg-primary-700', href="#{new_admin_meeting_room_management_path}")
+		span.whitespace-nowrap Add Room
+		= mi.shape(:add_circle).round.md_18
+
+.overflow-hidden.rounded-lg.border.border-gray-200
+  table.w-full.border-collapse.bg-white.text-left.text-sm.text-gray-500
+    thead.bg-gray-50
+      tr
+        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+          | ID
+        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+          | Name
+        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+          | Department
+        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+          | Capacity
+        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+          | Facilities
+        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+    tbody.divide-y.divide-gray-100.border-t.border-gray-100
+			- @meeting_rooms.each do |room|
+				tr.hover:bg-gray-50
+					td.px-6.py-4 = room.id
+					td.px-6.py-4 = room.name
+					td.px-6.py-4 = room.department.name
+					td.px-6.py-4 = room.max_capacity
+					td.px-6.py-4
+						.flex.gap-2
+						  - room.facilities.each do |facility|
+								span.inline-flex.items-center.gap-1.rounded-full.bg-blue-50.px-2.py-1.text-xs.font-semibold.text-blue-600
+									= facility.name 
+					td.px-6.py-4
+						.flex.justify-end.gap-4
+							a[x-data="{ tooltip: 'Delete' }" href="#"]
+								svg.h-6.w-6[xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" x-tooltip="tooltip"]
+									path[stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"]
+							a[x-data="{ tooltip: 'Edite' }" href="#"]
+								svg.h-6.w-6[xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" x-tooltip="tooltip"]
+									path[stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"]
+    / = will_paginate @rooms
