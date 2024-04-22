@@ -25,7 +25,6 @@ class Admin::MeetingRoomManagementController < ApplicationController
   def edit
     add_breadcrumb params[:id], edit_admin_meeting_room_management_path
     add_breadcrumb 'Edit', edit_admin_meeting_room_management_path
-
   end
 
   def update
