@@ -90,3 +90,5 @@ gem 'material_icons', '~> 4.0'
 gem 'breadcrumbs_on_rails', '~> 4.1'
 
 gem 'simple_form', '~> 5.3'
+
+gem "pagy", "~> 8.2"

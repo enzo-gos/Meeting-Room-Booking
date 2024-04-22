@@ -185,4 +185,35 @@
   .form-row-wrapper > div {
     @apply w-full;
   }
+
+  .pagy.nav {
+    @apply flex 
+      bg-white 
+      w-full
+      p-4
+      justify-end
+      border-t
+      border-gray-100;
+  }
+
+  .pagy.nav a {
+    @apply text-sm
+      px-3
+      py-2.5
+      rounded-md
+      hover:bg-gray-200/60
+      flex
+      items-center
+      leading-none;
+  }
+
+  .pagy.nav a[aria-disabled="true"]:first-child,
+  .pagy.nav a[aria-disabled="true"]:last-child {
+    @apply hidden;
+  }
+
+  .pagy.nav a.current {
+    @apply text-primary-700
+      font-bold;
+  }
 }
