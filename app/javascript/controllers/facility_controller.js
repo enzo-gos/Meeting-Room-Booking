@@ -8,7 +8,7 @@ export default class extends Controller {
     if (this.facilitiesInputTarget.value) {
       this.facilitiesInputTarget.value = this.facilitiesInputTarget.value
         .split(" ")
-        .join(",");
+        .reduce((prev, curr) => (prev += curr + ","), "");
 
       this.element.querySelector(".facilities").classList.remove("hidden");
       this.element.querySelector(".facilities").classList.add("block");

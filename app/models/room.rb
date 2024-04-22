@@ -4,9 +4,16 @@ class Room < ApplicationRecord
 
   has_one_attached :preview_image
 
-  validates :department_id, presence: true
-  validates :preview_image, presence: true
-  validates :name, presence: true
-  validates :facility_ids, presence: true
-  validates :max_capacity, presence: true
+  validates :department_id, presence: { message: 'Department must be provided' }
+  validates :preview_image, presence: { message: 'Preview image must be provided' }
+  validates :name, presence: { message: "Name can't be blank" }
+  validates :facility_ids, presence: { message: 'Facilities must be included' }
+  validates :max_capacity, presence: { message: 'Capacity must be provided' },
+                            numericality: {
+                              only_integer: true,
+                              greater_than_or_equal_to: 3,
+                              less_than_or_equal_to: 200,
+                              message: 'Capacity must be between 3 and 200'
+                            }
+  validates :name, uniqueness: { scope: :department_id, message: 'A room with this name already exists in this department' }
 end

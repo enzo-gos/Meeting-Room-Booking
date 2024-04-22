@@ -110,7 +110,7 @@
   }
 
   .main-content {
-    @apply p-4 max-w-7xl mx-auto min-w-[80rem] 2xl:min-w-max;
+    @apply p-4 max-w-6xl min-w-[72rem] mx-auto 2xl:min-w-max;
   }
 
   a.navlink-active {
@@ -129,8 +129,8 @@
     @apply text-gray-700 px-4 py-3 hover:bg-gray-200/60 cursor-default flex justify-between items-center;
   }
 
-  .meeting_room_preview_image {
-    @apply mb-8;
+  .meeting_room_preview_image.dropzone {
+    @apply mb-8 min-h-[163px];
   }
 
   .meeting_room_preview_image.dropzone {
@@ -146,23 +146,28 @@
 
   .meeting_room_preview_image.dropzone .dz-preview {
     @apply m-0 
-      w-[525px]
-      h-[160px]
-      rounded-none;
+    w-[525px]
+    h-[160px]
+    rounded-none;
+  }
+
+  .meeting_room_preview_image.dropzone .dz-message {
+    @apply hidden;
   }
 
   .meeting_room_preview_image.dropzone .dz-preview.dz-image-preview {
     @apply bg-transparent rounded-none;
   }
 
-  .meeting_room_preview_image.dropzone .dz-preview .dz-image {
+  .meeting_room_preview_image.dropzone .dz-preview .dz-image,
+  .meeting_room_preview_image.dropzone .exists-preview-image {
     @apply w-[525px]
-      overflow-hidden
-      h-[160px]
-      flex
-      items-center
-      justify-center
-      rounded-none;
+    overflow-hidden
+    h-[160px]
+    flex
+    items-center
+    justify-center
+    rounded-sm;
   }
 
   .meeting_room_preview_image.dropzone .dz-preview .dz-remove {
@@ -171,5 +176,13 @@
 
   .meeting_room_preview_image.dropzone .dz-preview .dz-image img {
     @apply min-w-full min-h-full z-0;
+  }
+
+  .form-row-wrapper {
+    @apply flex mb-4 gap-5;
+  }
+
+  .form-row-wrapper > div {
+    @apply w-full;
   }
 }

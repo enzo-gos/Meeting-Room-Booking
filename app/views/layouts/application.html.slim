@@ -37,20 +37,21 @@ html[lang="en"]
         
         div.border-t.my-2
 
-        b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
+        - if current_user.has_role?(:admin)
+          b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
+        - if current_user.has_role?(:admin)
+          div.flex.flex-col.gap-2
+            a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+              = mi.shape(:people).outlined
+              span.whitespace-nowrap x-show="sidebarOpen" Employees
 
-        div.flex.flex-col.gap-2
-          a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
-            = mi.shape(:people).outlined
-            span.whitespace-nowrap x-show="sidebarOpen" Employees
+            a class=('px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer' + (current_controller?('admin/meeting_room_management') ? ' navlink-active' : '')) href="#{admin_meeting_room_management_index_path}"
+              = mi.shape(:room_preferences).outlined
+              span.mr-auto.whitespace-nowrap x-show="sidebarOpen" Rooms
+              span.whitespace-nowrap x-show="sidebarOpen"
+                = mi.shape(:keyboard_arrow_right).outlined
 
-          a class=('px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer' + (current_page?(admin_meeting_room_management_index_path) ? ' navlink-active' : '')) href="#{admin_meeting_room_management_index_path}"
-            = mi.shape(:room_preferences).outlined
-            span.mr-auto.whitespace-nowrap x-show="sidebarOpen" Rooms
-            span.whitespace-nowrap x-show="sidebarOpen"
-              = mi.shape(:keyboard_arrow_right).outlined
-
-        div.border-t.my-2
+          div.border-t.my-2
 
         div.flex.items-center.gap-1.justify-center.text-sm.mt-4.xl:mt-auto.whitespace-nowrap x-show="sidebarOpen"
           | Copyright  
@@ -68,16 +69,34 @@ html[lang="en"]
           div.relative.ml-auto x-data="{ settingOpen: false }" @click.away="settingOpen = false"
             
             div.rounded-full.border.overflow-hidden.w-11.h-11.cursor-pointer @click="settingOpen = !settingOpen"
-              img.block width=50 height=50 src='https://comana.goldenowl.asia/packs/media/images/avatar-b0696fe53c597b8a1f2c6581759a4216.png' alt='Avatar'
+              - if current_user.avatar.attached?
+                = image_tag current_user.avatar, width: 50, height: 50, alt: 'avatar'
+              - else
+                img.block width=50 height=50 src='https://comana.goldenowl.asia/packs/media/images/avatar-b0696fe53c597b8a1f2c6581759a4216.png' alt='Avatar'
             
             div.absolute.right-0.bg-white.border.rounded-md.min-w-44.shadow-md.top-full.mt-1 x-show="settingOpen" x-cloak="visible"
               a.flex.items-center.whitespace-nowrap.p-4.gap-2.cursor-pointer.hover:bg-gray-200/60 href='/user/profile'
                 = mi.shape(:account_circle).outlined
                 | My Profile
 
-              div.flex.items-center.whitespace-nowrap.p-4.gap-2.cursor-pointer.hover:bg-gray-200/60
+              = button_to destroy_user_session_path, method: :delete, class: 'flex items-center whitespace-nowrap p-4 gap-2 cursor-pointer hover:bg-gray-200/60 w-full' do
                 = mi.shape(:exit_to_app).outlined
-                = button_to "Logout", destroy_user_session_path, method: :delete
+                span Logout
+
         .w-full.overflow-x-auto.overflow-y-hidden.py-2.min-h-screen
           div.main-content
+            div.fixed.top-10.right-10.shadow-md.rounded-md.z-max
+              - if notice
+                .flex.rounded-md.bg-primary-50.p-4.text-sm.text-primary-500 [x-cloak x-show="showAlert" x-data="{ showAlert: true }" x-init="setTimeout(() => showAlert = false, 2000)"]
+                  svg.mr-3.h-5.w-5.flex-shrink-0[xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor"]
+                    path[fill-rule="evenodd" d="M19 10.5a8.5 8.5 0 11-17 0 8.5 8.5 0 0117 0zM8.25 9.75A.75.75 0 019 9h.253a1.75 1.75 0 011.709 2.13l-.46 2.066a.25.25 0 00.245.304H11a.75.75 0 010 1.5h-.253a1.75 1.75 0 01-1.709-2.13l.46-2.066a.25.25 0 00-.245-.304H9a.75.75 0 01-.75-.75zM10 7a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"]
+                  div
+                    h4.font-bold
+                      | Information
+                    .mt-1
+                      p
+                      = notice
+                  button.ml-4[x-on:click="showAlert = false"]
+                    svg.h-5.w-5[xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor"]
+                      path[d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"]
             = yield
