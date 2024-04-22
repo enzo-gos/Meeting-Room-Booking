@@ -32,5 +32,9 @@ class User < ApplicationRecord
     add_role(:user) if roles.blank? || !has_role?(:user)
   end
 
+  def admin?
+    has_role?(:admin)
+  end
+
   attr_accessor :current_password
 end

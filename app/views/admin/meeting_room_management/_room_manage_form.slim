@@ -1,0 +1,36 @@
+.mt-2.text-sm data-controller='facility'
+	= simple_form_for @meeting_room, url: url, method: method, defaults: { label_html: { class: 'form-label my-2 flex flex-row-reverse justify-end gap-1' }, error_html: { class: 'text-red-500 mt-1 block text-[13px] ml-1' } } do |f|
+		.my-4
+			h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1 
+				b.text-red-500 *
+				| Preview Image
+			.meeting_room_preview_image.dropzone.dropzone-default.dz-clickable data-controller='dropzone' data-dropzone-max-file-size='5' data-dropzone-thumbnail-width='524' data-dropzone-thumbnail-height='160' data-dropzone-max-files='1' data-dropzone-accepted-files='image/jpg,image/png,image/jpeg'
+				.block.m-auto.text-center.text-gray-400.pointer-events-none.absolute.left-1/2.top-1/2.-translate-x-1/2.-translate-y-1/2
+					- if @meeting_room.preview_image.persisted?
+						.exists-preview-image.pointer-events-none
+							= image_tag(@meeting_room.preview_image, class: 'w-full')
+					- else
+							div = mi.shape(:add_photo_alternate).round.md_48
+							.whitespace-nowrap
+								| Drag & drop here
+				= f.input :preview_image, label_html: { class: 'hidden' }, input_html: { data: { dropzone_target: 'input' }, class: 'hidden', disabled: true, direct_upload: true, required: true }
+		.form-row-wrapper
+			= f.input :name, label: "Name", input_html: { class: 'form-input w-full', placeholder: 'Enter room name', required: true }
+			= f.input :max_capacity, label: "Capacity" , input_html: { class: 'form-input w-full', placeholder: '3 - 200', required: true }
+		.mb-4
+			= f.input :department_id, label: "Department", collection: Department.all, label_method: :name, value_method: :id, prompt: "Select Department", input_html: { class: "form-input w-full", required: true }
+		.mb-4
+			h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1 
+				b.text-red-500 *
+				| Facilities
+			.relative
+				input.w-full.form-input.py-2.facility_autocomplete type='text' placeholder='Facility' data-action='click->facility#keepDropdownOpen blur->facility#closeDropdown input->facility#searchFacility'
+				.facility_dropdown data-facility-target='facilityDropdown'
+					- Facility.all.each do |facility|
+						button.py-2.px-4.w-full.text-left.hover:bg-gray-200/60 type='button' data-action='mousedown->facility#addFacility' value="#{facility.id}" data-facility-target="facility" = facility.name
+			= f.input :facility_ids, label: false, input_html: { id: "facilities-hidden", hidden: true, 'data-facility-target': "facilitiesInput" }
+			.facilities.border.mt-2.rounded-md.hidden.bg-gray-100/30
+		.mb-4
+			= f.input :description, :as => :text, :input_html => { 'rows' => 3, 'cols' => 10, class: 'form-input w-full', placeholder: 'Enter description' }
+		.mt-6
+			= f.button :submit, "Update", class: "btn-submit"

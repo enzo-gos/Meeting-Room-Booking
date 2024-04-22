@@ -5,7 +5,10 @@ export default class extends Controller {
   static targets = ["facility", "facilitiesInput", "facilityDropdown"];
 
   connect() {
-    if (this.facilitiesInputTarget.value) {
+    if (
+      this.facilitiesInputTarget.value &&
+      !this.facilitiesInputTarget.value.includes(",")
+    ) {
       this.facilitiesInputTarget.value = this.facilitiesInputTarget.value
         .split(" ")
         .reduce((prev, curr) => (prev += curr + ","), "");

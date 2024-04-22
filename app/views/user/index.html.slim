@@ -1,20 +1,20 @@
-div.flex.gap-4.items-start
+.flex.gap-4.items-start
 	.bg-white.p-8.w-full.border.border-gray-200
 		= simple_form_for @user_profile, url: :user_profile, :method => :patch, defaults: { error_html: { class: 'text-red-500' }, label_html: { class: 'form-label mb-2' } } do |f|
-			div.flex.gap-10
-				div.flex.flex-col.items-center 
+			.flex.gap-10
+				.flex.flex-col.items-center 
 					span.mb-5 Avatar
-					div.avatar.dropzone.dropzone-default.dz-clickable data-controller='dropzone' data-dropzone-max-file-size='5' data-dropzone-max-files='1' data-dropzone-accepted-files='image/jpg,image/png,image/jpeg'
+					.avatar.dropzone.dropzone-default.dz-clickable data-controller='dropzone' data-dropzone-max-file-size='5' data-dropzone-max-files='1' data-dropzone-accepted-files='image/jpg,image/png,image/jpeg'
 						.block.m-auto.text-center.text-gray-400.pointer-events-none.absolute.left-1/2.top-1/2.-translate-x-1/2.-translate-y-1/2
 							- if @user_profile.avatar.persisted?
-								div.rounded-full.w-52.h-52.overflow-hidden
+								.rounded-full.w-52.h-52.overflow-hidden
 									= image_tag(@user_profile.avatar, class: 'w-full')
 							- else
 								div = mi.shape(:add_photo_alternate).round.md_48
-								div.whitespace-nowrap
+								.whitespace-nowrap
 									| Drag & drop here
 						= f.input :avatar, label_html: { class: 'hidden' }, input_html: { data: { dropzone_target: 'input' }, hidden: true, disabled: true, direct_upload: true }
-				div.flex.flex-col.gap-5.w-full
+				.flex.flex-col.gap-5.w-full
 					= f.input :email, label: 'Email', input_html: { class: 'form-input', readonly: true }
 					= f.input :current_password, label: 'Current Password', input_html: { class: "form-input#{@user_profile.errors.include?(:current_password) ? ' border-red-500' : ''}", placeholder: '••••••••' }
 					= f.input :password, label: 'Password', input_html: { class: "form-input#{@user_profile.errors.include?(:password) ? ' border-red-500' : ''}", placeholder: '••••••••' }	
@@ -22,13 +22,13 @@ div.flex.gap-4.items-start
 					/ = f.input :email, label: 'Enter your email'
 			= f.button :submit, 'Save', class: 'btn-submit mt-7'
 	.bg-white.p-8.border.border-gray-200.w-2/3
-		div.flex.flex-col.gap-4 
+		.flex.flex-col.gap-4 
 			div 
 				b.text-xs.text-gray-500/70.uppercase Identity 
-				div.text-gray-800 = @user_profile.id
+				.text-gray-800 = @user_profile.id
 			div 
 				b.text-xs.text-gray-500/70.uppercase Role 
-				div.text-gray-800 = @user_profile.roles.all.map{ |el| el.name.capitalize }.join(', ')
+				.text-gray-800 = @user_profile.roles.all.map{ |el| el.name.capitalize }.join(', ')
 			div
 				b.text-xs.text-gray-500/70.uppercase Create At 
-				div.text-gray-800 = @user_profile.created_at
+				.text-gray-800 = @user_profile.created_at

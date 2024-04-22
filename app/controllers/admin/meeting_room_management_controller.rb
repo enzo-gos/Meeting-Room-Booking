@@ -1,50 +1,42 @@
 class Admin::MeetingRoomManagementController < ApplicationController
-  before_action :authenticate_user!
-  before_action :role_admin?
+  before_action :init_breadcrumbs
 
-  add_breadcrumb 'Manage'
-  add_breadcrumb 'Rooms'
+  before_action :prepare_meeting_rooms, only: [:index]
+  before_action :prepare_meeting_room, only: [:edit, :update, :destroy]
 
-  def index
-    @meeting_rooms = Room.all
-    @facilities = Facility.all
-  end
-
-  def create
-    @meeting_room = Room.new(room_params)
-    if @meeting_room.save
-      redirect_to admin_meeting_room_management_index_path, notice: 'Meeting room was successfully created.'
-    else
-      @facilities = Facility.all
-      render :new, status: :unprocessable_entity
-    end
-  end
+  def index; end
 
   def new
     add_breadcrumb 'Create', new_admin_meeting_room_management_path
     @meeting_room = Room.new
   end
 
+  def create
+    @meeting_room = Room.new(room_params)
+    authorize @meeting_room, policy_class: RoomManagementPolicy
+
+    if @meeting_room.save
+      redirect_to admin_meeting_room_management_index_path, notice: 'Meeting room was successfully created.'
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def edit
     add_breadcrumb params[:id], edit_admin_meeting_room_management_path
     add_breadcrumb 'Edit', edit_admin_meeting_room_management_path
 
-    @meeting_room = Room.find(params[:id])
   end
 
   def update
-    @meeting_room = Room.find(params[:id])
-
     if @meeting_room.update(room_params)
       redirect_to edit_admin_meeting_room_management_path, notice: 'Meeting room was successfully updated.'
     else
-      flash.now[:alert] = "Error updating meeting room: #{params.inspect}"
       render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
-    @meeting_room = Room.find(params[:id])
     @meeting_room.destroy
     redirect_to admin_meeting_room_management_index_path, notice: 'Meeting room was successfully destroyed.'
   end
@@ -56,7 +48,20 @@ class Admin::MeetingRoomManagementController < ApplicationController
     params.required(:room).permit(:name, :max_capacity, :department_id, :description, :preview_image, facility_ids: [])
   end
 
-  def role_admin?
-    redirect_to authenticated_root_path unless current_user.has_role?(:admin)
+  def prepare_meeting_rooms
+    @facilities = Facility.all
+    @meeting_rooms = policy_scope(Room, policy_scope_class: RoomManagementPolicy::Scope).order(:id)
+
+    authorize @meeting_rooms, policy_class: RoomManagementPolicy
+  end
+
+  def prepare_meeting_room
+    @meeting_room = Room.find(params[:id])
+    authorize @meeting_room, policy_class: RoomManagementPolicy
+  end
+
+  def init_breadcrumbs
+    add_breadcrumb 'Manage'
+    add_breadcrumb 'Rooms'
   end
 end

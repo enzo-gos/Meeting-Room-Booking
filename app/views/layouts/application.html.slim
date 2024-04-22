@@ -17,12 +17,12 @@ html[lang="en"]
   body.bg-slate-100/50
     div x-data="{ sidebarOpen: false }"
       .fixed.left-0.h-screen.bg-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.transition-all.border-gray-200/60 :class="{'w-64': sidebarOpen, 'w-[72px]': !sidebarOpen}"
-        div.py-2.pb-6
+        .py-2.pb-6
           img.block.mx-auto :class="{'w-[80px]': sidebarOpen, 'w-[50px]': !sidebarOpen}" src='https://comana.goldenowl.asia/packs/media/images/logo-wing-121cc1b6074afdcca9f74bd8c4863e80.png' alt='golden_owl_logo'
         
         b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Main menu
   
-        div.flex.flex-col.gap-2
+        .flex.flex-col.gap-2
           a class=('px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer' + (current_page?(dashboard_path) || current_page?(authenticated_root_path) ? ' navlink-active' : '')) href="#{dashboard_path}"
             = mi.shape(:space_dashboard).outlined
             span.whitespace-nowrap x-show="sidebarOpen" Dashboard
@@ -35,12 +35,12 @@ html[lang="en"]
             = mi.shape(:schedule).outlined
             span.whitespace-nowrap x-show="sidebarOpen" Schedule
         
-        div.border-t.my-2
+        .border-t.my-2
 
         - if current_user.has_role?(:admin)
           b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
         - if current_user.has_role?(:admin)
-          div.flex.flex-col.gap-2
+          .flex.flex-col.gap-2
             a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
               = mi.shape(:people).outlined
               span.whitespace-nowrap x-show="sidebarOpen" Employees
@@ -51,14 +51,14 @@ html[lang="en"]
               span.whitespace-nowrap x-show="sidebarOpen"
                 = mi.shape(:keyboard_arrow_right).outlined
 
-          div.border-t.my-2
+          .border-t.my-2
 
-        div.flex.items-center.gap-1.justify-center.text-sm.mt-4.xl:mt-auto.whitespace-nowrap x-show="sidebarOpen"
+        .flex.items-center.gap-1.justify-center.text-sm.mt-4.xl:mt-auto.whitespace-nowrap x-show="sidebarOpen"
           | Copyright  
           = mi.shape(:copyright).outlined.md_18
           | 2024
    
-      div.w-auto.transition-all.left-0.right-0 :class="{'ml-64': sidebarOpen, 'ml-[72px]': !sidebarOpen}"
+      .w-auto.transition-all.left-0.right-0 :class="{'ml-64': sidebarOpen, 'ml-[72px]': !sidebarOpen}"
         nav.flex.items-center.w-full.bg-white.p-2.px-4.border-b.sticky.top-0.z-max
           button.flex.items-center.justify-center.border.rounded-full.p-2.hover:bg-gray-200/60.cursor-pointer @click="sidebarOpen = !sidebarOpen"
             = mi.shape(:menu).outlined.md_18
@@ -66,15 +66,15 @@ html[lang="en"]
           b.text-xl.font-semibold.ml-6.text-gray-700.flex.items-center
             = render_breadcrumbs :separator => mi.shape(:keyboard_arrow_right).round
           
-          div.relative.ml-auto x-data="{ settingOpen: false }" @click.away="settingOpen = false"
+          .relative.ml-auto x-data="{ settingOpen: false }" @click.away="settingOpen = false"
             
-            div.rounded-full.border.overflow-hidden.w-11.h-11.cursor-pointer @click="settingOpen = !settingOpen"
+            .rounded-full.border.overflow-hidden.w-11.h-11.cursor-pointer @click="settingOpen = !settingOpen"
               - if current_user.avatar.attached?
                 = image_tag current_user.avatar, width: 50, height: 50, alt: 'avatar'
               - else
                 img.block width=50 height=50 src='https://comana.goldenowl.asia/packs/media/images/avatar-b0696fe53c597b8a1f2c6581759a4216.png' alt='Avatar'
             
-            div.absolute.right-0.bg-white.border.rounded-md.min-w-44.shadow-md.top-full.mt-1 x-show="settingOpen" x-cloak="visible"
+            .absolute.right-0.bg-white.border.rounded-md.min-w-44.shadow-md.top-full.mt-1 x-show="settingOpen" x-cloak="visible"
               a.flex.items-center.whitespace-nowrap.p-4.gap-2.cursor-pointer.hover:bg-gray-200/60 href='/user/profile'
                 = mi.shape(:account_circle).outlined
                 | My Profile
@@ -84,8 +84,8 @@ html[lang="en"]
                 span Logout
 
         .w-full.overflow-x-auto.overflow-y-hidden.py-2.min-h-screen
-          div.main-content
-            div.fixed.top-10.right-10.shadow-md.rounded-md.z-max
+          .main-content
+            .fixed.top-10.right-10.shadow-md.rounded-md.z-max
               - if notice
                 .flex.rounded-md.bg-primary-50.p-4.text-sm.text-primary-500 [x-cloak x-show="showAlert" x-data="{ showAlert: true }" x-init="setTimeout(() => showAlert = false, 2000)"]
                   svg.mr-3.h-5.w-5.flex-shrink-0[xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor"]

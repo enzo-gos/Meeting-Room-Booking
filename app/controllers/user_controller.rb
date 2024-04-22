@@ -1,5 +1,4 @@
 class UserController < ApplicationController
-  before_action :authenticate_user!
   add_breadcrumb 'User Profile', :user_profile_path
 
   def index
