@@ -9,11 +9,11 @@ class Room < ApplicationRecord
   validates :name, presence: { message: "Name can't be blank" }
   validates :facility_ids, presence: { message: 'Facilities must be included' }
   validates :max_capacity, presence: { message: 'Capacity must be provided' },
-                            numericality: {
-                              only_integer: true,
-                              greater_than_or_equal_to: 3,
-                              less_than_or_equal_to: 200,
-                              message: 'Capacity must be between 3 and 200'
-                            }
+                           numericality: {
+                             only_integer: true,
+                             greater_than_or_equal_to: 3,
+                             less_than_or_equal_to: 200,
+                             message: 'Capacity must be between 3 and 200'
+                           }
   validates :name, uniqueness: { scope: :department_id, message: 'A room with this name already exists in this department' }
 end
