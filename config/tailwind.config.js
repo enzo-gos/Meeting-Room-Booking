@@ -17,6 +17,9 @@ module.exports = {
         primary: colors.sky,
         secondary: colors.slate,
       },
+      zIndex: {
+        max: "9999",
+      },
     },
   },
   plugins: [

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_15_052435) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_19_150240) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,28 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_15_052435) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "departments", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "facilities", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "facilities_rooms", id: false, force: :cascade do |t|
+    t.bigint "room_id", null: false
+    t.bigint "facility_id", null: false
+    t.index ["facility_id", "room_id"], name: "index_facilities_rooms_on_facility_id_and_room_id"
+    t.index ["room_id", "facility_id"], name: "index_facilities_rooms_on_room_id_and_facility_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -50,6 +72,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_15_052435) do
     t.datetime "updated_at", null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.string "name"
+    t.bigint "department_id", null: false
+    t.integer "max_capacity"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["department_id"], name: "index_rooms_on_department_id"
+    t.index ["name", "department_id"], name: "index_rooms_on_name_and_department_id", unique: true
   end
 
   create_table "teams", force: :cascade do |t|
@@ -93,6 +126,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_15_052435) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "rooms", "departments"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end

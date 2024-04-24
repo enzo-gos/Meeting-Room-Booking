@@ -159,6 +159,8 @@ function createDropZone(controller) {
     maxFilesize: controller.maxFileSize,
     acceptedFiles: controller.acceptedFiles,
     addRemoveLinks: controller.addRemoveLinks,
+    thumbnailWidth: controller.thumbnailWidth,
+    thumbnailHeight: controller.thumbnailHeight,
     autoQueue: false,
     dictDefaultMessage: "",
   });

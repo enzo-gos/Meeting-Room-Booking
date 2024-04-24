@@ -4,21 +4,22 @@
 
 @layer components {
   .form-label {
-    @apply mb-1 block font-medium text-gray-700;
+    @apply mb-1 block font-semibold text-gray-700;
   }
 
   .form-input {
     @apply block 
       w-full 
       py-3
-      rounded-md 
-      border-gray-300 
+      rounded
+      border-gray-200 
       focus:border-primary-600 
       focus:ring 
       focus:ring-primary-200 
       focus:ring-opacity-50 
       disabled:cursor-not-allowed 
       disabled:bg-gray-50
+      text-sm
       disabled:text-gray-500;
   }
 
@@ -43,12 +44,12 @@
     @apply w-full 
       py-3
       mt-1 
-      bg-primary-900 
+      bg-primary-800 
       text-white 
       font-semibold 
       cursor-pointer
-      rounded-md 
-      hover:bg-primary-800;
+      rounded 
+      hover:bg-primary-700;
     transition: all 0.2s ease;
   }
 
@@ -66,17 +67,17 @@
 
   .avatar.dropzone {
     @apply relative
-    max-w-52
-    min-w-52
-    max-h-52
-    min-h-52
-    rounded-full
-    border-dashed
-    border-2
-    p-0
-    border-gray-300
-    hover:border-primary-600
-    transition-all;
+      max-w-52
+      min-w-52
+      max-h-52
+      min-h-52
+      rounded-full
+      border-dashed
+      border-2
+      p-0
+      border-gray-300
+      hover:border-primary-600
+      transition-all;
   }
 
   .avatar.dropzone.dz-drag-hover {
@@ -85,7 +86,6 @@
 
   .avatar.dropzone .dz-preview {
     @apply m-0 
-      overflow-hidden
       w-52
       h-52;
   }
@@ -96,15 +96,124 @@
 
   .avatar.dropzone .dz-preview .dz-image {
     @apply rounded-full
+      overflow-hidden
       w-[205px]
       h-[205px];
   }
 
+  .avatar.dropzone .dz-preview .dz-remove {
+    @apply mt-3;
+  }
+
   .avatar.dropzone .dz-preview .dz-image img {
-    @apply w-full;
+    @apply w-full z-0;
   }
 
   .main-content {
-    @apply p-4 max-w-7xl mx-auto min-w-[80rem];
+    @apply p-4 max-w-6xl min-w-[72rem] mx-auto 2xl:min-w-max;
+  }
+
+  a.navlink-active {
+    @apply bg-primary-700 text-white hover:bg-primary-700;
+  }
+
+  .facility_dropdown {
+    @apply absolute top-full max-h-40 bg-white overflow-y-auto w-full border rounded mt-1 shadow hidden;
+  }
+
+  .facility_dropdown.open {
+    @apply block;
+  }
+
+  .facilities .facilities-item {
+    @apply text-gray-700 px-4 py-3 hover:bg-gray-200/60 cursor-default flex justify-between items-center;
+  }
+
+  .meeting_room_preview_image.dropzone {
+    @apply mb-8 min-h-[163px];
+  }
+
+  .meeting_room_preview_image.dropzone {
+    @apply relative
+      border-dashed
+      border-2
+      p-0
+      border-gray-300
+      hover:border-primary-600
+      w-full
+      transition-all;
+  }
+
+  .meeting_room_preview_image.dropzone .dz-preview {
+    @apply m-0 
+    w-[525px]
+    h-[160px]
+    rounded-none;
+  }
+
+  .meeting_room_preview_image.dropzone .dz-message {
+    @apply hidden;
+  }
+
+  .meeting_room_preview_image.dropzone .dz-preview.dz-image-preview {
+    @apply bg-transparent rounded-none;
+  }
+
+  .meeting_room_preview_image.dropzone .dz-preview .dz-image,
+  .meeting_room_preview_image.dropzone .exists-preview-image {
+    @apply w-[525px]
+    overflow-hidden
+    h-[160px]
+    flex
+    items-center
+    justify-center
+    rounded-sm;
+  }
+
+  .meeting_room_preview_image.dropzone .dz-preview .dz-remove {
+    @apply mt-3;
+  }
+
+  .meeting_room_preview_image.dropzone .dz-preview .dz-image img {
+    @apply min-w-full min-h-full z-0;
+  }
+
+  .form-row-wrapper {
+    @apply flex mb-4 gap-5;
+  }
+
+  .form-row-wrapper > div {
+    @apply w-full;
+  }
+
+  .pagy.nav {
+    @apply flex 
+      bg-white 
+      w-full
+      p-4
+      justify-end
+      border-t
+      border-gray-100;
+  }
+
+  .pagy.nav a {
+    @apply text-sm
+      px-3
+      py-2.5
+      rounded-md
+      hover:bg-gray-200/60
+      flex
+      items-center
+      leading-none;
+  }
+
+  .pagy.nav a[aria-disabled="true"]:first-child,
+  .pagy.nav a[aria-disabled="true"]:last-child {
+    @apply hidden;
+  }
+
+  .pagy.nav a.current {
+    @apply text-primary-700
+      font-bold;
   }
 }

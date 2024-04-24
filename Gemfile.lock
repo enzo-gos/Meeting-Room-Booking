@@ -86,6 +86,9 @@ GEM
     breadcrumbs_on_rails (4.1.0)
       railties (>= 5.0)
     builder (3.2.4)
+    bullet (7.1.6)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11)
     capybara (3.40.0)
       addressable
       matrix
@@ -200,6 +203,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
+    pagy (8.2.2)
     pg (1.5.6)
     pgcrypto (0.4.1)
     psych (5.1.2)
@@ -310,6 +314,7 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    uniform_notifier (1.16.0)
     uri (0.13.0)
     version_gem (1.1.4)
     warden (1.2.9)
@@ -339,6 +344,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   breadcrumbs_on_rails (~> 4.1)
+  bullet
   capybara
   debug
   devise (~> 4.9)
@@ -349,6 +355,7 @@ DEPENDENCIES
   material_icons (~> 4.0)
   omniauth-google-oauth2 (~> 1.1)
   omniauth-rails_csrf_protection (~> 1.0)
+  pagy (~> 8.2)
   pg (~> 1.1)
   pgcrypto (~> 0.4.1)
   puma (>= 5.0)
