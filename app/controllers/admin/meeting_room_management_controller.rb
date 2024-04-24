@@ -49,7 +49,7 @@ class Admin::MeetingRoomManagementController < ApplicationController
 
   def prepare_meeting_rooms
     @facilities = Facility.all
-    @meeting_rooms = policy_scope(Room, policy_scope_class: RoomManagementPolicy::Scope).order(:id)
+    @meeting_rooms = policy_scope(Room, policy_scope_class: RoomManagementPolicy::Scope).order(:id).includes([:department, :facilities])
 
     authorize @meeting_rooms, policy_class: RoomManagementPolicy
   end
