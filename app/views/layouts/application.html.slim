@@ -18,8 +18,7 @@ html[lang="en"]
     div x-data="{ sidebarOpen: false }"
       .fixed.left-0.h-screen.bg-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.transition-all.border-gray-200/60 :class="{'w-64': sidebarOpen, 'w-[72px]': !sidebarOpen}"
         .py-2.pb-6
-          img.block.mx-auto :class="{'w-[80px]': sidebarOpen, 'w-[50px]': !sidebarOpen}" src='https://comana.goldenowl.asia/packs/media/images/logo-wing-121cc1b6074afdcca9f74bd8c4863e80.png' alt='golden_owl_logo'
-        
+          = image_tag 'logo.png', class: 'block mx-auto', alt: 'golden_owl_logo', ':class': "{'w-[80px]': sidebarOpen, 'w-[50px]': !sidebarOpen}"
         b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Main menu
   
         .flex.flex-col.gap-2
@@ -41,7 +40,7 @@ html[lang="en"]
           b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
         - if current_user.has_role?(:admin)
           .flex.flex-col.gap-2
-            a.px-4.py-3.rounded-sm.flex.gap-3.items-center.hover:bg-gray-200/60.cursor-pointer
+            = link_to '#', class: 'px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer'
               = mi.shape(:people).outlined
               span.whitespace-nowrap x-show="sidebarOpen" Employees
 
@@ -72,7 +71,7 @@ html[lang="en"]
               - if current_user.avatar.attached?
                 = image_tag current_user.avatar, width: 50, height: 50, alt: 'avatar'
               - else
-                img.block width=50 height=50 src='https://comana.goldenowl.asia/packs/media/images/avatar-b0696fe53c597b8a1f2c6581759a4216.png' alt='Avatar'
+                = image_tag 'avatar.png', class: 'block', width: 50, height: 50, alt: 'avatar'
             
             .absolute.right-0.bg-white.border.rounded-md.min-w-44.shadow-md.top-full.mt-1 x-show="settingOpen" x-cloak="visible"
               = link_to user_profile_path, class: 'flex items-center whitespace-nowrap p-4 gap-2 cursor-pointer hover:bg-gray-200/60'
