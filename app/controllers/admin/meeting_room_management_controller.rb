@@ -51,6 +51,8 @@ class Admin::MeetingRoomManagementController < ApplicationController
     @facilities = Facility.all
     @meeting_rooms = policy_scope(Room, policy_scope_class: RoomManagementPolicy::Scope).order(:id).includes([:department, :facilities])
 
+    @pagination, @meeting_rooms = pagy(@meeting_rooms)
+
     authorize @meeting_rooms, policy_class: RoomManagementPolicy
   end
 

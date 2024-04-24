@@ -203,6 +203,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
+    pagy (8.2.2)
     pg (1.5.6)
     pgcrypto (0.4.1)
     psych (5.1.2)
@@ -343,7 +344,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   breadcrumbs_on_rails (~> 4.1)
-  bullet (~> 7.1)
+  bullet
   capybara
   debug
   devise (~> 4.9)
@@ -354,6 +355,7 @@ DEPENDENCIES
   material_icons (~> 4.0)
   omniauth-google-oauth2 (~> 1.1)
   omniauth-rails_csrf_protection (~> 1.0)
+  pagy (~> 8.2)
   pg (~> 1.1)
   pgcrypto (~> 0.4.1)
   puma (>= 5.0)

@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   get 'user/profile' => 'user#index'
   patch 'user/profile' => 'user#update'
 
+  get 'meeting-rooms' => 'meeting_rooms#index'
+
   devise_scope :user do
     authenticated :user do
       root 'dashboard#index', as: :authenticated_root
