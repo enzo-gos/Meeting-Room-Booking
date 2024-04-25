@@ -19,7 +19,7 @@
 				value: @filter_history['name']
 
 		.relative.z-10
-			button.w-full.form-input.flex.gap-2.px-4.pl-5.justify-center.items-center.text-secondary-500 type='button' placeholder='Facility' data-room-filter-form-target='filterBtn' data-action='click->room-filter-form#keepDropdownOpen'
+			button.w-full.form-input.flex.gap-2.px-4.pl-5.justify-center.items-center.text-secondary-500 type='button' data-room-filter-form-target='filterBtn' data-action='click->room-filter-form#keepDropdownOpen'
 				span.text-black Facilities
 				= mi.shape(:filter_list).md_18
 
@@ -33,7 +33,7 @@
 		= f.select :department_id,
 			options_for_select(Department.all.pluck(:name, :id), @filter_history['department_id']),
 			{ include_blank: 'All departments' },
-			class: 'w-auto pr-11 form-input' 
+			class: 'w-auto pr-11 form-input'
 
 	= turbo_frame_tag "rooms" do
 		.bg-white.p-8.border.rounded-md.shadow-sm.pb-12
