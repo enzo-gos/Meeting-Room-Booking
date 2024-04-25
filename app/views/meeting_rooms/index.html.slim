@@ -47,8 +47,7 @@
 						= "#{@departments_rooms.values.flatten.count} items"
 			- else 
 				div.text-secondary-700 
-					| There are no rooms available with name: 
-					b = @filter_history['name']
+					| There are no rooms available.
 						
 			.flex.flex-col.gap-14
 				- @departments_rooms.each do |department, rooms|
