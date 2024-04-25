@@ -5,7 +5,7 @@
 				.flex.flex-col.items-center 
 					span.mb-5 Avatar
 					.avatar.dropzone.dropzone-default.dz-clickable data-controller='dropzone' data-dropzone-max-file-size='5' data-dropzone-max-files='1' data-dropzone-accepted-files='image/jpg,image/png,image/jpeg'
-						.block.m-auto.text-center.text-gray-400.pointer-events-none.absolute.left-1/2.top-1/2.-translate-x-1/2.-translate-y-1/2
+						.block.m-auto.text-center.text-secondary-400.pointer-events-none.absolute.left-1/2.top-1/2.-translate-x-1/2.-translate-y-1/2
 							- if @user_profile.avatar.persisted?
 								.rounded-full.w-52.h-52.overflow-hidden
 									= image_tag(@user_profile.avatar, class: 'w-full')
@@ -24,11 +24,11 @@
 	.bg-white.p-8.border.border-gray-200.w-2/3
 		.flex.flex-col.gap-4 
 			div 
-				b.text-xs.text-gray-500/70.uppercase Identity 
-				.text-gray-800 = @user_profile.id
+				b.text-xs.text-secondary-500/70.uppercase Identity 
+				.text-secondary-800 = @user_profile.id
 			div 
-				b.text-xs.text-gray-500/70.uppercase Role 
-				.text-gray-800 = @user_profile.roles.all.map{ |el| el.name.capitalize }.join(', ')
+				b.text-xs.text-secondary-500/70.uppercase Role 
+				.text-secondary-800 = @user_profile.roles.all.map{ |el| el.name.capitalize }.join(', ')
 			div
-				b.text-xs.text-gray-500/70.uppercase Create At 
-				.text-gray-800 = @user_profile.created_at
+				b.text-xs.text-secondary-500/70.uppercase Create At 
+				.text-secondary-800 = @user_profile.created_at

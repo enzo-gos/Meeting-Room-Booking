@@ -5,7 +5,7 @@
 				b.text-red-500 *
 				| Preview Image
 			.meeting_room_preview_image.dropzone.dropzone-default.dz-clickable data-controller='dropzone' data-dropzone-max-file-size='5' data-dropzone-thumbnail-width='524' data-dropzone-thumbnail-height='160' data-dropzone-max-files='1' data-dropzone-accepted-files='image/jpg,image/png,image/jpeg'
-				.block.m-auto.text-center.text-gray-400.pointer-events-none.absolute.left-1/2.top-1/2.-translate-x-1/2.-translate-y-1/2
+				.block.m-auto.text-center.text-secondary-400.pointer-events-none.absolute.left-1/2.top-1/2.-translate-x-1/2.-translate-y-1/2
 					- if @meeting_room.preview_image.persisted?
 						.exists-preview-image.pointer-events-none
 							= image_tag(@meeting_room.preview_image, class: 'w-full')

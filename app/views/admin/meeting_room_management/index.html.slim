@@ -1,28 +1,28 @@
 .flex.items-center.gap-4
 	.w-full.relative
-		.pointer-events-none.absolute.inset-y-0.left-0.flex.items-center.px-3.text-gray-600
+		.pointer-events-none.absolute.inset-y-0.left-0.flex.items-center.px-3.text-secondary-600
 			= mi.shape(:search).round.md_24
 		input.form-input.pl-11[type="email" placeholder="Search for anything..."]
 	
-	a(class='ml-auto border bg-primary-800 p-3 px-4 text-white rounded text-sm flex items-center gap-2 font-semibold transition-all my-4 hover:bg-primary-700', href="#{new_admin_meeting_room_management_path}")
+	= link_to new_admin_meeting_room_management_path, class: 'ml-auto border bg-primary-800 p-3 px-4 text-white rounded text-sm flex items-center gap-2 font-semibold transition-all my-4 hover:bg-primary-700'
 		span.whitespace-nowrap Add Room
 		= mi.shape(:add_circle).round.md_18
 
 .overflow-hidden.rounded-lg.border.border-gray-200.flex.flex-col-reverse
-  table.w-full.border-collapse.bg-white.text-left.text-sm.text-gray-700
+  table.w-full.border-collapse.bg-white.text-left.text-sm.text-secondary-700
     thead.bg-gray-50
       tr
-        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
           | ID
-        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
           | Name
-        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
           | Department
-        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
           | Capacity
-        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
           | Facilities
-        th.px-6.py-4.font-medium.text-gray-900[scope="col"]
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
     tbody.divide-y.divide-gray-100.border-t.border-gray-100
 			- @meeting_rooms.each do |room|
 				tr.hover:bg-gray-50/80

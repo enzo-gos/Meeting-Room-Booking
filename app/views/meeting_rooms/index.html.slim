@@ -1,0 +1,79 @@
+.mx-auto.max-w-6xl.px-8
+	= form_with url: meeting_rooms_path,
+		method: :get,
+		class: 'flex gap-2 mb-6 min-w-max bg-white p-8 border rounded-md shadow-sm',
+		data: { controller: 'room-filter-form',
+			action: 'change->room-filter-form#filter',
+			room_filter_form_target: 'form',
+			turbo_frame: 'rooms' } do |f|
+
+		.relative.w-full
+			.pointer-events-none.absolute.inset-y-0.left-0.flex.items-center.px-3.text-secondary-600
+				= mi.shape(:search).round.md_24
+				
+			= f.text_field :name,
+				placeholder: 'Search by name',
+				class: 'form-input pl-11',
+				autocomplete: "off",
+				data: { action: 'input->room-filter-form#filter' },
+				value: @filter_history['name']
+
+		.relative.z-10
+			button.w-full.form-input.flex.gap-2.px-4.pl-5.justify-center.items-center.text-secondary-500 type='button' placeholder='Facility' data-room-filter-form-target='filterBtn' data-action='click->room-filter-form#keepDropdownOpen'
+				span.text-black Facilities
+				= mi.shape(:filter_list).md_18
+
+			.facility_dropdown
+				- Facility.all.each do |facility|
+					= f.label "facility_ids_#{facility.id}", class: 'flex justify-start items-center gap-2 py-2 px-4 cursor-pointer whitespace-nowrap text-sm', data: { action: 'click->room-filter-form#stopPropagation' } do
+						= f.check_box :facility_ids, { multiple: true, class: 'form-checkbox', checked: @filter_history['facility_ids'].include?(facility.id.to_s), data: { room_filter_form_target: 'filterOption' } }, facility.id, ''
+						span = facility.name
+
+
+		= f.select :department_id,
+			options_for_select(Department.all.pluck(:name, :id), @filter_history['department_id']),
+			{ include_blank: 'All departments' },
+			class: 'w-auto pr-11 form-input' 
+
+	= turbo_frame_tag "rooms" do
+		.bg-white.p-8.border.rounded-md.shadow-sm.pb-12
+			- if @departments_rooms && !@departments_rooms.empty?
+					.text-right
+						| Results: 
+						= "#{@departments_rooms.values.flatten.count} items"
+			- else 
+				div.text-secondary-700 
+					| There are no rooms available with name: 
+					b = @filter_history['name']
+						
+			.flex.flex-col.gap-14
+				- @departments_rooms.each do |department, rooms|
+					div
+						.flex.items-center.mt-0.pb-6.gap-2
+							= mi.shape(:business).outlined
+							h1.text-2xl.font-medium = department.name
+						
+						.grid.grid-cols-3.gap-4
+							- rooms.each do |room|
+								.room-card
+									.flex.items-center.justify-center.h-44.overflow-hidden.relative
+										= image_tag room.preview_image, class: 'w-full transition-all duration-500'
+									
+									.px-4.py-3.text-sm
+										.flex.items-center
+											h2.font-semibold.text-primary-800 = room.name
+									
+											.flex.ml-auto.items-center.gap-1
+												= mi.shape(:people).outlined.md_18 
+												span.text-xs = room.max_capacity
+									
+										- if !room.description.empty? 
+											p.text-left.mt-2 = room.description
+									
+									.border-t.px-2.p-3.text-sm
+										.flex.gap-2.max-w-md.flex-wrap
+											- room.facilities.each do |facility|
+												span.inline-flex.items-center.gap-1.rounded-full.bg-primary-50.px-2.py-1.text-xs.font-medium.text-primary-700.whitespace-nowrap
+													= facility.name 
+									
+	

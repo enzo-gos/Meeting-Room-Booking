@@ -4,7 +4,7 @@
 
 @layer components {
   .form-label {
-    @apply mb-1 block font-semibold text-gray-700;
+    @apply mb-1 block font-semibold text-secondary-700;
   }
 
   .form-input {
@@ -20,10 +20,11 @@
       disabled:cursor-not-allowed 
       disabled:bg-gray-50
       text-sm
-      disabled:text-gray-500;
+      disabled:text-secondary-500;
   }
 
-  .form-remember {
+  .form-remember,
+  .form-checkbox {
     @apply h-4 
       w-4 
       rounded 
@@ -36,7 +37,7 @@
       focus:ring-opacity-50 
       focus:ring-offset-0 
       disabled:cursor-not-allowed 
-    disabled:text-gray-400
+    disabled:text-secondary-400
       cursor-pointer;
   }
 
@@ -118,7 +119,7 @@
   }
 
   .facility_dropdown {
-    @apply absolute top-full max-h-40 bg-white overflow-y-auto w-full border rounded mt-1 shadow hidden;
+    @apply absolute top-full max-h-40 bg-white overflow-y-auto border rounded mt-1 shadow hidden;
   }
 
   .facility_dropdown.open {
@@ -126,15 +127,13 @@
   }
 
   .facilities .facilities-item {
-    @apply text-gray-700 px-4 py-3 hover:bg-gray-200/60 cursor-default flex justify-between items-center;
+    @apply text-secondary-700 px-4 py-3 hover:bg-gray-200/60 cursor-default flex justify-between items-center;
   }
 
   .meeting_room_preview_image.dropzone {
-    @apply mb-8 min-h-[163px];
-  }
-
-  .meeting_room_preview_image.dropzone {
-    @apply relative
+    @apply mb-8 
+      min-h-[163px]
+      relative
       border-dashed
       border-2
       p-0
@@ -215,5 +214,22 @@
   .pagy.nav a.current {
     @apply text-primary-700
       font-bold;
+  }
+
+  .room-card {
+    @apply col-span-1 
+      text-center 
+      border 
+      rounded-md 
+      overflow-hidden 
+      bg-white 
+      cursor-pointer 
+      transition-all
+      duration-500
+      hover:shadow-md;
+  }
+
+  .room-card:hover img {
+    scale: 1.1;
   }
 }
