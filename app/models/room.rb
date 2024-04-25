@@ -1,5 +1,5 @@
 class Room < ApplicationRecord
-  FILTER_PARAMS = %i[name department_id facility_ids].freeze
+  FILTER_PARAMS = %i[name department_id facility_ids min_capacity max_capacity].freeze
 
   belongs_to :department
   has_and_belongs_to_many :facilities
@@ -26,6 +26,14 @@ class Room < ApplicationRecord
       all
     end
   }
+  scope :by_capacity, ->(min_capacity, max_capacity) {
+    query = all
+
+    query = query.where('rooms.max_capacity >= ?', min_capacity) if min_capacity.present?
+    query = query.where('rooms.max_capacity <= ?', max_capacity) if max_capacity.present?
+
+    query
+  }
 
   def self.filter(filters)
     Room
@@ -35,6 +43,7 @@ class Room < ApplicationRecord
       .by_name(filters['name'])
       .by_department(filters['department_id'])
       .by_facilities(filters['facility_ids'])
+      .by_capacity(filters['min_capacity'], filters['max_capacity'])
   end
 
   validates :department_id, presence: { message: 'Department must be provided' }
