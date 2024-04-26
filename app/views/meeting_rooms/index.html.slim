@@ -31,7 +31,7 @@
 			.facility_dropdown
 				- Facility.all.each do |facility|
 					= f.label "facility_ids_#{facility.id}", class: 'flex justify-start items-center gap-2 py-2 px-4 cursor-pointer whitespace-nowrap text-sm', data: { action: 'click->room-filter-form#stopPropagation' } do
-						= f.check_box :facility_ids, { multiple: true, class: 'form-checkbox', checked: @filter_history['facility_ids'].include?(facility.id.to_s), data: { room_filter_form_target: 'filterOption' } }, facility.id, ''
+						= f.check_box :facility_ids, { multiple: true, class: 'form-checkbox', checked: @filter_history['facility_ids'] && @filter_history['facility_ids'].include?(facility.id.to_s), data: { room_filter_form_target: 'filterOption' } }, facility.id, ''
 						span = facility.name 
 
 		= f.select :department_id,
