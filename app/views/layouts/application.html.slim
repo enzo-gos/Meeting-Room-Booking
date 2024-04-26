@@ -14,19 +14,20 @@ html[lang="en"]
     script[src="https://unpkg.com/@ryangjchandler/alpine-tooltip@1.2.0/dist/cdn.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"]
     script[src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"]
     link[rel="stylesheet" href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" type="text/css"]
+    link[src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"]
   body.bg-slate-100/50
     div x-data="{ sidebarOpen: false }"
       .fixed.left-0.h-screen.bg-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.transition-all.border-gray-200/60 :class="{'w-64': sidebarOpen, 'w-[72px]': !sidebarOpen}"
         .py-2.pb-6
           = image_tag 'logo.png', class: 'block mx-auto', alt: 'golden_owl_logo', ':class': "{'w-[80px]': sidebarOpen, 'w-[50px]': !sidebarOpen}"
-        b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Main menu
+        b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Main menu
   
         .flex.flex-col.gap-2
           = link_to dashboard_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_page?(dashboard_path) || current_page?(authenticated_root_path) ? ' navlink-active' : ''}"
             = mi.shape(:space_dashboard).outlined
             span.whitespace-nowrap x-show="sidebarOpen" Dashboard
 
-          = link_to '#', class: 'px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer'
+          = link_to meeting_rooms_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_page?(meeting_rooms_path) ? ' navlink-active' : ''}"
             = mi.shape(:meeting_room).outlined
             span.whitespace-nowrap x-show="sidebarOpen" Meeting Room
 
@@ -37,7 +38,7 @@ html[lang="en"]
         .border-t.my-2
 
         - if current_user.has_role?(:admin)
-          b.font-medium.text-sm.text-gray-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
+          b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
         - if current_user.has_role?(:admin)
           .flex.flex-col.gap-2
             = link_to '#', class: 'px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer'
@@ -62,7 +63,7 @@ html[lang="en"]
           button.flex.items-center.justify-center.border.rounded-full.p-2.hover:bg-gray-200/60.cursor-pointer @click="sidebarOpen = !sidebarOpen"
             = mi.shape(:menu).outlined.md_18
 
-          b.text-xl.font-semibold.ml-6.text-gray-700.flex.items-center
+          b.text-xl.font-semibold.ml-6.text-secondary-700.flex.items-center
             = render_breadcrumbs :separator => mi.shape(:keyboard_arrow_right).round
           
           .relative.ml-auto x-data="{ settingOpen: false }" @click.away="settingOpen = false"
