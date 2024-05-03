@@ -13,6 +13,7 @@ class User < ApplicationRecord
            if: :validate_password?, on: :update
 
   has_many :teams, through: :user_teams
+  has_many :meeting_reservations, foreign_key: :book_by_id
 
   def self.from_google(user_params)
     create_with(uid: user_params[:uid], password: Devise.friendly_token[0, 20], provider: 'google').find_or_create_by!(email: user_params[:email])

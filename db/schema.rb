@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_19_150240) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_26_054758) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "action_text_rich_texts", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "body"
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -62,6 +72,40 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_150240) do
     t.bigint "facility_id", null: false
     t.index ["facility_id", "room_id"], name: "index_facilities_rooms_on_facility_id_and_room_id"
     t.index ["room_id", "facility_id"], name: "index_facilities_rooms_on_room_id_and_facility_id"
+  end
+
+  create_table "meeting_invitations", id: false, force: :cascade do |t|
+    t.bigint "meeting_reservation_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["meeting_reservation_id", "user_id"], name: "idx_on_meeting_reservation_id_user_id_572c4cc304"
+    t.index ["user_id", "meeting_reservation_id"], name: "idx_on_user_id_meeting_reservation_id_f99e017ebc"
+  end
+
+  create_table "meeting_reservations", force: :cascade do |t|
+    t.string "title"
+    t.bigint "room_id", null: false
+    t.bigint "book_by_id", null: false
+    t.date "book_at"
+    t.time "start_time"
+    t.time "end_time"
+    t.bigint "team_id"
+    t.integer "every_day"
+    t.integer "every_week"
+    t.integer "every_month"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["book_by_id"], name: "index_meeting_reservations_on_book_by_id"
+    t.index ["room_id"], name: "index_meeting_reservations_on_room_id"
+    t.index ["team_id"], name: "index_meeting_reservations_on_team_id"
+  end
+
+  create_table "meeting_room_invitations", force: :cascade do |t|
+    t.bigint "meeting_reservation_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meeting_reservation_id"], name: "index_meeting_room_invitations_on_meeting_reservation_id"
+    t.index ["user_id"], name: "index_meeting_room_invitations_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -126,6 +170,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_150240) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "meeting_reservations", "rooms"
+  add_foreign_key "meeting_reservations", "teams"
+  add_foreign_key "meeting_reservations", "users", column: "book_by_id"
+  add_foreign_key "meeting_room_invitations", "meeting_reservations"
+  add_foreign_key "meeting_room_invitations", "users"
   add_foreign_key "rooms", "departments"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"

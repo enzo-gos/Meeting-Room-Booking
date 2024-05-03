@@ -1,0 +1,113 @@
+/*
+ * Provides a drop-in pointer for the default Trix stylesheet that will format the toolbar and
+ * the trix-editor content (whether displayed or under editing). Feel free to incorporate this
+ * inclusion directly in any other asset bundle and remove this file.
+ *
+ *= require trix
+*/
+
+/*
+ * We need to override trix.css’s image gallery styles to accommodate the
+ * <action-text-attachment> element we wrap around attachments. Otherwise,
+ * images in galleries will be squished by the max-width: 33%; rule.
+*/
+.trix-content .attachment-gallery > action-text-attachment,
+.trix-content .attachment-gallery > .attachment {
+  flex: 1 0 33%;
+  padding: 0 0.5em;
+  max-width: 33%;
+}
+
+.trix-content
+  .attachment-gallery.attachment-gallery--2
+  > action-text-attachment,
+.trix-content .attachment-gallery.attachment-gallery--2 > .attachment,
+.trix-content
+  .attachment-gallery.attachment-gallery--4
+  > action-text-attachment,
+.trix-content .attachment-gallery.attachment-gallery--4 > .attachment {
+  flex-basis: 50%;
+  max-width: 50%;
+}
+
+.trix-content action-text-attachment .attachment {
+  padding: 0 !important;
+  max-width: 100% !important;
+}
+
+.trix-editor {
+  width: 100%;
+  min-height: 6rem;
+}
+
+.trix-editor h1 {
+  font-size: 1.25rem !important;
+  line-height: 1.25rem !important;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.trix-editor a:not(.no-underline) {
+  text-decoration: underline;
+}
+
+.trix-editor a:visited {
+  color: green;
+}
+
+.trix-editor ul {
+  list-style-type: disc;
+  padding-left: 1rem;
+}
+
+.trix-editor ol {
+  list-style-type: decimal;
+  padding-left: 1rem;
+}
+
+.trix-editor pre {
+  display: inline-block;
+  width: 100%;
+  vertical-align: top;
+  font-family: monospace;
+  padding: 0.5em;
+  white-space: pre;
+  background-color: #eee;
+  overflow-x: auto;
+}
+
+.trix-editor blockquote {
+  border: 0 solid #ccc;
+  border-left-width: 0px;
+  border-left-width: 0.3em;
+  margin-left: 0.3em;
+  padding-left: 0.6em;
+}
+
+.trix-button--icon-link,
+.trix-button--icon-quote,
+.trix-button--icon-code,
+.trix-button-group--block-tools,
+.trix-button-group--history-tools {
+  display: none;
+}
+
+.trix-button-group {
+  display: flex !important;
+  gap: 3px !important;
+  border: none !important;
+  margin: 8px !important;
+}
+
+trix-toolbar .trix-button {
+  width: 2.3em;
+  border: none !important;
+}
+
+trix-toolbar .trix-button:hover {
+  background-color: rgba(240, 240, 240, 0.9);
+}
+
+.trix-button-group.trix-button-group--block-tools {
+  border-radius: 0px !important;
+}

@@ -8,4 +8,9 @@ pin_all_from "app/javascript/controllers", under: "controllers"
 pin "dropzone" # @6.0.0
 pin "just-extend" # @5.1.1
 pin "@rails/activestorage", to: "@rails--activestorage.js" # @7.1.3
-pin "jquery", to: "https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.js"
+pin "jquery" # @3.7.1
+pin "trix"
+pin "@rails/actiontext", to: "actiontext.esm.js"
+pin "flatpickr" # @4.6.13
+pin "fullcalendar" # @6.1.11
+pin "moment" # @2.30.1
