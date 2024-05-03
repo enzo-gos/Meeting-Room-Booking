@@ -72,15 +72,17 @@ class MeetingRoomsController < ApplicationController
         members: @meeting_reservation.members.to_a.map { |el| { email: el.email } },
         note: @meeting_reservation.note.body.to_s
       )
-    rescue ActiveRecord::RecordInvalid => e
-      return render json: { error: e.message }, status: :unprocessable_entity
     rescue Google::Apis::AuthorizationError => _e
+      client = initialize_client
+      response = client.refresh!
+      session[:authorization] = session[:authorization].merge(response)
+      retry
       # client = initialize_client
       # return redirect_to client.authorization_uri.to_s, allow_other_host: true
     end
 
     respond_to do |format|
-      if @meeting_reservation.save!
+      if @meeting_reservation.save
         format.html { redirect_to meeting_rooms_details_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.replace('modal-body', partial: 'book_form'), status: :unprocessable_entity }
