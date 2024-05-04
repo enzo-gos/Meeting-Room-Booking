@@ -60,32 +60,33 @@ class MeetingRoomsController < ApplicationController
 
   def create
     @meeting_reservation = MeetingReservation.create(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
+    valid = @meeting_reservation.valid?
 
-    begin
-      start_date_time = combine_date_time(@meeting_reservation.book_at, @meeting_reservation.start_time).strftime('%Y-%m-%dT%H:%M:%S%:z')
-      end_date_time = combine_date_time(@meeting_reservation.book_at, @meeting_reservation.end_time).strftime('%Y-%m-%dT%H:%M:%S%:z')
+    if valid
+      begin
+        start_date_time = combine_date_time(@meeting_reservation.book_at, @meeting_reservation.start_time).strftime('%Y-%m-%dT%H:%M:%S%:z')
+        end_date_time = combine_date_time(@meeting_reservation.book_at, @meeting_reservation.end_time).strftime('%Y-%m-%dT%H:%M:%S%:z')
 
-      create_new_event(
-        title: @meeting_reservation.title,
-        start_date: start_date_time,
-        end_date: end_date_time,
-        members: @meeting_reservation.members.to_a.map { |el| { email: el.email } },
-        note: @meeting_reservation.note.body.to_s
-      )
-    rescue Google::Apis::AuthorizationError => _e
-      client = initialize_client
-      response = client.refresh!
-      session[:authorization] = session[:authorization].merge(response)
-      retry
-      # client = initialize_client
-      # return redirect_to client.authorization_uri.to_s, allow_other_host: true
+        create_new_event(
+          title: @meeting_reservation.title,
+          start_date: start_date_time,
+          end_date: end_date_time,
+          members: @meeting_reservation.members.to_a.map { |el| { email: el.email } },
+          note: @meeting_reservation.note.body.to_s
+        )
+      rescue Google::Apis::AuthorizationError => _e
+        client = initialize_client
+        response = client.refresh!
+        session[:authorization] = session[:authorization].merge(response)
+        retry
+      end
     end
 
     respond_to do |format|
       if @meeting_reservation.save
         format.html { redirect_to meeting_rooms_details_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
       else
-        format.turbo_stream { render turbo_stream: turbo_stream.replace('modal-body', partial: 'book_form'), status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update('modal-body', partial: 'book_form'), status: :unprocessable_entity }
       end
     end
   end
