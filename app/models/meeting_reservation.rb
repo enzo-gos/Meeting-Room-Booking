@@ -19,7 +19,7 @@ class MeetingReservation < ApplicationRecord
   validate :time_difference_is_15_minutes
 
   def does_not_conflict
-    book_at_str = book_at ? book_at.strftime('%Y-%m-%d') : book_at
+    book_at_str = book_at&.strftime('%Y-%m-%d')
     overlapping_events = MeetingReservation.where('((start_time < ? AND end_time > ?) OR (start_time < ? AND end_time > ?)) AND book_at = ?', end_time, start_time, end_time, start_time, book_at_str)
 
     if overlapping_events.exists?
