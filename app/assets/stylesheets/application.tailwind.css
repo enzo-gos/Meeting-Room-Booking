@@ -118,15 +118,15 @@
     @apply bg-primary-700 text-white hover:bg-primary-700;
   }
 
-  .facility_dropdown {
+  .tag_dropdown {
     @apply absolute top-full max-h-40 bg-white overflow-y-auto border rounded mt-1 shadow hidden;
   }
 
-  .facility_dropdown.open {
+  .tag_dropdown.open {
     @apply block;
   }
 
-  .facilities .facilities-item {
+  .tags .tags-item {
     @apply text-secondary-700 px-4 py-3 hover:bg-gray-200/60 cursor-default flex justify-between items-center;
   }
 
@@ -231,5 +231,19 @@
 
   .room-card:hover img {
     scale: 1.1;
+  }
+
+  .trix-editor {
+    @apply border-none;
+  }
+
+  trix-toolbar {
+    @apply border-b items-center;
+  }
+
+  .fp_date_time,
+  .fp_time,
+  .fp_date {
+    @apply form-input;
   }
 }

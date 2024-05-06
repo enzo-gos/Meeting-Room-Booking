@@ -1,3 +1,4 @@
+#TODO: Refactor for clean routing
 Rails.application.routes.draw do
   namespace :admin do
     resources :meeting_room_management, path: 'rooms'
@@ -13,14 +14,26 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-  get "up" => "rails/health#show", as: :rails_health_check
+  get 'up' => 'rails/health#show', as: :rails_health_check
 
-  get "dashboard" => "dashboard#index"
+  get 'dashboard' => 'dashboard#index'
 
+  # TODO: Refactor this
   get 'user/profile' => 'user#index'
   patch 'user/profile' => 'user#update'
 
-  get 'meeting-rooms' => 'meeting_rooms#index'
+  resources :meeting_rooms, only: [:index] do
+    member do
+      get '/', to: 'meeting_rooms#schedule', as: 'details'
+      get 'book'
+      post 'book', to: 'meeting_rooms#create'
+      get 'events'
+    end
+  end
+
+  # TODO: Refactor this
+  get '/google/calendar' => 'calendars#redirect'
+  get '/google/calendar/callback' => 'calendars#callback'
 
   devise_scope :user do
     authenticated :user do

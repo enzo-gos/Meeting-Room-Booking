@@ -11,6 +11,8 @@
 Role.create!(name: 'admin')
 Role.create!(name: 'user')
 
+Team.create!(name: 'Ruby Alpha')
+
 # generate some service of meeting room
 Facility.create!(name: 'Internet', description: 'Reliable and fast internet connection for seamless online activities during meetings')
 Facility.create!(name: 'Projector', description: 'A device for projecting images onto a screen or wall')

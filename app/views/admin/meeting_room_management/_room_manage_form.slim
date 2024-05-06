@@ -1,4 +1,4 @@
-.mt-2.text-sm data-controller='facility'
+.mt-2.text-sm data-controller='tag'
 	= simple_form_for @meeting_room, url: url, method: method, defaults: { label_html: { class: 'form-label my-2 flex flex-row-reverse justify-end gap-1' }, error_html: { class: 'text-red-500 mt-1 block text-[13px] ml-1' } } do |f|
 		.my-4
 			h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1 
@@ -24,12 +24,12 @@
 				b.text-red-500 *
 				| Facilities
 			.relative
-				input.w-full.form-input.py-2.facility_autocomplete type='text' placeholder='Facility' data-action='click->facility#keepDropdownOpen blur->facility#closeDropdown input->facility#searchFacility'
-				.facility_dropdown data-facility-target='facilityDropdown'
+				input.w-full.form-input.py-2.tag_autocomplete type='text' placeholder='Facility' data-action='click->tag#keepDropdownOpen blur->tag#closeDropdown input->tag#searchTag'
+				.tag_dropdown data-tag-target='tagDropdown'
 					- Facility.all.each do |facility|
-						button.py-2.px-4.w-full.text-left.hover:bg-gray-200/60 type='button' data-action='mousedown->facility#addFacility' value="#{facility.id}" data-facility-target="facility" = facility.name
-			= f.input :facility_ids, label: false, input_html: { id: "facilities-hidden", hidden: true, 'data-facility-target': "facilitiesInput" }
-			.facilities.border.mt-2.rounded-md.hidden.bg-gray-100/30
+						button.py-2.px-4.w-full.text-left.hover:bg-gray-200/60 type='button' data-action='mousedown->tag#addTag' value="#{facility.id}" data-tag-target="tag" = facility.name
+			= f.input :facility_ids, label: false, input_html: { id: "tags-hidden", hidden: true, 'data-tag-target': "tagsInput" }
+			.tags.border.mt-2.rounded-md.hidden.bg-gray-100/30
 		.mb-4
 			= f.input :description, :as => :text, :input_html => { 'rows' => 3, 'cols' => 10, class: 'form-input w-full', placeholder: 'Enter description' }
 		.mt-6

@@ -46,7 +46,7 @@ export default class extends Controller {
 
   keepDropdownOpen(event) {
     event.stopPropagation();
-    $(".facility_dropdown").addClass("open");
+    $(".tag_dropdown").addClass("open");
   }
 
   stopPropagation(event) {
@@ -54,6 +54,6 @@ export default class extends Controller {
   }
 
   closeDropdown(event) {
-    $(".facility_dropdown").removeClass("open");
+    $(".tag_dropdown").removeClass("open");
   }
 }

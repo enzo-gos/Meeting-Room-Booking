@@ -9,12 +9,11 @@ html[lang="en"]
     = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
-    script[src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"]
     link[rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"]
-    script[src="https://unpkg.com/@ryangjchandler/alpine-tooltip@1.2.0/dist/cdn.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"]
-    script[src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"]
     link[rel="stylesheet" href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" type="text/css"]
-    link[src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"]
+    
+    script[src="https://unpkg.com/alpinejs@3.13.10/dist/cdn.min.js"]
+    script[src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"]
   body.bg-slate-100/50
     div x-data="{ sidebarOpen: false }"
       .fixed.left-0.h-screen.bg-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.transition-all.border-gray-200/60 :class="{'w-64': sidebarOpen, 'w-[72px]': !sidebarOpen}"
