@@ -14,7 +14,7 @@ class MeetingRoomsController < ApplicationController
     add_breadcrumb params[:id]
     add_breadcrumb 'Schedule'
 
-    @meeting_room = Room.find(params[:id])
+    @meeting_room = Room.includes(:department).find(params[:id])
 
     @meeting_reservation = MeetingReservation.new
   end
@@ -84,6 +84,7 @@ class MeetingRoomsController < ApplicationController
 
     respond_to do |format|
       if @meeting_reservation.save
+        SendEventJob.perform_later(@meeting_reservation)
         format.html { redirect_to details_meeting_room_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update('modal-body', partial: 'book_form'), status: :unprocessable_entity }

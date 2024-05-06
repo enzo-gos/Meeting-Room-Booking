@@ -14,7 +14,7 @@ export default class extends Controller {
     this.date_time_end = "";
 
     const calendarEl = $("#calendar").get(0);
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    const calendar = new FullCalendar.Calendar(calendarEl, {
       timeZone: "local",
       initialView: "timeGridWeek",
       headerToolbar: {
@@ -67,6 +67,16 @@ export default class extends Controller {
       },
     });
     calendar.render();
+
+    this.eventCreated = $(document).on("eventCreated", (e) => {
+      if (e.detail?.refetch) {
+        calendar.refetchEvents();
+      }
+    });
+  }
+
+  disconnect() {
+    $(document).off("eventCreated", this.eventCreated);
   }
 
   bookFormTargetConnected() {

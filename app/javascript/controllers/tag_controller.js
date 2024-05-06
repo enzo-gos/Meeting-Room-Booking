@@ -19,7 +19,6 @@ export default class extends Controller {
       this.tagTargets.forEach((el) => {
         if (this.tagsInputTarget.value.includes(el.value)) {
           el.classList.add("hidden");
-          console.log(el);
           this.insertTagElement(el.value, el.textContent);
         }
       });

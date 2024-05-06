@@ -1,6 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
 import flatpickr from "flatpickr";
-import moment from "moment";
 
 export default class extends Controller {
   connect() {
@@ -8,6 +7,8 @@ export default class extends Controller {
       enableTime: true,
       noCalendar: true,
       dateFormat: "H:i",
+      minTime: "9:00",
+      maxTime: "18:00",
       time_24hr: true,
     });
 
