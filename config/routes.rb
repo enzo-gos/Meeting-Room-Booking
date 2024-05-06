@@ -1,3 +1,4 @@
+#TODO: Refactor for clean routing
 Rails.application.routes.draw do
   namespace :admin do
     resources :meeting_room_management, path: 'rooms'
@@ -17,6 +18,7 @@ Rails.application.routes.draw do
 
   get 'dashboard' => 'dashboard#index'
 
+  # TODO: Refactor this
   get 'user/profile' => 'user#index'
   patch 'user/profile' => 'user#update'
 
@@ -29,6 +31,7 @@ Rails.application.routes.draw do
     end
   end
 
+  # TODO: Refactor this
   get '/google/calendar' => 'calendars#redirect'
   get '/google/calendar/callback' => 'calendars#callback'
 
