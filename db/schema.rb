@@ -89,9 +89,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_26_054758) do
     t.time "start_time"
     t.time "end_time"
     t.bigint "team_id"
-    t.integer "every_day"
-    t.integer "every_week"
-    t.integer "every_month"
+    t.integer "frequency", limit: 2, default: 0
+    t.text "recurring"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["book_by_id"], name: "index_meeting_reservations_on_book_by_id"

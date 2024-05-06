@@ -58,7 +58,7 @@
 						
 						.grid.grid-cols-3.gap-4
 							- rooms.each do |room|
-								= link_to meeting_rooms_details_path(room.id), class: 'room-card', data: { turbo_frame: '_top' }
+								= link_to details_meeting_room_path(room.id), class: 'room-card', data: { turbo_frame: '_top' }
 									.flex.items-center.justify-center.h-44.overflow-hidden.relative
 										= image_tag room.preview_image, class: 'w-full transition-all duration-500'
 									

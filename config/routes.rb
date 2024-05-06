@@ -20,13 +20,14 @@ Rails.application.routes.draw do
   get 'user/profile' => 'user#index'
   patch 'user/profile' => 'user#update'
 
-  get 'meeting-rooms' => 'meeting_rooms#index'
-  get 'meeting-rooms/:id' => 'meeting_rooms#schedule', as: 'meeting_rooms_details'
-
-  get 'meeting-rooms/:id/book' => 'meeting_rooms#book', as: 'book_meeting_rooms'
-  post 'meeting-rooms/:id/book' => 'meeting_rooms#create'
-
-  get 'meeting-rooms/:id/events' => 'meeting_rooms#events', as: 'meeting_room_events'
+  resources :meeting_rooms, only: [:index] do
+    member do
+      get '/', to: 'meeting_rooms#schedule', as: 'details'
+      get 'book'
+      post 'book', to: 'meeting_rooms#create'
+      get 'events'
+    end
+  end
 
   get '/google/calendar' => 'calendars#redirect'
   get '/google/calendar/callback' => 'calendars#callback'

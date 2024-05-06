@@ -24,6 +24,6 @@
 
       hr.my-3
 
-      = link_to book_meeting_rooms_path(@meeting_room.id), class: 'btn-submit flex items-center justify-center gap-2', id: 'book_room_btn', data: { turbo_stream: "" }
+      = link_to book_meeting_room_path(@meeting_room.id), class: 'btn-submit flex items-center justify-center gap-2', id: 'book_room_btn', data: { turbo_stream: "" }
         = mi.shape(:add_circle).round.md_18
         span.leading-normal Book Room

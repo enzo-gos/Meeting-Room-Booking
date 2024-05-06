@@ -84,7 +84,7 @@ class MeetingRoomsController < ApplicationController
 
     respond_to do |format|
       if @meeting_reservation.save
-        format.html { redirect_to meeting_rooms_details_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
+        format.html { redirect_to details_meeting_room_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update('modal-body', partial: 'book_form'), status: :unprocessable_entity }
       end
@@ -98,7 +98,7 @@ class MeetingRoomsController < ApplicationController
   end
 
   def authorize_user
-    session[:calendar_callback_url] = meeting_rooms_details_url(params[:id])
+    session[:calendar_callback_url] = details_meeting_room_url(params[:id])
     redirect_to google_calendar_path unless session[:authorization].present?
   end
 
