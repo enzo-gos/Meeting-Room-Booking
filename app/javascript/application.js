@@ -11,3 +11,4 @@ import "trix";
 import "@rails/actiontext";
 
 import "flatpickr";
+import "./channels"
