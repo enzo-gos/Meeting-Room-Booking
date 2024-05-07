@@ -20,14 +20,35 @@ class MeetingRoomsController < ApplicationController
   end
 
   def events
-    start_date = params[:start]
     end_date = params[:end]
 
-    @meeting_reservations = MeetingReservation.where('book_at >= ? AND book_at <= ? AND room_id = ?', start_date, end_date, params[:id])
+    @events = MeetingReservation.where('room_id = ?', params[:id])
+    @meeting_reservations = @events.flat_map do |e|
+      e.events(end_date)
+    end
 
-    formatted_meeting_reservations = @meeting_reservations.map do |reservation|
-      start_datetime = combine_date_time(reservation.book_at, reservation.start_time)
-      end_datetime = combine_date_time(reservation.book_at, reservation.end_time)
+    # handle Calendar overlap recurring - recurring UI show
+    grouped_schedules = @meeting_reservations.group_by { |schedule| schedule.book_at.strftime('%Y-%m-%d') }
+
+    grouped_schedules.each do |date, events|
+      events.sort_by!(&:created_at)
+
+      non_overlapping_events = [events.first]
+
+      events.each do |event|
+        overlapping = non_overlapping_events.any? do |non_overlap_event|
+          (event.start_time < non_overlap_event.end_time) && (event.end_time > non_overlap_event.start_time)
+        end
+
+        non_overlapping_events << event unless overlapping
+      end
+
+      grouped_schedules[date] = non_overlapping_events
+    end
+
+    formatted_meeting_reservations = grouped_schedules.values.flatten.map do |reservation|
+      start_datetime = reservation.start_datetime
+      end_datetime = reservation.end_datetime
 
       {
         title: reservation.title,
@@ -64,15 +85,16 @@ class MeetingRoomsController < ApplicationController
 
     if valid
       begin
-        start_date_time = combine_date_time(@meeting_reservation.book_at, @meeting_reservation.start_time).strftime('%Y-%m-%dT%H:%M:%S%:z')
-        end_date_time = combine_date_time(@meeting_reservation.book_at, @meeting_reservation.end_time).strftime('%Y-%m-%dT%H:%M:%S%:z')
+        start_date_time = @meeting_reservation.start_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
+        end_date_time = @meeting_reservation.end_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
 
         create_new_event(
           title: @meeting_reservation.title,
           start_date: start_date_time,
           end_date: end_date_time,
           members: @meeting_reservation.members.to_a.map { |el| { email: el.email } },
-          note: @meeting_reservation.note.body.to_s
+          note: @meeting_reservation.note.body.to_s,
+          recurrence: @meeting_reservation.recurring.empty? ? [] : [@meeting_reservation.google_calendar_rule]
         )
       rescue Google::Apis::AuthorizationError => _e
         client = initialize_client
@@ -84,7 +106,9 @@ class MeetingRoomsController < ApplicationController
 
     respond_to do |format|
       if @meeting_reservation.save
-        SendEventJob.perform_later(@meeting_reservation)
+        MonthlyBookJob.perform_async
+        SendEventJob.perform_async(@meeting_reservation.to_json)
+
         format.html { redirect_to details_meeting_room_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update('modal-body', partial: 'book_form'), status: :unprocessable_entity }
@@ -105,11 +129,6 @@ class MeetingRoomsController < ApplicationController
 
   def meeting_reservation_params
     params[:meeting_reservation][:member_ids] = params[:meeting_reservation][:member_ids].split(',').map(&:strip) || []
-    params.require(:meeting_reservation).permit(:title, :note, :book_at, :start_time, :end_time, member_ids: [])
-  end
-
-  def combine_date_time(date, time)
-    date_time = date + time.seconds_since_midnight.seconds
-    DateTime.new(date_time.year, date_time.month, date_time.day, date_time.hour, date_time.min, date_time.sec, '+07:00')
+    params.require(:meeting_reservation).permit(:title, :note, :recurring, :book_at, :start_time, :end_time, member_ids: [])
   end
 end

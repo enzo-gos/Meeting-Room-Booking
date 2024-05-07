@@ -22,7 +22,7 @@ module GoogleCalendar
     }
   end
 
-  def create_new_event(title:, start_date:, end_date:, members:, note: '', calendar_id: 'primary', reminder: 30)
+  def create_new_event(title:, start_date:, end_date:, members:, note: '', recurrence: [], calendar_id: 'primary', reminder: 30)
     service = initialize_calendar_service
 
     event = Google::Apis::CalendarV3::Event.new(
@@ -38,6 +38,7 @@ module GoogleCalendar
           Google::Apis::CalendarV3::EventReminder.new(reminder_method: 'email', minutes: reminder)
         ]
       },
+      recurrence: recurrence,
       notification_settings: {
         notifications: [
           { type: 'event_creation', method: 'email' },

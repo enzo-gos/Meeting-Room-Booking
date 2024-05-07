@@ -25,5 +25,7 @@ module MeetingRoom
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :forbidden
+
+    config.active_job.queue_adapter = :sidekiq
   end
 end

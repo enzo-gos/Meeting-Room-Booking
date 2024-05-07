@@ -1,2 +1,4 @@
 web: bin/rails server
 css: bin/rails tailwindcss:watch
+redis: docker compose up
+sidekiq: bundle exec sidekiq -C config/sidekiq.yml

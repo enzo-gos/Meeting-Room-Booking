@@ -18,8 +18,9 @@
                 button.py-2.px-4.w-full.text-left.hover:bg-gray-200/60 type='button' data-action='mousedown->tag#addTag' value="#{user.id}" data-tag-target="tag" = user.email
           = f.input :member_ids, label: false, input_html: { id: "tags-hidden", hidden: true, 'data-tag-target': "tagsInput", 'data-action': 'change->tag#onResetInput' }
           .tags.border.mt-2.rounded-md.hidden.bg-gray-100/30
+          = f.input :recurring, as: :select, input_html: { class: 'recurring_select form-input' }, collection: [['- not recurring -', 'null'], ['Set schedule...', 'custom']], selected: '- not recurring -'
         .form-row-wrapper
-          = f.input :book_at, label: 'Book date', as: :string, input_html: { class: 'fp_date' }, placeholder: 'Book at'
+          = f.input :book_at, label: 'Start date', as: :string, input_html: { class: 'fp_date' }, placeholder: 'Start date'
           .gap-2.form-row-wrapper
             = f.input :start_time, as: :string, input_html: { class: 'fp_time' }, placeholder: 'Start at'
             = f.input :end_time, as: :string, input_html: { class: 'fp_time' }, placeholder: 'End at'

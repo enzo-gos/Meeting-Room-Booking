@@ -1,0 +1,24 @@
+doctype html
+html
+ head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+    title Overlap in Meeting Reservation
+ body
+    h1 Overlap in Meeting Reservation
+    p
+      | Hello #{@reservation.book_by.email},
+    p
+      | We're unable to process your meeting reservation for #{@reservation.title} on #{@reservation.book_at} due to an overlap with another reservation.
+    p
+      | Reservation Details:
+      ul
+        li Title: #{@reservation.title}
+        li Room: #{@reservation.room.name}
+        li Booked by: #{@reservation.book_by.email}
+        li Start time: #{@reservation.start_datetime}
+        li End time: #{@reservation.end_datetime}
+    p
+      | Please choose a different time slot or contact our support team for assistance.
+    p
+      | Best,
+      | Meeting Room Team

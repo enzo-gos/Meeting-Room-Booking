@@ -1,5 +1,9 @@
+require 'sidekiq/web'
+
 #TODO: Refactor for clean routing
 Rails.application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
+
   namespace :admin do
     resources :meeting_room_management, path: 'rooms'
   end

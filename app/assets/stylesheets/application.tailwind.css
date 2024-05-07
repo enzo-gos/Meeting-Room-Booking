@@ -246,4 +246,47 @@
   .fp_date {
     @apply form-input;
   }
+
+  .rs_dialog_holder .rs_dialog .rs_dialog_content p.frequency-select-wrapper {
+    @apply flex flex-col gap-2 items-start;
+  }
+
+  .rs_frequency {
+    @apply border-gray-200 text-sm form-input py-2;
+  }
+
+  .rs_dialog_holder
+    .rs_dialog
+    .rs_dialog_content
+    .freq_option_section
+    > p:first-child {
+    @apply flex items-center gap-2 whitespace-nowrap;
+  }
+
+  .freq_option_section {
+    @apply my-2;
+  }
+
+  .rs_dialog_holder
+    .rs_dialog
+    .rs_dialog_content
+    .freq_option_section
+    .rs_interval.rs_daily_interval,
+  .rs_dialog_holder
+    .rs_dialog
+    .rs_dialog_content
+    .freq_option_section
+    .rs_interval.rs_weekly_interval,
+  .rs_dialog_holder
+    .rs_dialog
+    .rs_dialog_content
+    .freq_option_section
+    .rs_interval.rs_monthly_interval,
+  .rs_dialog_holder
+    .rs_dialog
+    .rs_dialog_content
+    .freq_option_section
+    .rs_interval.rs_yearly_interval {
+    @apply block form-input py-2;
+  }
 }

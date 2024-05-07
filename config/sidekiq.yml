@@ -1,0 +1,6 @@
+:scheduler:
+  :schedule:
+    monthly_book:
+      cron: "0 0 1 * *"
+      class: MonthlyBookJob
+      queue: default

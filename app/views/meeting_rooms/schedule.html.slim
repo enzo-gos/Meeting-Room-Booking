@@ -1,6 +1,6 @@
 . class='flex gap-5 items-start' data-controller="calendar"
   = render 'book_modal'
-  
+
   . class='bg-white rounded w-full p-4 min-w-[48rem]'
     .text-sm id="calendar"
   
@@ -29,7 +29,8 @@
         span
           | Room ID: 
           span data-room-id="#{@meeting_room.try(:id)}"
-
+          = @meeting_room.id
+        
         span.flex.items-center.gap-1
           = mi.shape(:business).round.md_18
           = @meeting_room.department.name
