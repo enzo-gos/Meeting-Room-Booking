@@ -17,6 +17,9 @@
 *= require material_icons.helpers
 */
 /*
+*= require recurring_select
+*/
+/*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
@@ -48,4 +51,8 @@
 
 #calendar.fc h2.fc-toolbar-title {
   font-size: 18px !important;
+}
+
+.rs_dialog_holder {
+  z-index: 9999 !important;
 }

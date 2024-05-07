@@ -98,15 +98,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_26_054758) do
     t.index ["team_id"], name: "index_meeting_reservations_on_team_id"
   end
 
-  create_table "meeting_room_invitations", force: :cascade do |t|
-    t.bigint "meeting_reservation_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["meeting_reservation_id"], name: "index_meeting_room_invitations_on_meeting_reservation_id"
-    t.index ["user_id"], name: "index_meeting_room_invitations_on_user_id"
-  end
-
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -172,8 +163,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_26_054758) do
   add_foreign_key "meeting_reservations", "rooms"
   add_foreign_key "meeting_reservations", "teams"
   add_foreign_key "meeting_reservations", "users", column: "book_by_id"
-  add_foreign_key "meeting_room_invitations", "meeting_reservations"
-  add_foreign_key "meeting_room_invitations", "users"
   add_foreign_key "rooms", "departments"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"

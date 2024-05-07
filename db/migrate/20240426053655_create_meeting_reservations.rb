@@ -8,9 +8,7 @@ class CreateMeetingReservations < ActiveRecord::Migration[7.1]
       t.time :start_time
       t.time :end_time
       t.references :team, null: true, foreign_key: true
-      t.integer :every_day
-      t.integer :every_week
-      t.integer :every_month
+      t.text :recurring
 
       t.timestamps
     end

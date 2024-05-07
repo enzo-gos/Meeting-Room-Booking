@@ -96,3 +96,15 @@ gem 'pagy', '~> 8.2'
 gem 'bullet', group: 'development'
 
 gem 'google-apis-calendar_v3', '~> 0.40.0'
+
+gem 'ice_cube', '~> 0.16.4'
+
+gem 'recurring_select', '~> 3.0'
+
+gem 'sidekiq', '~> 7.2'
+
+gem 'sidekiq-scheduler', '~> 5.0'
+
+gem 'redis', '~> 5.2'
+
+gem "annotate", "~> 3.2"

@@ -4,7 +4,10 @@ document.addEventListener("turbo:load", function () {
   const room_id = $("[data-room-id]").attr("data-room-id");
 
   consumer.subscriptions.subscriptions.forEach((subscription) => {
-    if (JSON.parse(subscription.identifier).channel === "RoomChannel")
+    if (
+      !room_id &&
+      JSON.parse(subscription.identifier).channel === "RoomChannel"
+    )
       consumer.subscriptions.remove(subscription);
   });
 
@@ -25,6 +28,7 @@ document.addEventListener("turbo:load", function () {
         },
 
         received(data) {
+          console.log(data);
           // Called when there's incoming data on the websocket for this channel
           document.dispatchEvent(
             new CustomEvent("eventCreated", { detail: data })

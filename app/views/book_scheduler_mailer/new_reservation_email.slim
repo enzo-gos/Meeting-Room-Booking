@@ -1,0 +1,25 @@
+doctype html
+html
+ head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+    title Notice: Meeting Reservation
+ body
+    h1 Notice: Meeting Reservation
+    p
+      | Hello #{@reservation.book_by.email},
+    p
+      | You have a meeting reservation of this month for #{@reservation.title} on #{@reservation.book_at}.
+    p
+      | Meeting Details:
+      ul
+        li Title: #{@reservation.title}
+        li Room: #{@reservation.room.name}
+        li Booked by: #{@reservation.book_by.email}
+        li Date: #{@reservation.book_at}
+        li Start Time: #{@reservation.start_time.strftime('%H:%M')}
+        li End Time: #{@reservation.end_time.strftime('%H:%M')}
+    p
+      | Please confirm your attendance.
+    p
+      | Best,
+      | Meeting Room Team

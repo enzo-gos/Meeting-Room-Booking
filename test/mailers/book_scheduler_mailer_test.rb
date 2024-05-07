@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SendEventJobTest < ActiveJob::TestCase
+class BookSchedulerMailerTest < ActionMailer::TestCase
   # test "the truth" do
   #   assert true
   # end
