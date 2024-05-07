@@ -106,7 +106,6 @@ class MeetingRoomsController < ApplicationController
 
     respond_to do |format|
       if @meeting_reservation.save
-        MonthlyBookJob.perform_async
         SendEventJob.perform_async(@meeting_reservation.to_json)
 
         format.html { redirect_to details_meeting_room_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
