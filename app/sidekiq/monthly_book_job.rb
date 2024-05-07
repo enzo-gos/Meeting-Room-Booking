@@ -1,7 +1,7 @@
 class MonthlyBookJob
   include Sidekiq::Job
 
-  def perform(*args)
+  def perform(*_args)
     reservations = MeetingReservation.includes(:book_by, :room, :members).where.not(recurring: nil)
 
     meeting_reservations = reservations.flat_map do |e|
