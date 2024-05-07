@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: meeting_reservations
+#
+#  id         :bigint           not null, primary key
+#  title      :string
+#  room_id    :bigint           not null
+#  book_by_id :bigint           not null
+#  book_at    :date
+#  start_time :time
+#  end_time   :time
+#  team_id    :bigint
+#  recurring  :text
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
 class MeetingReservation < ApplicationRecord
   require 'ice_cube'
   serialize :recurring, type: Hash, coder: JSON
@@ -46,7 +62,7 @@ class MeetingReservation < ApplicationRecord
   def time_difference_in_15_minutes
     return unless start_time && end_time
 
-    if (end_time - start_time).to_i / 60.0 < 15
+    if (end_time - start_time) > 15.minutes
       errors.add(:base, 'The meeting must last at least 15 minutes from the start time.')
     end
   end
