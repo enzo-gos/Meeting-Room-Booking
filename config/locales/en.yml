@@ -34,3 +34,8 @@ en:
     post_policy:
       update?: "You cannot edit this post!"
       create?: "You cannot create posts!"
+  errors:
+    messages:
+      not_updated:
+        one: "1 error prohibited this %{resource} from being updated:"
+        other: "%{count} errors prohibited this %{resource} from being updated:"

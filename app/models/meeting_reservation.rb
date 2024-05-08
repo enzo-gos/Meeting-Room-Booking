@@ -32,11 +32,11 @@ class MeetingReservation < ApplicationRecord
   validates :start_time, presence: { message: 'Start time must be provided' }
   validates :end_time, presence: { message: 'End time must be provided' }
 
-  validate :does_not_conflict, if: -> { new_record? && !persisted? }
+  validate :does_not_conflict, if: -> { (new_record? && !persisted?) || changed? }
   validate :start_time_less_than_end_time
   validate :time_difference_in_15_minutes
-  validate :does_not_overlap_single_recurring, if: -> { new_record? && !persisted? }
-  validate :does_not_overlap_recurring, if: -> { new_record? && !persisted? }
+  validate :does_not_overlap_single_recurring, if: -> { (new_record? && !persisted?) || changed? }
+  validate :does_not_overlap_recurring, if: -> { (new_record? && !persisted?) || changed? }
 
   validate :invitation_required
 
@@ -45,7 +45,11 @@ class MeetingReservation < ApplicationRecord
     return unless recurring.empty?
 
     book_at_str = book_at&.strftime('%Y-%m-%d')
-    overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND book_at = ?', end_time, start_time, book_at_str).where(recurring: nil)
+    if id.nil?
+      overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND book_at = ?', end_time, start_time, book_at_str).where(recurring: nil)
+    else
+      overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND book_at = ? AND id != ?', end_time, start_time, book_at_str, id).where(recurring: nil)
+    end
 
     if overlapping_events.exists?
       errors.add(:base, 'A meeting has already been booked at this time.')
@@ -73,7 +77,11 @@ class MeetingReservation < ApplicationRecord
     return if recurring.empty?
     return unless start_time && end_time
 
-    overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ?', end_time, start_time, recurring.to_json)
+    if id.nil?
+      overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ?', end_time, start_time, recurring.to_json)
+    else
+      overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ? AND id != ?', end_time, start_time, recurring.to_json, id)
+    end
 
     if overlapping_events.exists?
       errors.add(:base, 'A meeting has already been booked at this time.')
@@ -85,7 +93,12 @@ class MeetingReservation < ApplicationRecord
     return unless recurring.empty?
     return unless start_time && end_time
 
-    events = MeetingReservation.where('room_id = ?', room_id)
+    if id.nil?
+      events = MeetingReservation.where('room_id = ?', room_id)
+    else
+      events = MeetingReservation.where('room_id = ? AND id != ?', room_id, id)
+    end
+
     recurring_meetings = events.flat_map do |e|
       e.events(end_datetime)
     end

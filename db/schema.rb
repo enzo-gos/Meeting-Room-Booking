@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_26_054758) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_08_102133) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,10 +89,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_26_054758) do
     t.time "start_time"
     t.time "end_time"
     t.bigint "team_id"
-    t.integer "frequency", limit: 2, default: 0
     t.text "recurring"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "calendar_event"
     t.index ["book_by_id"], name: "index_meeting_reservations_on_book_by_id"
     t.index ["room_id"], name: "index_meeting_reservations_on_room_id"
     t.index ["team_id"], name: "index_meeting_reservations_on_team_id"
@@ -125,13 +125,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_26_054758) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_teams", force: :cascade do |t|
-    t.bigint "user_id", null: false
+  create_table "teams_users", id: false, force: :cascade do |t|
     t.bigint "team_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["team_id"], name: "index_user_teams_on_team_id"
-    t.index ["user_id"], name: "index_user_teams_on_user_id"
+    t.bigint "user_id", null: false
+    t.index ["team_id", "user_id"], name: "index_teams_users_on_team_id_and_user_id"
+    t.index ["user_id", "team_id"], name: "index_teams_users_on_user_id_and_team_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -164,6 +162,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_26_054758) do
   add_foreign_key "meeting_reservations", "teams"
   add_foreign_key "meeting_reservations", "users", column: "book_by_id"
   add_foreign_key "rooms", "departments"
-  add_foreign_key "user_teams", "teams"
-  add_foreign_key "user_teams", "users"
 end
