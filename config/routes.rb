@@ -35,6 +35,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :reservation
+
   # TODO: Refactor this
   get '/google/calendar' => 'calendars#redirect'
   get '/google/calendar/callback' => 'calendars#callback'

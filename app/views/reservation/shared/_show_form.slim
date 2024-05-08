@@ -1,0 +1,54 @@
+.mx-2.overflow-y-auto
+  .mt-2.text-sm.px-4
+    . id='flat-booking-dates'
+      .
+        = render 'reservation/shared/error_message', resource: @meeting_reservation
+        h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1
+          | Title
+        .form-row-wrapper
+          span.form-input.w-full
+            = @meeting_reservation.title
+        h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1
+          | Note
+        .mb-4.border-gray-200.border.rounded.p-4
+          = @meeting_reservation.note || 'No note available'
+        .mb-4.flex.gap-2
+          .w-full
+            h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1 
+              | People
+            .tags.border.mt-2.rounded-md.bg-gray-100/30
+              - if @members.empty?
+                .tags-item There are no members invited to this room
+              - else
+                - @members.each do |member|
+                  .tags-item
+                    = member.email
+          .w-1/3
+            h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1
+              | Team
+            .form-input
+              = @meeting_reservation.team&.name || "None"
+        .mb-4
+        h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1
+          | Recurring
+        - if @selected_rule.present?
+          .recurring_select.form-input = @selected_rule.first
+        - else
+          .recurring_select.form-input - not recurring -
+        .form-row-wrapper.mt-2
+          .
+            h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1
+              | Start at
+            .fp_date
+              = @meeting_reservation.book_at.strftime('%Y-%m-%d')
+          .gap-2.form-row-wrapper
+            .
+              h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1
+                | Start time
+              .fp_date
+                = @meeting_reservation.start_time.strftime('%H:%M')
+            .
+              h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1
+                | End time
+              .fp_date
+                = @meeting_reservation.end_time.strftime('%H:%M')

@@ -1,0 +1,6 @@
+.mx-auto.rounded-lg.bg-white.shadow-md.max-w-xl
+  .relative.py-7.px-2
+    h3.text-2xl.font-bold.text-primary-800.px-4.mx-2.mb-4
+      | Reservation 
+    . id='modal-body'
+      = render 'reservation/shared/edit_form', meeting_reservation: @meeting_reservation, data_controller: 'flatpickr'

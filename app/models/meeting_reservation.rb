@@ -181,4 +181,15 @@ class MeetingReservation < ApplicationRecord
 
     team_users | member_emails
   end
+
+  def rule_to_option
+    return nil if recurring.empty?
+
+    rule = RecurringSelect.dirty_hash_to_rule(ice_cube_rule)
+    ar = [rule.to_s, rule.to_hash.to_json]
+
+    ar[0] += '*'
+    ar << { 'data-custom' => true }
+    ar
+  end
 end
