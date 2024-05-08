@@ -107,4 +107,4 @@ gem 'sidekiq-scheduler', '~> 5.0'
 
 gem 'redis', '~> 5.2'
 
-gem "annotate", "~> 3.2"
+gem 'annotate', '~> 3.2'
