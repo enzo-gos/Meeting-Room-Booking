@@ -31,13 +31,14 @@ class MeetingReservation < ApplicationRecord
   validates :book_at, presence: { message: 'Book at must be provided' }
   validates :start_time, presence: { message: 'Start time must be provided' }
   validates :end_time, presence: { message: 'End time must be provided' }
-  validates :member_ids, presence: { message: 'Members must be included' }
 
   validate :does_not_conflict, if: -> { new_record? && !persisted? }
   validate :start_time_less_than_end_time
   validate :time_difference_in_15_minutes
   validate :does_not_overlap_single_recurring, if: -> { new_record? && !persisted? }
   validate :does_not_overlap_recurring, if: -> { new_record? && !persisted? }
+
+  validate :invitation_required
 
   # check overlap single event - single event
   def does_not_conflict
@@ -62,7 +63,7 @@ class MeetingReservation < ApplicationRecord
   def time_difference_in_15_minutes
     return unless start_time && end_time
 
-    if (end_time - start_time) > 15.minutes
+    if (end_time - start_time) < 15.minutes
       errors.add(:base, 'The meeting must last at least 15 minutes from the start time.')
     end
   end
@@ -168,5 +169,16 @@ class MeetingReservation < ApplicationRecord
     schedule(book_at).occurrences(end_frequency).map do |date|
       MeetingReservation.new(id: id, title: title, book_at: date, start_time: start_time, end_time: end_time, recurring: recurring, book_by_id: book_by_id, room_id: room_id, created_at: created_at)
     end
+  end
+
+  def invitation_required
+    errors.add(:base, 'Invitation must be included.') if members.empty? && team_id.nil?
+  end
+
+  def allmembers
+    team_users = team&.users.to_a.map { |el| { email: el.email } }
+    member_emails = members.to_a.map { |el| { email: el.email } }
+
+    team_users | member_emails
   end
 end

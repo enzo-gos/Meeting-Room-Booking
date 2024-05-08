@@ -8,5 +8,5 @@
 #  updated_at :datetime         not null
 #
 class Team < ApplicationRecord
-  has_many :users, through: :user_teams
+  has_and_belongs_to_many :users
 end

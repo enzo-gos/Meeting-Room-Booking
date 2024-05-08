@@ -7,17 +7,20 @@
           = f.input :title, input_html: { class: 'form-input w-full', placeholder: 'Enter meeting title', required: true }
         .mb-4.border-gray-200.border.rounded
           = f.rich_text_area :note, class: 'trix-editor w-full', placeholder: 'Enter meeting note'
+        .mb-4.flex.gap-2
+          .w-full
+            h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1 
+              | People
+            .relative
+              input.w-full.form-input.py-2.tag_autocomplete type='text' placeholder='People' data-action='click->tag#keepDropdownOpen blur->tag#closeDropdown input->tag#searchTag'
+              .tag_dropdown.w-full data-tag-target='tagDropdown'
+                - @user_list.each do |user|
+                  button.py-2.px-4.w-full.text-left.hover:bg-gray-200/60 type='button' data-action='mousedown->tag#addTag' value="#{user.id}" data-tag-target="tag" = user.email
+            = f.input :member_ids, label: false, input_html: { id: "tags-hidden", hidden: true, 'data-tag-target': "tagsInput", 'data-action': 'change->tag#onResetInput' }
+            .tags.border.mt-2.rounded-md.hidden.bg-gray-100/30
+          .w-1/3
+            = f.input :team_id, collection: Team.all, input_html: { class: 'recurring_select form-input py-2' }
         .mb-4
-          h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1 
-            b.text-red-500 *
-            | People
-          .relative
-            input.w-full.form-input.py-2.tag_autocomplete type='text' placeholder='People' data-action='click->tag#keepDropdownOpen blur->tag#closeDropdown input->tag#searchTag'
-            .tag_dropdown.w-full data-tag-target='tagDropdown'
-              - User.where.not(id: current_user.id).each do |user|
-                button.py-2.px-4.w-full.text-left.hover:bg-gray-200/60 type='button' data-action='mousedown->tag#addTag' value="#{user.id}" data-tag-target="tag" = user.email
-          = f.input :member_ids, label: false, input_html: { id: "tags-hidden", hidden: true, 'data-tag-target': "tagsInput", 'data-action': 'change->tag#onResetInput' }
-          .tags.border.mt-2.rounded-md.hidden.bg-gray-100/30
           = f.input :recurring, as: :select, input_html: { class: 'recurring_select form-input' }, collection: [['- not recurring -', 'null'], ['Set schedule...', 'custom']], selected: '- not recurring -'
         .form-row-wrapper
           = f.input :book_at, label: 'Start date', as: :string, input_html: { class: 'fp_date' }, placeholder: 'Start date'
