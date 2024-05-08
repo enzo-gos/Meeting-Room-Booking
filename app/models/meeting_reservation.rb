@@ -176,9 +176,9 @@ class MeetingReservation < ApplicationRecord
   end
 
   def allmembers
-    team_users = team.users.to_a.map { |el| { email: el.email } }
-    members = members.to_a.map { |el| { email: el.email } }
+    team_users = team&.users.to_a.map { |el| { email: el.email } }
+    member_emails = members.to_a.map { |el| { email: el.email } }
 
-    team_users | members
+    team_users | member_emails
   end
 end

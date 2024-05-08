@@ -68,6 +68,7 @@ class MeetingRoomsController < ApplicationController
     add_breadcrumb 'Book'
 
     @meeting_reservation = MeetingReservation.new
+    @user_list = User.where.not(id: current_user.id)
 
     respond_to do |format|
       format.turbo_stream do
