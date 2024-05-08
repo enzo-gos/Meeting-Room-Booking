@@ -81,6 +81,7 @@ class MeetingRoomsController < ApplicationController
   end
 
   def create
+    @user_list = User.where.not(id: current_user.id)
     @meeting_reservation = MeetingReservation.create(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
     valid = @meeting_reservation.valid?
 
