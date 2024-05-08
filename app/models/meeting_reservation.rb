@@ -45,11 +45,9 @@ class MeetingReservation < ApplicationRecord
     return unless recurring.empty?
 
     book_at_str = book_at&.strftime('%Y-%m-%d')
-    if id.nil?
-      overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND book_at = ?', end_time, start_time, book_at_str).where(recurring: nil)
-    else
-      overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND book_at = ? AND id != ?', end_time, start_time, book_at_str, id).where(recurring: nil)
-    end
+
+    overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND book_at = ?', end_time, start_time, book_at_str).where(recurring: nil)
+    overlapping_events = overlapping_events.where.not(id: id) unless id.nil?
 
     if overlapping_events.exists?
       errors.add(:base, 'A meeting has already been booked at this time.')
@@ -77,11 +75,8 @@ class MeetingReservation < ApplicationRecord
     return if recurring.empty?
     return unless start_time && end_time
 
-    if id.nil?
-      overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ?', end_time, start_time, recurring.to_json)
-    else
-      overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ? AND id != ?', end_time, start_time, recurring.to_json, id)
-    end
+    overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ?', end_time, start_time, recurring.to_json)
+    overlapping_events = overlapping_events.where.not(id: id) unless id.nil?
 
     if overlapping_events.exists?
       errors.add(:base, 'A meeting has already been booked at this time.')
@@ -93,11 +88,8 @@ class MeetingReservation < ApplicationRecord
     return unless recurring.empty?
     return unless start_time && end_time
 
-    if id.nil?
-      events = MeetingReservation.where('room_id = ?', room_id)
-    else
-      events = MeetingReservation.where('room_id = ? AND id != ?', room_id, id)
-    end
+    events = MeetingReservation.where('room_id = ?', room_id)
+    events = events.where.not(id: id) unless id.nil?
 
     recurring_meetings = events.flat_map do |e|
       e.events(end_datetime)
