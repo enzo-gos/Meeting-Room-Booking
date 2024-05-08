@@ -92,7 +92,7 @@ class MeetingRoomsController < ApplicationController
           title: @meeting_reservation.title,
           start_date: start_date_time,
           end_date: end_date_time,
-          members: @meeting_reservation.members.to_a.map { |el| { email: el.email } },
+          members: @meeting_reservation.allmembers,
           note: @meeting_reservation.note.body.to_s,
           recurrence: @meeting_reservation.recurring.empty? ? [] : [@meeting_reservation.google_calendar_rule]
         )
@@ -128,6 +128,6 @@ class MeetingRoomsController < ApplicationController
 
   def meeting_reservation_params
     params[:meeting_reservation][:member_ids] = params[:meeting_reservation][:member_ids].split(',').map(&:strip) || []
-    params.require(:meeting_reservation).permit(:title, :note, :recurring, :book_at, :start_time, :end_time, member_ids: [])
+    params.require(:meeting_reservation).permit(:title, :note, :recurring, :book_at, :start_time, :end_time, :team_id, member_ids: [])
   end
 end
