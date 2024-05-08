@@ -1,9 +1,11 @@
-. class='flex gap-5 items-start' data-controller="calendar"
-  = render 'book_modal'
+.flex.gap-5.items-start.mx-auto.max-w-6xl.px-8
 
-  . class='bg-white rounded w-full p-4 min-w-[48rem]'
-    .text-sm id="calendar"
-  
+  .mx-auto.rounded-lg.bg-white.shadow-md.max-w-xl.w-full
+    .relative.py-7.px-2.
+      h3.text-2xl.font-bold.text-primary-800.px-4.mx-2.mb-4
+        | Reservation 
+      = render 'reservation/shared/show_form', meeting_reservation: @meeting_reservation, data_controller: 'flatpickr'
+
   .bg-white.rounded-md.overflow-hidden.border
     .h-36.overflow-hidden.flex.items-center.justify-center 
       = image_tag @meeting_room.preview_image, class: 'w-full'
@@ -34,9 +36,3 @@
         span.flex.items-center.gap-1
           = mi.shape(:business).round.md_18
           = @meeting_room.department.name
-      
-      hr.my-3
-
-      = link_to book_meeting_room_path(@meeting_room.id), class: 'btn-submit flex items-center justify-center gap-2', id: 'book_room_btn'
-        = mi.shape(:add_circle).round.md_18
-        span.leading-normal Book Room

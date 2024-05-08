@@ -20,6 +20,20 @@ export default class extends Controller {
         },
       ],
     });
+
+    const start_time_el = this.getStartTimeInput();
+    const end_time_el = this.getEndTimeInput();
+
+    const start_time = $(start_time_el.element).attr("value").split(" ")[1];
+    const end_time = $(end_time_el.element).attr("value").split(" ")[1];
+
+    if (start_time && end_time) {
+      $(start_time_el.element).attr("value", start_time);
+      $(end_time_el.element).attr("value", end_time);
+
+      start_time_el.setDate(start_time, true, "H:i");
+      end_time_el.setDate(end_time, true, "H:i");
+    }
   }
 
   getStartTimeInput() {

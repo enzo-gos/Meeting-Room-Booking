@@ -2,7 +2,7 @@
   .mt-2.text-sm.px-4
     . id='flat-booking-dates'
       = simple_form_for @meeting_reservation, url: :book_meeting_room, method: :post, data: { controller: "tag #{ data_controller || '' }" }, defaults: { label_html: { class: 'form-label my-2 flex flex-row-reverse justify-end gap-1' }, error_html: { class: 'text-red-500 mt-1 block text-[13px] ml-1' } } do |f|
-        = render 'error_message', resource: @meeting_reservation
+        = render 'reservation/shared/error_message', resource: @meeting_reservation
         .form-row-wrapper
           = f.input :title, input_html: { class: 'form-input w-full', placeholder: 'Enter meeting title', required: true }
         .mb-4.border-gray-200.border.rounded
@@ -21,7 +21,7 @@
           .w-1/3
             = f.input :team_id, collection: Team.all, input_html: { class: 'recurring_select form-input py-2' }
         .mb-4
-        - if @selected_rule.present? 
+        - if @selected_rule.present?
           = f.input :recurring, as: :select, input_html: { class: 'recurring_select form-input' }, collection: [['- not recurring -', 'null'], @selected_rule, ['Set schedule...', 'custom']], selected: @selected_rule
         - else
           = f.input :recurring, as: :select, input_html: { class: 'recurring_select form-input' }, collection: [['- not recurring -', 'null'], ['Set schedule...', 'custom']], selected: '- not recurring -'

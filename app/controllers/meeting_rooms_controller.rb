@@ -54,7 +54,8 @@ class MeetingRoomsController < ApplicationController
         title: reservation.title,
         start: start_datetime.strftime('%Y-%m-%d %H:%M:%S'),
         end: end_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-        color: reservation.book_by_id == current_user.id ? 'green' : 'sky'
+        color: reservation.book_by_id == current_user.id ? 'green' : 'sky',
+        url: current_user.id == reservation.book_by_id ? edit_reservation_path(reservation.id) : reservation_path(reservation.id)
       }
     end
 
@@ -71,6 +72,7 @@ class MeetingRoomsController < ApplicationController
     @user_list = User.where.not(id: current_user.id)
 
     respond_to do |format|
+      format.html { render 'book' }
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.update('modal-title') { 'Book Room' },
@@ -83,6 +85,9 @@ class MeetingRoomsController < ApplicationController
   def create
     @user_list = User.where.not(id: current_user.id)
     @meeting_reservation = MeetingReservation.create(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
+
+    @selected_rule = @meeting_reservation.rule_to_option
+
     valid = @meeting_reservation.valid?
 
     if valid
@@ -112,7 +117,7 @@ class MeetingRoomsController < ApplicationController
 
         format.html { redirect_to details_meeting_room_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
       else
-        format.turbo_stream { render turbo_stream: turbo_stream.update('modal-body', partial: 'book_form'), status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update('modal-body', partial: 'book_form', locals: { data_controller: 'flatpickr' }), status: :unprocessable_entity }
       end
     end
   end
