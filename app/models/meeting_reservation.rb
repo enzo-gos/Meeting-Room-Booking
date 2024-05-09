@@ -16,6 +16,9 @@
 #
 class MeetingReservation < ApplicationRecord
   require 'ice_cube'
+
+  FILTER_PARAMS = %i[title book_by book_at start_time room_id].freeze
+
   serialize :recurring, type: Hash, coder: JSON
 
   has_rich_text :description
@@ -39,6 +42,24 @@ class MeetingReservation < ApplicationRecord
   validate :does_not_overlap_recurring, if: -> { (new_record? && !persisted?) || changed? }
 
   validate :invitation_required
+
+  scope :with_room_department, -> { includes(room: :department) }
+
+  scope :by_title, ->(query) { where('meeting_reservations.title ilike ?', "%#{query}%") }
+  scope :by_room, ->(room_id) { where(room_id: room_id) if room_id.present? }
+  scope :by_book_at, ->(book_at) { where(book_at: book_at) if book_at.present? }
+  scope :by_start_time, ->(start_time) { where(start_time: start_time) if start_time.present? }
+
+  def self.filter(filters)
+    MeetingReservation
+      .includes([:room])
+      .with_room_department
+      .order(:created_at)
+      .by_room(filters['room_id'])
+      .by_title(filters['title'])
+      .by_book_at(filters['book_at'])
+      .by_start_time(filters['start_time'])
+  end
 
   # check overlap single event - single event
   def does_not_conflict
