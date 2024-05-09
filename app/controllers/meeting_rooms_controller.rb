@@ -95,7 +95,7 @@ class MeetingRoomsController < ApplicationController
         start_date_time = @meeting_reservation.start_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
         end_date_time = @meeting_reservation.end_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
 
-        create_new_event(
+        new_event = create_new_event(
           title: @meeting_reservation.title,
           start_date: start_date_time,
           end_date: end_date_time,
@@ -103,6 +103,8 @@ class MeetingRoomsController < ApplicationController
           note: @meeting_reservation.note.body.to_s,
           recurrence: @meeting_reservation.recurring.empty? ? [] : [@meeting_reservation.google_calendar_rule]
         )
+
+        @meeting_reservation.calendar_event = new_event.id
       rescue Google::Apis::AuthorizationError => _e
         client = initialize_client
         response = client.refresh!

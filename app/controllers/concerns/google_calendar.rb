@@ -51,4 +51,24 @@ module GoogleCalendar
 
     service.insert_event(calendar_id, event, send_updates: 'all')
   end
+
+  def update_event(event_id:, title:, start_date:, end_date:, members:, note: '', recurrence: [], calendar_id: 'primary')
+    service = initialize_calendar_service
+
+    event = service.get_event(calendar_id, event_id)
+
+    event.summary = title
+    event.description = note
+    event.start = Google::Apis::CalendarV3::EventDateTime.new(date_time: start_date, time_zone: 'Asia/Ho_Chi_Minh')
+    event.end = Google::Apis::CalendarV3::EventDateTime.new(date_time: end_date, time_zone: 'Asia/Ho_Chi_Minh')
+    event.attendees = members
+    event.recurrence = recurrence
+
+    service.update_event('primary', event.id, event, send_updates: 'all')
+  end
+
+  def delete_event(event_id:, calendar_id: 'primary')
+    service = initialize_calendar_service
+    service.delete_event(calendar_id, event_id, send_updates: 'all')
+  end
 end

@@ -32,11 +32,11 @@ class MeetingReservation < ApplicationRecord
   validates :start_time, presence: { message: 'Start time must be provided' }
   validates :end_time, presence: { message: 'End time must be provided' }
 
-  validate :does_not_conflict, if: -> { new_record? && !persisted? }
+  validate :does_not_conflict, if: -> { (new_record? && !persisted?) || changed? }
   validate :start_time_less_than_end_time
   validate :time_difference_in_15_minutes
-  validate :does_not_overlap_single_recurring, if: -> { new_record? && !persisted? }
-  validate :does_not_overlap_recurring, if: -> { new_record? && !persisted? }
+  validate :does_not_overlap_single_recurring, if: -> { (new_record? && !persisted?) || changed? }
+  validate :does_not_overlap_recurring, if: -> { (new_record? && !persisted?) || changed? }
 
   validate :invitation_required
 
@@ -45,7 +45,9 @@ class MeetingReservation < ApplicationRecord
     return unless recurring.empty?
 
     book_at_str = book_at&.strftime('%Y-%m-%d')
+
     overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND book_at = ?', end_time, start_time, book_at_str).where(recurring: nil)
+    overlapping_events = overlapping_events.where.not(id: id) unless id.nil?
 
     if overlapping_events.exists?
       errors.add(:base, 'A meeting has already been booked at this time.')
@@ -74,6 +76,7 @@ class MeetingReservation < ApplicationRecord
     return unless start_time && end_time
 
     overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ?', end_time, start_time, recurring.to_json)
+    overlapping_events = overlapping_events.where.not(id: id) unless id.nil?
 
     if overlapping_events.exists?
       errors.add(:base, 'A meeting has already been booked at this time.')
@@ -86,6 +89,8 @@ class MeetingReservation < ApplicationRecord
     return unless start_time && end_time
 
     events = MeetingReservation.where('room_id = ?', room_id)
+    events = events.where.not(id: id) unless id.nil?
+
     recurring_meetings = events.flat_map do |e|
       e.events(end_datetime)
     end
