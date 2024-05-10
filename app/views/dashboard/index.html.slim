@@ -67,7 +67,7 @@
 								.flex.justify-end.gap-3
 									= button_to reservation_path(reservation.id), method: :delete, data: { turbo_frame: '_top', turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this reservation?" } do
 										= image_tag 'delete_icon.svg', class: 'h-6 w-6', alt: 'delete'
-									= link_to edit_reservation_path(reservation.id), data: { turbo_frame: '_top' } do
+									= link_to edit_reservation_path(reservation.id), data: { turbo_frame: '_top', turbo_prefetch: false } do
 										= image_tag 'edit_icon.svg', class: 'h-6 w-6', alt: 'edit'
 										
 					- if @reservations.empty? 

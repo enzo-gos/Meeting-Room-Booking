@@ -25,8 +25,8 @@ export default class extends Controller {
     const end_time_el = this.getEndTimeInput();
 
     if (start_time_el && end_time_el) {
-      const start_time = $(start_time_el.element).attr("value").split(" ")[1];
-      const end_time = $(end_time_el.element).attr("value").split(" ")[1];
+      const start_time = $(start_time_el.element).attr("value")?.split(" ")[1];
+      const end_time = $(end_time_el.element).attr("value")?.split(" ")[1];
 
       if (start_time && end_time) {
         $(start_time_el.element).attr("value", start_time);
