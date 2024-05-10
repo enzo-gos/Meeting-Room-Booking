@@ -1,4 +1,4 @@
-import consumer from "./consumer";
+import consumer from "channels/consumer";
 
 document.addEventListener("turbo:load", function () {
   const room_id = $("[data-room-id]").attr("data-room-id");
