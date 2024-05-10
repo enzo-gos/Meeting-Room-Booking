@@ -61,6 +61,7 @@ class ReservationController < ApplicationController
     @meeting_reservation.destroy
 
     begin
+      SendEventJob.perform_async(@meeting_reservation.to_json)
       delete_event(event_id: @meeting_reservation.calendar_event)
     rescue Google::Apis::AuthorizationError => _e
       client = initialize_client
