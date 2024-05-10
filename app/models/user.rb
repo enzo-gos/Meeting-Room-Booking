@@ -29,7 +29,6 @@ class User < ApplicationRecord
   validate :current_password_is_correct,
            if: :validate_password?, on: :update
 
-  has_many :teams, through: :user_teams
   has_many :meeting_reservations, foreign_key: :book_by_id
   has_and_belongs_to_many :teams
 

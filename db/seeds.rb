@@ -60,7 +60,7 @@ User.create!(
 
 User.create!(
   id: 3,
-  email: 'admin@gmail.com',
+  email: 'dev1.gos@gmail.com',
   password: '123123',
   password_confirmation: '123123',
   reset_password_token: nil,
@@ -76,7 +76,7 @@ User.create!(
 
 User.create!(
   id: 4,
-  email: 'test.user@gmail.com',
+  email: 'dev2.gos@gmail.com',
   password: '123123',
   password_confirmation: '123123',
   reset_password_token: nil,
