@@ -34,8 +34,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       sign_out_all_scopes
       flash[:notice] = t 'devise.omniauth_callbacks.success', kind: 'Google'
 
-      p request.env
-
       store_oauth_token(request.env['omniauth.auth'])
 
       sign_in_and_redirect user, event: :authentication
