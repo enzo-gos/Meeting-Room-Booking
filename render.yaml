@@ -1,12 +1,12 @@
 databases:
-  - name: postgres
+  - name: go_meeting
     databaseName: meeting_room_production
     user: meeting_room
     plan: free
 
 services:
   - type: web
-    name: mysite
+    name: GoMeeting
     runtime: ruby
     plan: free
     buildCommand: "./bin/render-build.sh"
