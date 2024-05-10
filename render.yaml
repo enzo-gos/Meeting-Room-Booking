@@ -7,12 +7,13 @@ databases:
 services:
   - type: redis
     name: go-meeting-sidekiq-redis
-    maxmemoryPolicy: noeviction
     ipAllowList: [] # only allow internal connections
+    plan: free
 
   - type: worker
     name: go-meeting-sidekiq-worker
     runtime: ruby
+    plan: free
     buildCommand: bundle install
     startCommand: bundle exec sidekiq
     envVars:
