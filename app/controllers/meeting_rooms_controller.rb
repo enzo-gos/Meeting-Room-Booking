@@ -131,8 +131,10 @@ class MeetingRoomsController < ApplicationController
   end
 
   def authorize_user
-    flash[:alert] = 'You should be logged in with a Google account to use this feature.'
-    redirect_to meeting_rooms_path unless session[:authorization].present?
+    unless session[:authorization].present?
+      flash[:alert] = 'You should be logged in with a Google account to use this feature.'
+      redirect_to meeting_rooms_path
+    end
   end
 
   def meeting_reservation_params
