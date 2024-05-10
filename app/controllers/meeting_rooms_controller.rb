@@ -131,8 +131,8 @@ class MeetingRoomsController < ApplicationController
   end
 
   def authorize_user
-    session[:calendar_callback_url] = details_meeting_room_url(params[:id])
-    redirect_to google_calendar_path unless session[:authorization].present?
+    flash[:alert] = 'You should be logged in with a Google account to use this feature.'
+    redirect_to meeting_rooms_path unless session[:authorization].present?
   end
 
   def meeting_reservation_params

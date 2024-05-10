@@ -1,3 +1,15 @@
+.fixed.top-10.right-10.shadow-md.rounded-md.z-max
+  - if alert
+    .flex.rounded-md.bg-white.p-4.text-sm.text-red-500.border-2.border-red-400[x-cloak x-show="showAlert" x-data="{ showAlert: true }" x-init="setTimeout(() => showAlert = false, 3000)"]
+      = image_tag 'error_icon.svg', class: 'mr-3 h-5 w-5 flex-shrink-0 fill-red-500 text-red-500', alt: 'error'
+      div
+        h4.font-bold
+          | Action Failed
+        .mt-1
+          p
+            = alert
+      button.ml-4[x-on:click="showAlert = false"]
+        = mi.shape(:close).round.md_18
 .mx-auto.max-w-6xl.px-8
 	= form_with url: meeting_rooms_path,
 		method: :get,
