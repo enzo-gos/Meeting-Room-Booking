@@ -11,6 +11,6 @@ import "trix";
 import "@rails/actiontext";
 
 import "flatpickr";
-import "./channels";
+import "channels";
 
-import "./recurring_select/recurring_select";
+import "recurring_select";

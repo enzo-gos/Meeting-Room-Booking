@@ -15,4 +15,5 @@ pin "flatpickr" # @4.6.13
 pin "fullcalendar" # @6.1.11
 pin "moment" # @2.30.1
 pin "@rails/actioncable", to: "actioncable.esm.js"
+pin_all_from "app/javascript/recurring_select", under: "recurring_select"
 pin_all_from "app/javascript/channels", under: "channels"
