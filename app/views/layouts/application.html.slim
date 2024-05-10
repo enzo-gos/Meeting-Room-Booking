@@ -16,7 +16,7 @@ html[lang="en"]
     script[src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"]
   body.bg-slate-100/50
     div x-data="{ sidebarOpen: false }"
-      .fixed.left-0.h-screen.bg-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.transition-all.border-gray-200/60 :class="{'w-64': sidebarOpen, 'w-[72px]': !sidebarOpen}"
+      .fixed.left-0.h-screen.bg-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.border-gray-200/60 :class="{'w-64 transition-all': sidebarOpen, 'w-[72px]': !sidebarOpen}"
         .py-2.pb-6
           = image_tag 'logo.png', class: 'block mx-auto', alt: 'golden_owl_logo', ':class': "{'w-[80px]': sidebarOpen, 'w-[50px]': !sidebarOpen}"
         b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Main menu
@@ -57,7 +57,7 @@ html[lang="en"]
           = mi.shape(:copyright).outlined.md_18
           | 2024
    
-      .w-auto.transition-all.left-0.right-0 :class="{'ml-64': sidebarOpen, 'ml-[72px]': !sidebarOpen}"
+      .w-auto.left-0.right-0 :class="{'ml-64 transition-all': sidebarOpen, 'ml-[72px]': !sidebarOpen}"
         nav.flex.items-center.w-full.bg-white.p-2.px-4.border-b.sticky.top-0.z-max
           button.flex.items-center.justify-center.border.rounded-full.p-2.hover:bg-gray-200/60.cursor-pointer @click="sidebarOpen = !sidebarOpen"
             = mi.shape(:menu).outlined.md_18
