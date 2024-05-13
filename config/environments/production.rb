@@ -104,7 +104,8 @@ Rails.application.configure do
     port: ENV['MAIL_SERVICE_PORT_PRODUCTION'],
     user_name: ENV['MAIL_SERVICE_USERNAME_PRODUCTION'],
     password: ENV['MAIL_SERVICE_PASSWORD_PRODUCTION'],
-    authentication: 'login',
+    domain: 'mtech.id.vn',
+    authentication: 'plain',
     enable_starttls_auto: true
   }
 
