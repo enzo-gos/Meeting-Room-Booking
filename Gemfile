@@ -107,3 +107,7 @@ gem 'omniauth-rails_csrf_protection', '~> 1.0'
 gem 'google-apis-calendar_v3', '~> 0.40.0'
 gem 'ice_cube', '~> 0.16.4'
 gem 'recurring_select', '~> 3.0'
+
+gem "sentry-ruby", "~> 5.17"
+
+gem "sentry-rails", "~> 5.17"
