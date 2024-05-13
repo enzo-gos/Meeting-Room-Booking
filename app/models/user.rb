@@ -43,7 +43,7 @@ class User < ApplicationRecord
   end
 
   def validate_password?
-    !password.blank?
+    !password.blank? && !current_password.blank?
   end
 
   def assign_default_role
