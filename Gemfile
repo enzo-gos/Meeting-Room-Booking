@@ -93,7 +93,7 @@ gem 'simple_form', '~> 5.3'
 
 gem 'pagy', '~> 8.2'
 
-gem 'bullet', group: 'development'
+gem 'bullet', group: ['development', 'test']
 
 gem 'google-apis-calendar_v3', '~> 0.40.0'
 
@@ -108,3 +108,9 @@ gem 'sidekiq-scheduler', '~> 5.0'
 gem 'redis', '~> 5.2'
 
 gem 'annotate', '~> 3.2'
+
+gem "rspec-rails", "~> 6.1"
+
+gem "simplecov", "~> 0.22.0"
+
+gem "shoulda-matchers", "~> 6.2"
