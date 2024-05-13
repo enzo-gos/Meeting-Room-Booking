@@ -109,23 +109,9 @@ class MeetingReservation < ApplicationRecord
     return unless recurring.empty?
     return unless start_time && end_time
 
-    events = MeetingReservation.where('room_id = ?', room_id)
-    events = events.where.not(id: id) unless id.nil?
+    overlapping_meeting = find_overlapping_meeting
 
-    recurring_meetings = events.flat_map do |e|
-      e.events(end_datetime)
-    end
-
-    is_overlap = false
-
-    recurring_meetings.each do |e|
-      next unless e.book_at == book_at && e.start_time < end_time && e.end_time > start_time
-
-      is_overlap = true
-      break
-    end
-
-    if is_overlap
+    if overlapping_meeting
       errors.add(:base, 'A meeting has already been booked at this time.')
     end
   end
@@ -217,5 +203,22 @@ class MeetingReservation < ApplicationRecord
     ar[0] += '*'
     ar << { 'data-custom' => true }
     ar
+  end
+
+  private
+
+  def find_overlapping_meeting
+    reservations = MeetingReservation.where('room_id = ?', room_id)
+    reservations = reservations.where.not(id: id) unless id.nil?
+
+    recurring_meetings = reservations.flat_map { |e| e.events(end_datetime) }
+
+    recurring_meetings.find do |e|
+      overlap?(e)
+    end
+  end
+
+  def overlap?(meeting)
+    meeting.book_at == book_at && meeting.start_time < end_time && meeting.end_time > start_time
   end
 end

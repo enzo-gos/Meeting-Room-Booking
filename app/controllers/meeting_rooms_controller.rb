@@ -27,24 +27,7 @@ class MeetingRoomsController < ApplicationController
       e.events(end_date)
     end
 
-    # handle Calendar overlap recurring - recurring UI show
-    grouped_schedules = @meeting_reservations.group_by { |schedule| schedule.book_at.strftime('%Y-%m-%d') }
-
-    grouped_schedules.each do |date, events|
-      events.sort_by!(&:created_at)
-
-      non_overlapping_events = [events.first]
-
-      events.each do |event|
-        overlapping = non_overlapping_events.any? do |non_overlap_event|
-          (event.start_time < non_overlap_event.end_time) && (event.end_time > non_overlap_event.start_time)
-        end
-
-        non_overlapping_events << event unless overlapping
-      end
-
-      grouped_schedules[date] = non_overlapping_events
-    end
+    grouped_schedules = remove_overlap_events(@meeting_reservations)
 
     formatted_meeting_reservations = grouped_schedules.values.flatten.map do |reservation|
       start_datetime = reservation.start_datetime
@@ -140,5 +123,26 @@ class MeetingRoomsController < ApplicationController
   def meeting_reservation_params
     params[:meeting_reservation][:member_ids] = params[:meeting_reservation][:member_ids].split(',').map(&:strip) || []
     params.require(:meeting_reservation).permit(:title, :note, :recurring, :book_at, :start_time, :end_time, :team_id, member_ids: [])
+  end
+
+  def remove_overlap_events(meeting_reservations)
+    # handle Calendar overlap recurring - recurring UI show
+    grouped_schedules = meeting_reservations.group_by { |schedule| schedule.book_at.strftime('%Y-%m-%d') }
+
+    grouped_schedules.each do |date, events|
+      events.sort_by!(&:created_at)
+
+      non_overlapping_events = [events.first]
+
+      events.each do |event|
+        overlapping = non_overlapping_events.any? do |non_overlap_event|
+          (event.start_time < non_overlap_event.end_time) && (event.end_time > non_overlap_event.start_time)
+        end
+
+        non_overlapping_events << event unless overlapping
+      end
+
+      grouped_schedules[date] = non_overlapping_events
+    end
   end
 end
