@@ -1,8 +1,7 @@
 source 'https://rubygems.org'
-
 ruby '3.3.0'
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 7.1.3', '>= 7.1.3.2'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
@@ -27,13 +26,13 @@ gem 'stimulus-rails'
 gem 'jbuilder'
 
 # Use Redis adapter to run Action Cable in production
-# gem "redis", ">= 4.0.1"
+# gem 'redis', '>= 4.0.1'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
+# gem 'kredis'
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+# gem 'bcrypt', '~> 3.1.7'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[ windows jruby ]
@@ -47,6 +46,10 @@ gem 'image_processing', '~> 1.2'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[ mri windows ]
+  # gem 'rack-mini-profiler'
+  # gem 'spring'
+  gem 'bullet'
+  gem 'dotenv-rails'
 end
 
 group :development do
@@ -54,59 +57,53 @@ group :development do
   gem 'web-console'
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  # gem "rack-mini-profiler"
+  # gem 'rack-mini-profiler'
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
+  # gem 'spring'
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
   gem 'selenium-webdriver'
+  gem 'rspec-rails', '~> 6.1'
+  gem 'simplecov', '~> 0.22.0'
+  gem 'shoulda-matchers', '~> 6.2'
+  gem 'factory_bot_rails', '~> 6.4'
+  gem 'faker', '~> 3.3'
 end
 
+# Authentication and Authorization
 gem 'devise', '~> 4.9'
-
-gem 'tailwindcss-rails', '~> 2.4'
-
-gem 'dotenv', groups: [:development, :test]
-
 gem 'pundit', '~> 2.3'
-
-gem 'slim', '~> 5.2'
-gem 'omniauth-google-oauth2', '~> 1.1'
-
-gem 'omniauth-rails_csrf_protection', '~> 1.0'
-
-gem 'pgcrypto', '~> 0.4.1'
-
 gem 'rolify', '~> 6.0'
 
+# Frontend
+gem 'tailwindcss-rails', '~> 2.4'
+gem 'slim', '~> 5.2'
 gem 'font-awesome-sass', '~> 6.5'
-
 gem 'material_icons', '~> 4.0'
-
 gem 'breadcrumbs_on_rails', '~> 4.1'
-
 gem 'simple_form', '~> 5.3'
 
+# Pagination
 gem 'pagy', '~> 8.2'
 
-gem 'bullet', group: ['development', 'test']
-
-gem 'google-apis-calendar_v3', '~> 0.40.0'
-
-gem 'ice_cube', '~> 0.16.4'
-
-gem 'recurring_select', '~> 3.0'
-
+# Background Jobs
 gem 'sidekiq', '~> 7.2'
-
 gem 'sidekiq-scheduler', '~> 5.0'
-
 gem 'redis', '~> 5.2'
 
+# Utilities
+gem 'pgcrypto', '~> 0.4.1'
 gem 'annotate', '~> 3.2'
 
-gem "shoulda-matchers", "~> 6.2"
+# OmniAuth
+gem 'omniauth-google-oauth2', '~> 1.1'
+gem 'omniauth-rails_csrf_protection', '~> 1.0'
+
+# Calendar Integration
+gem 'google-apis-calendar_v3', '~> 0.40.0'
+gem 'ice_cube', '~> 0.16.4'
+gem 'recurring_select', '~> 3.0'
