@@ -6,7 +6,7 @@
         .form-row-wrapper
           = f.input :title, input_html: { class: 'form-input w-full', placeholder: 'Enter meeting title', required: true }
         .mb-4.border-gray-200.border.rounded
-          = f.rich_text_area :note, class: 'trix-editor w-full', placeholder: 'Enter meeting note'
+          = f.rich_text_area :note, class: 'trix-editor w-full', placeholder: 'Enter meeting note', value: @meeting_description
         .mb-4.flex.gap-2
           .w-full
             h3.form-label.my-2.flex.flex-row-reverse.justify-end.gap-1 

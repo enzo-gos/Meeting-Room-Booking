@@ -21,8 +21,10 @@ end
 
 # Create departments if they don't exist
 departments_data = [
-  { name: 'Golden Owl Q3', description: 'The department at CMT-8 street', address: '538 CMT 8 street, district 3 HCMC' },
-  { name: 'Golden Owl Q2', description: 'The department at Sala', address: 'district 2 HCMC' }
+  { name: 'Golden Owl Q3', description: 'The department at CMT-8 street', address: 'Level 7th, 538 Cach Mang Thang Tam, Ward 11, District 3, HCMC' },
+  { name: 'Golden Owl Q2 - L1', description: 'The department at Sala', address: 'Level 1th, C00-13 Sarina Apartment, An Loi Dong Ward, Thu Duc City, HCMC' }
+  { name: 'Golden Owl Q2 - L2', description: 'The department at Sala', address: 'Level 2th, C00-13 Sarina Apartment, An Loi Dong Ward, Thu Duc City, HCMC' }
+  { name: 'Golden Owl Q2 - L3', description: 'The department at Sala', address: 'Level 3th, C00-13 Sarina Apartment, An Loi Dong Ward, Thu Duc City, HCMC' }
 ]
 departments_data.each do |department_data|
   Department.find_or_create_by!(department_data)

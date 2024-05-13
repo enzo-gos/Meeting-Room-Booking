@@ -3,6 +3,8 @@ class MeetingRoomsController < ApplicationController
   include GoogleCalendar
 
   before_action :init_breadcrumbs
+  before_action :init_meeting_room, only: [:schedule, :create, :book]
+  before_action :init_meeting_descriptions, only: [:create, :book]
   before_action :authorize_user, only: [:schedule]
 
   def index
@@ -13,8 +15,6 @@ class MeetingRoomsController < ApplicationController
   def schedule
     add_breadcrumb params[:id]
     add_breadcrumb 'Schedule'
-
-    @meeting_room = Room.includes(:department).find(params[:id])
 
     @meeting_reservation = MeetingReservation.new
   end
@@ -111,6 +111,14 @@ class MeetingRoomsController < ApplicationController
 
   def init_breadcrumbs
     add_breadcrumb 'Meeting Rooms'
+  end
+
+  def init_meeting_room
+    @meeting_room = Room.includes(:department).find(params[:id])
+  end
+
+  def init_meeting_descriptions
+    @meeting_description = "<p>You're warmly invited to a meeting at <strong>#{@meeting_room.name} - #{@meeting_room.department.address}</strong></strong>.<br /><br />Your input is highly appreciated, so please mark your calendar and endeavor to arrive on time.</p>"
   end
 
   def authorize_user
