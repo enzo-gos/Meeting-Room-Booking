@@ -3,18 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Room, type: :model do
-  let(:department) { Department.create!(name: 'Engineering') } # Assuming Department model exists
-  let(:facility) { Facility.create!(name: 'Lab') } # Assuming Facility model exists
-  let(:filter_name) { { 'name' => 'Conference Room', 'department_id' => '', 'facility_ids' => '', 'min_capacity' => nil, 'max_capacity' => nil } }
-  let(:filter_department) { { 'name' => '', 'department_id' => department.id, 'facility_ids' => '', 'min_capacity' => nil, 'max_capacity' => nil } }
-  let(:filter_facility) { { 'name' => '', 'department_id' => '', 'facility_ids' => facility.id.to_s, 'min_capacity' => nil, 'max_capacity' => nil } }
-  let(:filter_capacity) { { 'name' => '', 'department_id' => '', 'facility_ids' => '', 'min_capacity' => 10, 'max_capacity' => 20 } }
-  let(:filter_all) { { 'name' => 'Conference Room', 'department_id' => department.id, 'facility_ids' => facility.id.to_s, 'min_capacity' => 10, 'max_capacity' => 20 } }
-  let(:room) { Room.create!(name: 'Conference Room', department_id: department.id, facility_ids: [facility.id], max_capacity: 10, preview_image: fixture_file_upload('spec/fixtures/images/room.jpg', 'image/jpeg')) } # Assuming Room model has a preview_image attachment
+  let(:department) { create(:department) }
+  let(:facility) { create(:facility) }
+  let(:room) { create(:room, name: 'Conference Room', department: department, facilities: [facility], max_capacity: 10) }
 
   before do
-    department.save!
-    facility.save!
     room.save!
   end
 
@@ -54,7 +47,7 @@ RSpec.describe Room, type: :model do
     end
 
     it 'ensures name is unique per department' do
-      duplicate_room = Room.new(name: room.name, department: department)
+      duplicate_room = build(:room, name: room.name, department: department)
       duplicate_room.valid?
       expect(duplicate_room.errors[:name]).to include('A room with this name already exists in this department')
     end
@@ -72,23 +65,23 @@ RSpec.describe Room, type: :model do
 
   describe 'scopes' do
     it 'filters by name' do
-      expect(Room.filter(filter_name).count).to eq(1)
+      expect(Room.filter({ 'name' => 'Conference Room', 'department_id' => '', 'facility_ids' => '', 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
     end
 
     it 'filters by department' do
-      expect(Room.filter(filter_department).count).to eq(1)
+      expect(Room.filter({ 'name' => '', 'department_id' => department.id, 'facility_ids' => '', 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
     end
 
     it 'filters by facilities' do
-      expect(Room.filter(filter_facility).count).to eq(1)
+      expect(Room.filter({ 'name' => '', 'department_id' => '', 'facility_ids' => facility.id.to_s, 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
     end
 
     it 'filters by capacity' do
-      expect(Room.filter(filter_capacity).count).to eq(1)
+      expect(Room.filter({ 'name' => '', 'department_id' => '', 'facility_ids' => '', 'min_capacity' => 10, 'max_capacity' => 20 }).count).to eq(1)
     end
 
     it 'full filters' do
-      expect(Room.filter(filter_all).count).to eq(1)
+      expect(Room.filter({ 'name' => 'Conference Room', 'department_id' => department.id, 'facility_ids' => facility.id.to_s, 'min_capacity' => 10, 'max_capacity' => 20 }).count).to eq(1)
     end
   end
 end

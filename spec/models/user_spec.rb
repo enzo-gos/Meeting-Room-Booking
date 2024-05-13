@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   let(:user_google_params) { { email: 'user@example.com', uid: '1234567890' } }
-  let(:user) { User.new(email: 'user@example.com', password: 'password', provider: 'google', uid: '1234567890', current_password: 'password') }
+  let(:user) { create(:user) }
 
   before do
     user.save!
@@ -25,8 +25,7 @@ RSpec.describe User, type: :model do
   end
 
   it 'email must be unique' do
-    duplicate_user = User.new(email: 'user@example.com', password: 'password', firstname: 'John', lastname: 'Doe', provider: 'google_oauth2', uid: '1234567890', current_password: 'password')
-    duplicate_user.save
+    create(:user, email: 'user@example.com')
     expect(User.where(email: 'user@example.com').count).to eq(1)
   end
 
