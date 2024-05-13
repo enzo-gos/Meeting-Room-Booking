@@ -109,4 +109,8 @@ gem 'redis', '~> 5.2'
 
 gem 'annotate', '~> 3.2'
 
+gem "rspec-rails", "~> 6.1"
+
+gem "simplecov", "~> 0.22.0"
+
 gem "shoulda-matchers", "~> 6.2"
