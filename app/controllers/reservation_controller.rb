@@ -3,13 +3,11 @@ class ReservationController < ApplicationController
 
   before_action :init_breadcrumbs
   before_action :init_reservation
-  before_action :authorize_reservation, only: [:edit, :update]
+  before_action :authorize_reservation
   before_action :init_userlist, only: [:edit, :update]
 
   def edit
     add_breadcrumb 'Edit'
-
-    authorize @meeting_reservation, policy_class: ReservationPolicy
 
     @selected_rule = @meeting_reservation.rule_to_option
   end

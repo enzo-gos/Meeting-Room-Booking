@@ -17,7 +17,7 @@
 class MeetingReservation < ApplicationRecord
   require 'ice_cube'
 
-  FILTER_PARAMS = %i[title book_by book_at start_time room_id].freeze
+  FILTER_PARAMS = %i[title book_at start_time room_id].freeze
 
   serialize :recurring, type: Hash, coder: JSON
 
@@ -47,6 +47,7 @@ class MeetingReservation < ApplicationRecord
 
   scope :by_title, ->(query) { where('meeting_reservations.title ilike ?', "%#{query}%") }
   scope :by_room, ->(room_id) { where(room_id: room_id) if room_id.present? }
+  scope :by_book_by, ->(book_by_id) { where(book_by_id: book_by_id) if book_by_id.present? }
   scope :by_book_at, ->(book_at) { where(book_at: book_at).where(recurring: nil) if book_at.present? }
   scope :by_start_time, ->(start_time) { where(start_time: start_time) if start_time.present? }
 

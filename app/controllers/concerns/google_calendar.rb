@@ -64,7 +64,7 @@ module GoogleCalendar
     event.attendees = members
     event.recurrence = recurrence
 
-    service.update_event('primary', event.id, event, send_updates: 'all')
+    service.update_event(calendar_id, event.id, event, send_updates: 'all')
   end
 
   def delete_event(event_id:, calendar_id: 'primary')
