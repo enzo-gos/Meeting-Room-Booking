@@ -13,24 +13,24 @@ services:
     ipAllowList: [] # only allow internal connections
     plan: free
 
-  - type: web
-    name: go-meeting-sidekiq
-    runtime: ruby
-    region: singapore
-    plan: free
-    buildCommand: "bundle install"
-    # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
-    startCommand: "bundle exec sidekiq -C config/sidekiq.yml"
-    envVars:
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: go-meeting-sidekiq-redis
-          property: connectionString
-      - key: RAILS_MASTER_KEY
-        sync: false
-      - key: WEB_CONCURRENCY
-        value: 2 # sensible default
+  # - type: web
+  #   name: go-meeting-sidekiq
+  #   runtime: ruby
+  #   region: singapore
+  #   plan: free
+  #   buildCommand: "bundle install"
+  #   # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
+  #   startCommand: "bundle exec sidekiq -C config/sidekiq.yml"
+  #   envVars:
+  #     - key: REDIS_URL
+  #       fromService:
+  #         type: redis
+  #         name: go-meeting-sidekiq-redis
+  #         property: connectionString
+  #     - key: RAILS_MASTER_KEY
+  #       sync: false
+  #     - key: WEB_CONCURRENCY
+  #       value: 2 # sensible default
 
   - type: web
     name: GoMeeting
@@ -39,7 +39,7 @@ services:
     plan: free
     buildCommand: "./bin/render-build.sh"
     # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
-    startCommand: "bundle exec rails server"
+    startCommand: "bundle exec rails server; bundle exec sidekiq -C config/sidekiq.yml"
     envVars:
       - key: REDIS_URL
         fromService:
