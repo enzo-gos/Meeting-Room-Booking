@@ -1,0 +1,11 @@
+= form_with url: :reservation, method: :delete do |f|
+  .px-4
+    = f.text_field :except_date, hidden: true, data: { reservation_target: 'exceptDate' }
+    = f.label :delete_option, 'Delete recurring reservation', class: 'mr-24 mb-6 mt-4 block font-bold'
+    .flex.flex-row-reverse.items-center.justify-end.gap-2.my-1
+      = f.label :delete_option, "Only this reservation", value: 1
+      = f.radio_button :delete_option, 1, checked: true
+    .flex.flex-row-reverse.items-center.justify-end.gap-2.my-1
+      = f.label :delete_option, "All", value: 0
+      = f.radio_button :delete_option, 0
+  = f.submit 'Ok', class: 'ml-auto block text-primary-700 font-bold hover:bg-gray-200/40 px-3 py-2 rounded cursor-pointer'

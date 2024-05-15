@@ -20,6 +20,7 @@ class MeetingReservation < ApplicationRecord
   FILTER_PARAMS = %i[title book_at start_time room_id].freeze
 
   serialize :recurring, type: Hash, coder: JSON
+  serialize :extimes, type: Array, coder: JSON
 
   has_rich_text :description
   has_rich_text :note
@@ -94,7 +95,7 @@ class MeetingReservation < ApplicationRecord
 
   # check overlap recurring - recurring
   def does_not_overlap_recurring
-    return if recurring.empty?
+    return unless recurring?
     return unless start_time && end_time
 
     overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ?', end_time, start_time, recurring.to_json)
@@ -128,14 +129,14 @@ class MeetingReservation < ApplicationRecord
   end
 
   def start_datetime_with_recurring
-    return start_datetime if recurring.empty?
+    return start_datetime unless recurring?
 
     date_time = schedule(book_at).first + start_time.seconds_since_midnight.seconds
     DateTime.new(date_time.year, date_time.month, date_time.day, date_time.hour, date_time.min, date_time.sec, '+07:00')
   end
 
   def end_datetime_with_recurring
-    return end_datetime if recurring.empty?
+    return end_datetime unless recurring?
 
     date_time = schedule(book_at).first + end_time.seconds_since_midnight.seconds
     DateTime.new(date_time.year, date_time.month, date_time.day, date_time.hour, date_time.min, date_time.sec, '+07:00')
@@ -149,15 +150,23 @@ class MeetingReservation < ApplicationRecord
     end
   end
 
+  def extimes=(value)
+    if value.nil?
+      super([])
+    else
+      processed_value = value.is_a?(Array) ? value : [value]
+      super(processed_value)
+    end
+  end
+
   def ice_cube_rule
     IceCube::Rule.from_hash recurring
   end
 
   def google_calendar_rule
-    pattern = /^(RRULE|EXRULE|RDATE|EXDATE):\S*/
+    pattern = /^(RRULE|EXRULE|RDATE|EXDATE).*$/
 
-    event = IceCube::Schedule.new
-    event.add_recurrence_rule(ice_cube_rule)
+    event = google_calendar_schedule(book_at)
 
     lines = event.to_ical.split("\n")
     filtered_lines = lines.select { |line| line.match?(pattern) }
@@ -166,14 +175,21 @@ class MeetingReservation < ApplicationRecord
   end
 
   def schedule(start_date)
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_rule(ice_cube_rule)
+    IceCube::Schedule.new(start_date) do |s|
+      s.add_recurrence_rule(ice_cube_rule)
+      extimes.each { |time| s.add_exception_time(time.to_date) }
+    end
+  end
 
-    schedule
+  def google_calendar_schedule(start_date)
+    IceCube::Schedule.new(start_date) do |s|
+      s.add_recurrence_rule(ice_cube_rule)
+      extimes.each { |time| s.add_exception_time(time.to_datetime) }
+    end
   end
 
   def events(end_date)
-    return [self] if recurring.empty?
+    return [self] unless recurring?
 
     end_date = end_date.to_date if end_date
 
@@ -196,7 +212,7 @@ class MeetingReservation < ApplicationRecord
   end
 
   def rule_to_option
-    return nil if recurring.empty?
+    return nil unless recurring?
 
     rule = RecurringSelect.dirty_hash_to_rule(ice_cube_rule)
     ar = [rule.to_s, rule.to_hash.to_json]
@@ -204,6 +220,25 @@ class MeetingReservation < ApplicationRecord
     ar[0] += '*'
     ar << { 'data-custom' => true }
     ar
+  end
+
+  def recurring?
+    !recurring.empty?
+  end
+
+  def occurrence?(date_time)
+    schedule(date_time).occurs_at?(date_time)
+  end
+
+  def except_date(date)
+    date_time = date.to_datetime
+
+    rule = IceCube::Schedule.new do |s|
+      time = DateTime.new(date_time.year, date_time.month, date_time.day, start_time.hour, start_time.min, date_time.sec, '+07:00')
+      s.add_exception_time(Time.at(time))
+    end
+
+    rule.extimes
   end
 
   private

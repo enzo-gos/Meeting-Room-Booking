@@ -59,7 +59,7 @@
 								.flex.flex-col.gap-1
 									span.whitespace-nowrap = reservation.room.department.name
 									span.whitespace-nowrap = reservation.room.name
-							td.px-6.py-4.whitespace-nowrap = reservation.recurring.empty? ? reservation.book_at.strftime('%Y-%m-%d') : ''
+							td.px-6.py-4.whitespace-nowrap = reservation.recurring? ? '' : reservation.book_at.strftime('%Y-%m-%d')
 							td.px-6.py-4.whitespace-nowrap = reservation.start_time.strftime('%H:%M')
 							td.px-6.py-4.whitespace-nowrap = reservation.end_time.strftime('%H:%M')
 							td.px-6.py-4.w-56 = reservation.rule_to_option.to_a.first
