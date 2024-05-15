@@ -39,7 +39,7 @@ services:
     plan: free
     buildCommand: "./bin/render-build.sh"
     # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
-    startCommand: "bundle exec rails server && bundle exec sidekiq -C config/sidekiq.yml"
+    startCommand: "bundle exec rails server"
     envVars:
       - key: REDIS_URL
         fromService:
