@@ -33,12 +33,14 @@ class MeetingRoomsController < ApplicationController
       start_datetime = reservation.start_datetime
       end_datetime = reservation.end_datetime
 
+      view_params = reservation.recurring? ? { id: reservation.id, recurring: start_datetime.to_i } : { id: reservation.id }
+
       {
         title: reservation.title,
         start: start_datetime.strftime('%Y-%m-%d %H:%M:%S'),
         end: end_datetime.strftime('%Y-%m-%d %H:%M:%S'),
         color: reservation.book_by_id == current_user.id ? 'green' : 'sky',
-        url: current_user.id == reservation.book_by_id ? edit_reservation_path(reservation.id) : reservation_path(reservation.id)
+        url: current_user.id == reservation.book_by_id ? edit_reservation_path(view_params) : reservation_path(view_params)
       }
     end
 
@@ -84,7 +86,7 @@ class MeetingRoomsController < ApplicationController
           end_date: end_date_time,
           members: @meeting_reservation.allmembers,
           note: @meeting_reservation.note.body.to_s,
-          recurrence: @meeting_reservation.recurring.empty? ? [] : [@meeting_reservation.google_calendar_rule]
+          recurrence: @meeting_reservation.recurring? ? [@meeting_reservation.google_calendar_rule] : []
         )
 
         @meeting_reservation.calendar_event = new_event.id
