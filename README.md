@@ -62,10 +62,11 @@ GoMee is web application that simplifies the process of reserving and managing m
 │   │   └── room_channel.rb
 │   ├── controllers
 │   │   ├── admin
-│           └── meeting_room_management_controller.rb
+│   │   │   ├── user_management_controller.rb
+│   │   │   └── meeting_room_management_controller.rb
 │   │   ├── concerns
-│           ├── filterable.rb
-│           └── google_calendar.rb
+│   │   │   ├── filterable.rb
+│   │   │   └── google_calendar.rb
 │   │   ├── users
 │   │   ├── application_controller.rb
 │   │   ├── dashboard_controller.rb
@@ -78,12 +79,31 @@ GoMee is web application that simplifies the process of reserving and managing m
 │   ├── jobs
 │   ├── mailers
 │   ├── models
-│   │   └── concerns
+│   │   ├── concerns
+│   │   ├── application_record.rb
+│   │   ├── department.rb
+│   │   ├── facility.rb
+│   │   ├── meeting_reservation.rb
+│   │   ├── role.rb
+│   │   ├── room.rb
+│   │   ├── team.rb
+│   │   └── user.rb
 │   ├── policies
 │   ├── sidekiq
+│   │   ├── monthly_book_job.rb
+│   │   ├── reservation_schedule_job.rb
+│   │   └── send_event_job.rb
 │   └── views
-│       └── layouts
-│           └── application.html.erb
+│       ├── active_storage
+│       ├── admin
+│       ├── book_scheduler_mailer
+│       ├── dashboard
+│       ├── devise
+│       ├── layouts
+│       ├── meeting_rooms
+│       ├── reservation
+│       └── user
+│
 ├── bin
 ├── config
 ├── db
@@ -113,7 +133,7 @@ GoMee is web application that simplifies the process of reserving and managing m
 2. **Navigate to the project directory:**
 
    ```bash
-   cd project-root
+   cd Meeting-Room-Booking
    ```
 
 3. **Install dependencies:**
@@ -125,8 +145,7 @@ GoMee is web application that simplifies the process of reserving and managing m
 4. **Set up the database:**
 
    ```bash
-   rails db:create
-   rails db:migrate
+   rails db:setup
    ```
 
 5. **Set up environment variables:**
@@ -134,35 +153,31 @@ GoMee is web application that simplifies the process of reserving and managing m
    - Create `.env` file in the project root.
    - Add required environment variables for Google OAuth, SendGrid, and other configurations.
 
-6. **Run Sidekiq for background processing:**
-
    ```bash
-   bundle exec sidekiq
+    GOOGLE_OAUTH_CLIENT_ID
+    GOOGLE_OAUTH_CLIENT_SECRET
+
+    MAIL_SERVICE_USERNAME
+    MAIL_SERVICE_PASSWORD
+
+    GOOGLE_CLIENT_ID
+    GOOGLE_CLIENT_SECRET
+
+    # Production
+    MAIL_SERVICE_PRODUCTION
+    MAIL_SERVICE_PORT_PRODUCTION
+    MAIL_SERVICE_USERNAME_PRODUCTION
+    MAIL_SERVICE_PASSWORD_PRODUCTION
    ```
 
-7. **Run the server:**
+6. **Run dev:**
 
    ```bash
-   rails server
+   ./bin/dev
    ```
 
-8. **Access the project:**
+7. **Access the project:**
    Open a web browser and go to `http://localhost:3000` (or the specified port if different).
-
-## Usage
-
-Describe how to use the project, including any commands or actions users need to take.
-
-## Contributing
-
-If you'd like to contribute to this project, please follow these guidelines.
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/fooBar`).
-3. Make your changes.
-4. Commit your changes (`git commit -am 'Add some fooBar'`).
-5. Push to the branch (`git push origin feature/fooBar`).
-6. Create a new Pull Request.
 
 ## License
 
