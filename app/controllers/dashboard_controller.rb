@@ -11,9 +11,6 @@ class DashboardController < ApplicationController
 
     @reservations = @reservations.by_book_by(current_user.id).by_schedule
 
-    @pagination, @reservations = pagy(@reservations)
-
-    @reservations_history = MeetingReservation.by_history
-    @pagination_history, @reservations_history = pagy(@reservations_history)
+    @reservations_history = MeetingReservation.includes([:room]).by_book_by(current_user.id).by_history
   end
 end

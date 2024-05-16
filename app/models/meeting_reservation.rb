@@ -17,6 +17,8 @@
 class MeetingReservation < ApplicationRecord
   require 'ice_cube'
 
+  attr_accessor :_skip_callback
+
   FILTER_PARAMS = %i[title book_at start_time room_id].freeze
 
   serialize :recurring, type: Hash, coder: JSON
@@ -54,8 +56,8 @@ class MeetingReservation < ApplicationRecord
   scope :by_book_at, ->(book_at) { where(book_at: book_at).where(recurring: nil) if book_at.present? }
   scope :by_start_time, ->(start_time) { where(start_time: start_time) if start_time.present? }
 
-  after_create_commit :perform_to_create_history
-  after_destroy_commit :perform_to_delete_history
+  after_create_commit :perform_to_create_history, :unless => :_skip_callback
+  after_destroy_commit :perform_to_delete_history, :unless => :_skip_callback
   after_commit :real_time_notification
   before_save :update_book_at
 
