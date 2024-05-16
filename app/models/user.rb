@@ -36,7 +36,6 @@ class User < ApplicationRecord
   validates :role_ids, presence: true
 
   def self.from_google(user_params)
-    User.where(email: user_params[:email])
     user = nil
     if User.where(email: user_params[:email]).exists?
       user = create_with(uid: user_params[:uid], password: Devise.friendly_token[0, 20], provider: 'google').find_or_create_by!(email: user_params[:email])

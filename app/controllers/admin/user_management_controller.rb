@@ -1,6 +1,8 @@
 class Admin::UserManagementController < ApplicationController
   before_action :init_breadcrumbs
+  before_action :init_update_breadcrumb, only: [:edit, :update]
   before_action :init_employees, only: [:index]
+  before_action :init_employee, except: [:create, :new, :index]
 
   def index; end
 
@@ -17,15 +19,9 @@ class Admin::UserManagementController < ApplicationController
     end
   end
 
-  def edit
-    add_breadcrumb 'Edit'
-    @employee = User.find(params[:id])
-  end
+  def edit; end
 
   def update
-    add_breadcrumb 'Edit'
-    @employee = User.find(params[:id])
-
     if @employee.update(employee_params)
       redirect_to admin_user_management_index_path, notice: 'Employee was successfully updated.'
     else
@@ -34,7 +30,6 @@ class Admin::UserManagementController < ApplicationController
   end
 
   def destroy
-    @employee = User.find(params[:id])
     @employee.destroy
     redirect_to admin_user_management_index_path, notice: 'Employee was successfully deleted.'
   end
@@ -43,10 +38,19 @@ class Admin::UserManagementController < ApplicationController
 
   def init_breadcrumbs
     add_breadcrumb 'Manage'
+    add_breadcrumb 'Users'
+  end
+
+  def init_update_breadcrumb
+    add_breadcrumb 'Edit'
   end
 
   def init_employees
     @employees = User.all
+  end
+
+  def init_employee
+    @employee = User.find(params[:id])
   end
 
   def employee_params
