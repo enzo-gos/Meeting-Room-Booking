@@ -18,7 +18,6 @@
 class User < ApplicationRecord
   rolify
   has_one_attached :avatar
-  after_create :assign_default_role
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -55,10 +54,6 @@ class User < ApplicationRecord
 
   def validate_password?
     !password.blank? && !current_password.blank?
-  end
-
-  def assign_default_role
-    add_role(:user) if roles.blank? || !has_role?(:user)
   end
 
   def admin?
