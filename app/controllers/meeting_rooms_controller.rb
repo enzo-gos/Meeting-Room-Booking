@@ -35,12 +35,16 @@ class MeetingRoomsController < ApplicationController
 
       view_params = reservation.recurring? ? { id: reservation.id, recurring: start_datetime.to_i } : { id: reservation.id }
 
+      color = 'grey'
+      color = 'green' if reservation.book_by_id == current_user.id && !reservation.outdated
+      color = 'sky' if reservation.book_by_id != current_user.id && !reservation.outdated
+
       {
         title: reservation.title,
         start: start_datetime.strftime('%Y-%m-%d %H:%M:%S'),
         end: end_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-        color: reservation.book_by_id == current_user.id ? 'green' : 'sky',
-        url: current_user.id == reservation.book_by_id ? edit_reservation_path(view_params) : reservation_path(view_params)
+        color: color,
+        url: current_user.id == reservation.book_by_id && !reservation.outdated ? edit_reservation_path(view_params) : reservation_path(view_params)
       }
     end
 
@@ -100,8 +104,6 @@ class MeetingRoomsController < ApplicationController
 
     respond_to do |format|
       if @meeting_reservation.save
-        SendEventJob.perform_async(@meeting_reservation.to_json)
-
         format.html { redirect_to details_meeting_room_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update('modal-body', partial: 'book_form', locals: { data_controller: 'flatpickr' }), status: :unprocessable_entity }

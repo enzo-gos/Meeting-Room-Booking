@@ -1,13 +1,26 @@
 class MonthlyBookJob
   include Sidekiq::Job
 
-  def perform(*_args)
-    reservations = MeetingReservation.includes(:book_by, :room, :members).where.not(recurring: nil)
+  def perform(reservation_id)
+    reservations = MeetingReservation.includes(:book_by, :room, :members).where.not(recurring: nil, outdated: true)
 
     meeting_reservations = reservations.flat_map do |e|
       e.events(Time.now.utc.end_of_month)
     end
 
+    overlaps = fetch_overlap(meeting_reservations)
+
+    return if overlaps.empty?
+
+    overlaps.each do |evt|
+      if evt.id == reservation_id
+        BookSchedulerMailer.overlap_reservation_email(evt.to_json).deliver_later
+        break
+      end
+    end
+  end
+
+  def fetch_overlap(meeting_reservations)
     grouped_schedules = meeting_reservations.group_by { |schedule| schedule.book_at.strftime('%Y-%m-%d') }
 
     grouped_schedules.each do |date, events|
@@ -26,12 +39,6 @@ class MonthlyBookJob
       grouped_schedules[date] = non_overlapping_events
     end
 
-    overlaps = meeting_reservations - grouped_schedules.values.flatten
-
-    return if overlaps.empty?
-
-    overlaps.each do |evt|
-      BookSchedulerMailer.overlap_reservation_email(evt.to_json).deliver_later
-    end
+    meeting_reservations - grouped_schedules.values.flatten
   end
 end

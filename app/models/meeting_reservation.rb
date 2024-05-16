@@ -52,6 +52,11 @@ class MeetingReservation < ApplicationRecord
   scope :by_book_at, ->(book_at) { where(book_at: book_at).where(recurring: nil) if book_at.present? }
   scope :by_start_time, ->(start_time) { where(start_time: start_time) if start_time.present? }
 
+  after_create_commit :perform_to_create_history
+  after_update_commit :perform_to_update_history
+  after_destroy_commit :perform_to_delete_history
+  after_commit :real_time_notification
+
   def self.filter(filters)
     MeetingReservation
       .includes([:room])
@@ -95,10 +100,11 @@ class MeetingReservation < ApplicationRecord
 
   # check overlap recurring - recurring
   def does_not_overlap_recurring
+    return if outdated == true
     return unless recurring?
     return unless start_time && end_time
 
-    overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ?', end_time, start_time, recurring.to_json)
+    overlapping_events = MeetingReservation.where('(start_time < ? AND end_time > ?) AND recurring = ? AND outdated = false', end_time, start_time, recurring.to_json)
     overlapping_events = overlapping_events.where.not(id: id) unless id.nil?
 
     if overlapping_events.exists?
@@ -108,6 +114,7 @@ class MeetingReservation < ApplicationRecord
 
   # check overlap single - recurring
   def does_not_overlap_single_recurring
+    return if outdated == true
     return unless recurring.empty?
     return unless start_time && end_time
 
@@ -189,7 +196,7 @@ class MeetingReservation < ApplicationRecord
   end
 
   def events(end_date)
-    return [self] unless recurring?
+    return [self] if !recurring? || outdated
 
     end_date = end_date.to_date if end_date
 
@@ -230,6 +237,10 @@ class MeetingReservation < ApplicationRecord
     schedule(date_time).occurs_at?(date_time)
   end
 
+  def next_occurrence
+    schedule(book_at).next_occurrence(book_at)
+  end
+
   def except_date(date)
     date_time = date.to_datetime
 
@@ -243,8 +254,33 @@ class MeetingReservation < ApplicationRecord
 
   private
 
+  def perform_to_create_history
+    return if outdated
+
+    ReservationScheduleJob.perform_at(start_datetime_with_recurring, id)
+    MonthlyBookJob.perform_at(start_datetime_with_recurring + 1.month - 7.days, id)
+    MonthlyBookJob.perform_async(id)
+  end
+
+  def perform_to_update_history
+    sidekiq = Sidekiq::ScheduledSet.new
+    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
+    schedules.first.reschedule(start_datetime_with_recurring) if schedules&.first
+  end
+
+  def perform_to_delete_history
+    sidekiq = Sidekiq::ScheduledSet.new
+    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
+
+    schedules.first.delete if schedules&.first
+  end
+
+  def real_time_notification
+    SendEventJob.perform_async(to_json)
+  end
+
   def find_overlapping_meeting
-    reservations = MeetingReservation.where('room_id = ?', room_id)
+    reservations = MeetingReservation.where('room_id = ? AND outdated = false', room_id)
     reservations = reservations.where.not(id: id) unless id.nil?
 
     recurring_meetings = reservations.flat_map { |e| e.events(end_datetime) }

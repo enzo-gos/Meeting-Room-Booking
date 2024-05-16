@@ -34,8 +34,6 @@ class ReservationController < ApplicationController
         retry
       end
 
-      SendEventJob.perform_async(@meeting_reservation.to_json)
-
       redirect_to details_meeting_room_path(@meeting_reservation.room_id), notice: 'Meeting reservation was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
@@ -105,8 +103,6 @@ class ReservationController < ApplicationController
 
   def delete_all
     @meeting_reservation.destroy
-    SendEventJob.perform_async(@meeting_reservation.to_json)
-
     begin
       delete_event(event_id: @meeting_reservation.calendar_event)
     rescue Google::Apis::AuthorizationError => _e
@@ -118,9 +114,8 @@ class ReservationController < ApplicationController
   end
 
   def delete_only
-    SendEventJob.perform_async(@meeting_reservation.to_json)
-
     extimes = @meeting_reservation.extimes + @meeting_reservation.except_date(params[:except_date])
+
     @meeting_reservation.update(extimes: extimes)
 
     begin
