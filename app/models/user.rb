@@ -32,8 +32,16 @@ class User < ApplicationRecord
   has_many :meeting_reservations, foreign_key: :book_by_id
   has_and_belongs_to_many :teams
 
+  validates :team_ids, presence: true
+  validates :role_ids, presence: true
+
   def self.from_google(user_params)
-    create_with(uid: user_params[:uid], password: Devise.friendly_token[0, 20], provider: 'google').find_or_create_by!(email: user_params[:email])
+    User.where(email: user_params[:email])
+    user = nil
+    if User.where(email: user_params[:email]).exists?
+      user = create_with(uid: user_params[:uid], password: Devise.friendly_token[0, 20], provider: 'google').find_or_create_by!(email: user_params[:email])
+    end
+    user
   end
 
   def current_password_is_correct

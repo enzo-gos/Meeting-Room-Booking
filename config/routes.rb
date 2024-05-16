@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :meeting_room_management, path: 'rooms'
+    resources :user_management, path: 'users'
   end
 
   devise_for :users, path: '/user', path_names: {

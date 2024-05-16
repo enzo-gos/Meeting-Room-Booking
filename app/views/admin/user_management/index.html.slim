@@ -1,0 +1,43 @@
+.flex.items-center.gap-4
+	.w-full.relative
+		.pointer-events-none.absolute.inset-y-0.left-0.flex.items-center.px-3.text-secondary-600
+			= mi.shape(:search).round.md_24
+		input.form-input.pl-11[type="email" placeholder="Search for anything..."]
+	
+	= link_to new_admin_user_management_path, class: 'ml-auto border bg-primary-800 p-3 px-4 text-white rounded text-sm flex items-center gap-2 font-semibold transition-all my-4 hover:bg-primary-700'
+		span.whitespace-nowrap Add Employee
+		= mi.shape(:add_circle).round.md_18
+
+.overflow-hidden.rounded-lg.border.border-gray-200.flex.flex-col-reverse
+  table.w-full.border-collapse.bg-white.text-left.text-sm.text-secondary-700
+    thead.bg-gray-50
+      tr
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+          | ID
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+          | Email
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+          | Team
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+          | Role
+        th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+    tbody.divide-y.divide-gray-100.border-t.border-gray-100
+			- @employees.each do |user|
+				tr.hover:bg-gray-50/80
+					td.px-6.py-4 = user.id
+					td.px-6.py-4 = user.email
+					td.px-6.py-4 = user.teams.first.name
+					td.px-6.py-4.text-center = user.roles.first.name
+					td.px-6.py-4
+						.flex.justify-end.gap-3
+							= button_to admin_user_management_path(user.id), method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this employee?" } do
+								= image_tag 'delete_icon.svg', class: 'h-6 w-6', alt: 'delete'
+							= link_to edit_admin_user_management_path(user.id), data: { turbo_frame: '_top', turbo_prefetch: false } do
+								= image_tag 'edit_icon.svg', class: 'h-6 w-6', alt: 'edit'
+								
+			- if @employees.empty? 
+			    tr
+						td.px-6.py-4 colspan='6'
+							| There are no rooms available
+	/ == pagy_nav(@pagination)
+	/ = will_paginate @rooms

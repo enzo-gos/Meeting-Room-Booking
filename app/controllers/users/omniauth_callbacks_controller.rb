@@ -41,7 +41,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     else
       flash[:alert] =
-        t 'devise.omniauth_callbacks.failure', kind: 'Google', reason: "#{auth.info.email} is not authorized."
+        t 'devise.omniauth_callbacks.failure', kind: 'Google', reason: 'You is not authorized.'
       redirect_to new_user_session_path
     end
   end

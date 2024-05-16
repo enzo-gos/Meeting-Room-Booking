@@ -40,7 +40,7 @@ html[lang="en"]
           b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
         - if current_user.has_role?(:admin)
           .flex.flex-col.gap-2
-            = link_to '#', class: 'px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer'
+            = link_to admin_user_management_index_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_page?(admin_user_management_index_path) ? ' navlink-active' : ''}"
               = mi.shape(:people).outlined
               span.whitespace-nowrap x-show="sidebarOpen" Employees
 
