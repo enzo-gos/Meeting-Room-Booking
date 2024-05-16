@@ -52,8 +52,9 @@ class MeetingReservation < ApplicationRecord
   scope :by_book_at, ->(book_at) { where(book_at: book_at).where(recurring: nil) if book_at.present? }
   scope :by_start_time, ->(start_time) { where(start_time: start_time) if start_time.present? }
 
-  after_commit :perform_to_create_history, on: :create
-  after_commit :perform_to_delete_history, on: :destroy
+  after_create_commit :perform_to_create_history
+  after_update_commit :perform_to_update_history
+  after_destroy_commit :perform_to_delete_history
   after_commit :real_time_notification
 
   def self.filter(filters)
@@ -259,6 +260,12 @@ class MeetingReservation < ApplicationRecord
     ReservationScheduleJob.perform_at(start_datetime_with_recurring, id)
     MonthlyBookJob.perform_at(start_datetime_with_recurring + 1.month - 7.days, id)
     MonthlyBookJob.perform_async(id)
+  end
+
+  def perform_to_update_history
+    sidekiq = Sidekiq::ScheduledSet.new
+    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
+    schedules.first.reschedule(start_datetime_with_recurring) if schedules&.first
   end
 
   def perform_to_delete_history

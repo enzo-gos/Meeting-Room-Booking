@@ -84,8 +84,6 @@ class MeetingRoomsController < ApplicationController
         start_date_time = @meeting_reservation.start_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
         end_date_time = @meeting_reservation.end_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
 
-        @meeting_reservation.book_at = @meeting_reservation.start_datetime_with_recurring.strftime('%Y-%m-%d')
-
         new_event = create_new_event(
           title: @meeting_reservation.title,
           start_date: start_date_time,

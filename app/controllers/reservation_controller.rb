@@ -14,10 +14,6 @@ class ReservationController < ApplicationController
 
   def update
     if @meeting_reservation.update(reservation_params)
-      sidekiq = Sidekiq::ScheduledSet.new
-      schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == @meeting_reservation.id }
-      schedules.first.reschedule(@meeting_reservation.start_datetime_with_recurring) if schedules&.first
-
       begin
         start_date_time = @meeting_reservation.start_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
         end_date_time = @meeting_reservation.end_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
@@ -58,7 +54,6 @@ class ReservationController < ApplicationController
       delete_all
       redirect_to details_meeting_room_path(@meeting_reservation.room_id), notice: 'Meeting reservation was successfully destroyed.'
     elsif params[:delete_option] == '1'
-      p @meeting_reservation
       delete_only
       redirect_to details_meeting_room_path(@meeting_reservation.room_id), notice: 'Meeting reservation was successfully destroyed.'
     else
