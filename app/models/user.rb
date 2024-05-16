@@ -38,9 +38,13 @@ class User < ApplicationRecord
   def self.from_google(user_params)
     user = nil
     if User.where(email: user_params[:email]).exists?
-      user = create_with(uid: user_params[:uid], password: Devise.friendly_token[0, 20], provider: 'google').find_or_create_by!(email: user_params[:email])
+      user = create_with(uid: user_params[:uid], password: default_password, provider: 'google').find_or_create_by!(email: user_params[:email])
     end
     user
+  end
+
+  def self.default_password
+    Devise.friendly_token[0, 20]
   end
 
   def current_password_is_correct

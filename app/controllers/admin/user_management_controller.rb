@@ -1,8 +1,8 @@
 class Admin::UserManagementController < ApplicationController
   before_action :init_breadcrumbs
   before_action :init_update_breadcrumb, only: [:edit, :update]
-  before_action :init_employees, only: [:index]
-  before_action :init_employee, except: [:create, :new, :index]
+  before_action :prepare_employee_list, only: [:index]
+  before_action :prepare_employee, except: [:create, :new, :index]
 
   def index; end
 
@@ -11,7 +11,7 @@ class Admin::UserManagementController < ApplicationController
   end
 
   def create
-    @employee = User.create(employee_params.merge({ password: Devise.friendly_token[0, 20] }))
+    @employee = User.create(employee_params.merge({ password: User.default_password }))
     if @employee.save
       redirect_to admin_user_management_index_path, notice: 'Employee was successfully created.'
     else
@@ -45,11 +45,11 @@ class Admin::UserManagementController < ApplicationController
     add_breadcrumb 'Edit'
   end
 
-  def init_employees
-    @employees = User.all
+  def prepare_employee_list
+    @employees = User.includes([:teams, :roles]).all
   end
 
-  def init_employee
+  def prepare_employee
     @employee = User.find(params[:id])
   end
 
