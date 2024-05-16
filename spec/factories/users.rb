@@ -9,5 +9,9 @@ FactoryBot.define do
     provider { 'google' }
     uid { Faker::Number.number(digits: 10) }
     current_password { password }
+    after(:build) do |room|
+      room.teams << FactoryBot.create(:team)
+      room.roles << FactoryBot.create(:role)
+    end
   end
 end

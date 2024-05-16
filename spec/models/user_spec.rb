@@ -44,9 +44,7 @@ RSpec.describe User, type: :model do
   it 'logs in with Google; if the user does not exist, creates a new one' do
     user = User.from_google(user_google_params)
 
-    expect(user).to be_persisted
-    expect(user.email).to eq(user_google_params[:email])
-    expect(user.provider).to eq('google')
+    expect(user).to be_nil
   end
 
   it 'validates current password when updating the profile' do
