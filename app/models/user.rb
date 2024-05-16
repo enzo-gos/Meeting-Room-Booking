@@ -18,7 +18,6 @@
 class User < ApplicationRecord
   rolify
   has_one_attached :avatar
-  after_create :assign_default_role
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -32,8 +31,19 @@ class User < ApplicationRecord
   has_many :meeting_reservations, foreign_key: :book_by_id
   has_and_belongs_to_many :teams
 
+  validates :team_ids, presence: true
+  validates :role_ids, presence: true
+
   def self.from_google(user_params)
-    create_with(uid: user_params[:uid], password: Devise.friendly_token[0, 20], provider: 'google').find_or_create_by!(email: user_params[:email])
+    user = nil
+    if User.where(email: user_params[:email]).exists?
+      user = create_with(uid: user_params[:uid], password: default_password, provider: 'google').find_or_create_by!(email: user_params[:email])
+    end
+    user
+  end
+
+  def self.default_password
+    Devise.friendly_token[0, 20]
   end
 
   def current_password_is_correct
@@ -44,10 +54,6 @@ class User < ApplicationRecord
 
   def validate_password?
     !password.blank? && !current_password.blank?
-  end
-
-  def assign_default_role
-    add_role(:user) if roles.blank? || !has_role?(:user)
   end
 
   def admin?

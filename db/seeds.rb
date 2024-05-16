@@ -30,42 +30,24 @@ departments_data.each do |department_data|
   Department.find_or_create_by!(department_data)
 end
 
-# Create or find users
-users_data = [
-  { email: 'enzo.nguyen.gos@gmail.com', password: Devise.friendly_token[0, 20] },
-  { email: 'nducminh.it@gmail.com', password: '123123', roles: [admin_role] },
-  { email: 'dev1.gos@gmail.com', password: '123123' },
-  { email: 'dev2.gos@gmail.com', password: '123123' }
-]
-users_data.each do |user_data|
-  user = User.find_or_create_by!(email: user_data[:email]) do |u|
-    u.password = user_data[:password]
-    u.roles = user_data[:roles] || [user_role]
-  end
-end
-
 # Create or find teams
 teams_data = ['Ruby Alpha', 'Ruby Beta', 'L&D']
 teams_data.each do |team_name|
   Team.find_or_create_by!(name: team_name)
 end
 
-# Assign users to teams
-# Define user email and team name mappings
-user_team_mappings = {
-  'enzo.nguyen.gos@gmail.com' => 'Ruby Alpha',
-  'nducminh.it@gmail.com' => 'Ruby Beta',
-  'dev1.gos@gmail.com' => 'L&D',
-  'dev2.gos@gmail.com' => 'Ruby Alpha'
-}
+# Create or find users
+users_data = [
+  { email: 'enzo.nguyen.gos@gmail.com', password: Devise.friendly_token[0, 20], teams: [Team.find_by_name('Ruby Alpha')] },
+  { email: 'nducminh.it@gmail.com', password: '123123', roles: [admin_role], teams: [Team.find_by_name('Ruby Beta')] },
+  { email: 'dev1.gos@gmail.com', password: '123123', teams: [Team.find_by_name('L&D')] },
+  { email: 'dev2.gos@gmail.com', password: '123123', teams: [Team.find_by_name('Ruby Alpha')] }
+]
 
-# Assign users to teams based on the mappings
-user_team_mappings.each do |email, team_name|
-  user = User.find_by(email: email)
-  team = Team.find_by(name: team_name)
-
-  # Check if the user is not already assigned to the team
-  unless user&.teams&.include?(team)
-    user&.teams << team if user && team
+users_data.each do |user_data|
+  user = User.find_or_create_by!(email: user_data[:email]) do |u|
+    u.password = user_data[:password]
+    u.roles = user_data[:roles] || [user_role]
+    u.teams = user_data[:teams]
   end
 end
