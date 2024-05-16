@@ -76,3 +76,45 @@
 									| There are no reservations available
 
 			== pagy_nav(@pagination)
+	
+	h1.text-lg.font-bold.mt-10.mb-5.mx-4 Reservation history
+  
+	= turbo_frame_tag 'reservations' do
+		.overflow-hidden.rounded-lg.border.border-gray-200.flex.flex-col
+			table.w-full.border-collapse.bg-white.text-left.text-sm.text-secondary-700
+				thead.bg-gray-50
+					tr
+						th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+							| ID
+						th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+							| Title
+						th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+							| Location
+						th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+							| Start At
+						th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+							| Start Time
+						th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+							| End Time
+						th.px-6.py-4.font-medium.text-secondary-900[scope="col"]
+							| Recurring
+				tbody.divide-y.divide-gray-100.border-t.border-gray-100
+					- @reservations_history.each do |reservation|
+						tr.hover:bg-gray-50/80
+							td.px-6.py-4 = reservation.id
+							td.px-6.py-4.whitespace-nowrap = reservation.title
+							td.px-6.py-4.whitespace-nowrap
+								.flex.flex-col.gap-1
+									span.whitespace-nowrap = reservation.room.department.name
+									span.whitespace-nowrap = reservation.room.name
+							td.px-6.py-4.whitespace-nowrap = reservation.recurring? ? '' : reservation.book_at.strftime('%Y-%m-%d')
+							td.px-6.py-4.whitespace-nowrap = reservation.start_time.strftime('%H:%M')
+							td.px-6.py-4.whitespace-nowrap = reservation.end_time.strftime('%H:%M')
+							td.px-6.py-4.w-56 = reservation.rule_to_option.to_a.first
+										
+					- if @reservations_history.empty? 
+							tr
+								td.px-6.py-4 colspan='6'
+									| There are no reservations history available
+
+			== pagy_nav(@pagination_history)

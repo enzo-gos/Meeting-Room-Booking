@@ -9,8 +9,11 @@ class DashboardController < ApplicationController
 
     @filter_history, @reservations = filter!(MeetingReservation)
 
-    @reservations = @reservations.by_book_by(current_user.id)
+    @reservations = @reservations.by_book_by(current_user.id).by_schedule
 
     @pagination, @reservations = pagy(@reservations)
+
+    @reservations_history = MeetingReservation.by_history
+    @pagination_history, @reservations_history = pagy(@reservations_history)
   end
 end

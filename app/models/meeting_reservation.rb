@@ -49,13 +49,15 @@ class MeetingReservation < ApplicationRecord
   scope :by_title, ->(query) { where('meeting_reservations.title ilike ?', "%#{query}%") }
   scope :by_room, ->(room_id) { where(room_id: room_id) if room_id.present? }
   scope :by_book_by, ->(book_by_id) { where(book_by_id: book_by_id) if book_by_id.present? }
+  scope :by_schedule, -> { where(outdated: false) }
+  scope :by_history, -> { where(outdated: true) }
   scope :by_book_at, ->(book_at) { where(book_at: book_at).where(recurring: nil) if book_at.present? }
   scope :by_start_time, ->(start_time) { where(start_time: start_time) if start_time.present? }
 
   after_create_commit :perform_to_create_history
-  after_update_commit :perform_to_update_history
   after_destroy_commit :perform_to_delete_history
   after_commit :real_time_notification
+  before_save :update_book_at
 
   def self.filter(filters)
     MeetingReservation
@@ -252,7 +254,17 @@ class MeetingReservation < ApplicationRecord
     rule.extimes
   end
 
+  def perform_to_update_history
+    sidekiq = Sidekiq::ScheduledSet.new
+    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
+    schedules.first.reschedule(start_datetime_with_recurring) if schedules&.first
+  end
+
   private
+
+  def update_book_at
+    self.book_at = start_datetime_with_recurring
+  end
 
   def perform_to_create_history
     return if outdated
@@ -262,17 +274,14 @@ class MeetingReservation < ApplicationRecord
     MonthlyBookJob.perform_async(id)
   end
 
-  def perform_to_update_history
-    sidekiq = Sidekiq::ScheduledSet.new
-    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
-    schedules.first.reschedule(start_datetime_with_recurring) if schedules&.first
-  end
-
   def perform_to_delete_history
     sidekiq = Sidekiq::ScheduledSet.new
-    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
 
+    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
     schedules.first.delete if schedules&.first
+
+    schedules_monthly = sidekiq.select { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
+    schedules_monthly.first.delete if schedules&.first
   end
 
   def real_time_notification

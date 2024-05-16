@@ -27,6 +27,8 @@ class ReservationController < ApplicationController
           note: @meeting_reservation.note.body.to_s,
           recurrence: @meeting_reservation.recurring? ? [@meeting_reservation.google_calendar_rule] : []
         )
+
+        @meeting_reservation.perform_to_update_history
       rescue Google::Apis::AuthorizationError => _e
         client = initialize_client
         response = client.refresh!
