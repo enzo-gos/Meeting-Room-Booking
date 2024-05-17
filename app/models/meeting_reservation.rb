@@ -260,9 +260,26 @@ class MeetingReservation < ApplicationRecord
     sidekiq = Sidekiq::ScheduledSet.new
     schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
     schedules&.first&.reschedule(start_datetime_with_recurring)
+
+    update_monthly_reservation
   end
 
   private
+
+  def update_monthly_reservation
+    sidekiq = Sidekiq::ScheduledSet.new
+    monthly_schedule = sidekiq.select { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
+
+    if recurring?
+      if monthly_schedule&.first.nil?
+        MonthlyBookJob.perform_async(id)
+      else
+        monthly_schedule.first.reschedule(start_datetime_with_recurring + 1.month - 7.days)
+      end
+    else
+      monthly_schedule&.first&.delete
+    end
+  end
 
   def update_book_at
     self.book_at = start_datetime_with_recurring
