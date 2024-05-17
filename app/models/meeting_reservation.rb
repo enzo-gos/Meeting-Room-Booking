@@ -17,6 +17,9 @@
 class MeetingReservation < ApplicationRecord
   require 'ice_cube'
 
+  include ScheduleHelper
+  include ReservationJobs
+
   attr_accessor :_skip_callback
 
   FILTER_PARAMS = %i[title book_at start_time room_id].freeze
@@ -257,9 +260,7 @@ class MeetingReservation < ApplicationRecord
   end
 
   def perform_to_update_history
-    sidekiq = Sidekiq::ScheduledSet.new
-    schedules = sidekiq.find { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
-    schedules&.reschedule(start_datetime_with_recurring)
+    schedule_job&.reschedule(start_datetime_with_recurring)
 
     update_monthly_reservation
   end
@@ -267,17 +268,14 @@ class MeetingReservation < ApplicationRecord
   private
 
   def update_monthly_reservation
-    sidekiq = Sidekiq::ScheduledSet.new
-    monthly_schedule = sidekiq.find { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
-
     if recurring?
-      if monthly_schedule.nil?
+      if monthly_job.nil?
         MonthlyBookJob.perform_async(id)
       else
-        monthly_schedule.reschedule(start_datetime_with_recurring + 1.month - 7.days)
+        monthly_job.reschedule(start_datetime_with_recurring + 1.month - 7.days)
       end
     else
-      monthly_schedule&.delete
+      monthly_job&.delete
     end
   end
 
@@ -293,14 +291,10 @@ class MeetingReservation < ApplicationRecord
   end
 
   def perform_to_delete_history
-    sidekiq = Sidekiq::ScheduledSet.new
-
-    schedules = sidekiq.find { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
-    schedules&.delete
+    schedule_job&.delete
 
     if recurring?
-      schedules_monthly = sidekiq.find { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
-      schedules_monthly&.delete
+      monthly_job&.delete
     end
   end
 
