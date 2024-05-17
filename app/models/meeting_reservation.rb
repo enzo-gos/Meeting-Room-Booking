@@ -259,7 +259,7 @@ class MeetingReservation < ApplicationRecord
   def perform_to_update_history
     sidekiq = Sidekiq::ScheduledSet.new
     schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
-    schedules.first.reschedule(start_datetime_with_recurring) if schedules&.first
+    schedules&.first&.reschedule(start_datetime_with_recurring)
   end
 
   private
@@ -272,18 +272,19 @@ class MeetingReservation < ApplicationRecord
     return if outdated
 
     ReservationScheduleJob.perform_at(start_datetime_with_recurring, id)
-    MonthlyBookJob.perform_at(start_datetime_with_recurring + 1.month - 7.days, id)
-    MonthlyBookJob.perform_async(id)
+    MonthlyBookJob.perform_async(id) if recurring?
   end
 
   def perform_to_delete_history
     sidekiq = Sidekiq::ScheduledSet.new
 
     schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
-    schedules.first.delete if schedules&.first
+    schedules&.first&.delete
 
-    schedules_monthly = sidekiq.select { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
-    schedules_monthly.first.delete if schedules&.first
+    if recurring?
+      schedules_monthly = sidekiq.select { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
+      schedules_monthly&.first&.delete
+    end
   end
 
   def real_time_notification

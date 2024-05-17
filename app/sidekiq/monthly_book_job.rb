@@ -2,6 +2,8 @@ class MonthlyBookJob
   include Sidekiq::Job
 
   def perform(reservation_id)
+    schedule_next_month(reservation_id)
+
     reservations = MeetingReservation.includes(:book_by, :room, :members).where.not(recurring: nil, outdated: true)
 
     meeting_reservations = reservations.flat_map do |e|
@@ -18,6 +20,10 @@ class MonthlyBookJob
         break
       end
     end
+  end
+
+  def schedule_next_month(reservation_id)
+    MonthlyBookJob.perform_at(Time.now.to_datetime + 1.month - 7.days, reservation_id)
   end
 
   def fetch_overlap(meeting_reservations)
