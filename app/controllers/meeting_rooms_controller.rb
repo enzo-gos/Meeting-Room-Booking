@@ -75,8 +75,6 @@ class MeetingRoomsController < ApplicationController
     @user_list = User.where.not(id: current_user.id)
     @meeting_reservation = MeetingReservation.create(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
 
-    @meeting_reservation.book_at = @meeting_reservation.start_datetime_with_recurring
-
     @selected_rule = @meeting_reservation.rule_to_option
 
     valid = @meeting_reservation.valid?
