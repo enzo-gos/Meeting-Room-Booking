@@ -260,10 +260,10 @@ class MeetingReservation < ApplicationRecord
   end
 
   def perform_to_update_history
-    schedule_job&.reschedule(start_datetime_with_recurring)
+    schedule_job(id)&.reschedule(start_datetime_with_recurring)
 
-    monthly_job&.delete
-    MonthlyBookJob.perform_async(id) if recurring?
+    monthly_job(id)&.delete
+    MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
   end
 
   private
@@ -276,14 +276,14 @@ class MeetingReservation < ApplicationRecord
     return if outdated
 
     ReservationScheduleJob.perform_at(start_datetime_with_recurring, id)
-    MonthlyBookJob.perform_async(id) if recurring?
+    MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
   end
 
   def perform_to_delete_history
-    schedule_job&.delete
+    schedule_job(id)&.delete
 
     if recurring?
-      monthly_job&.delete
+      monthly_job(id)&.delete
     end
   end
 
