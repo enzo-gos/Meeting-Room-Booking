@@ -38,8 +38,8 @@ class Admin::MeetingRoomManagementController < ApplicationController
   def destroy
     @meeting_room.destroy
     redirect_to admin_meeting_room_management_index_path, notice: 'Meeting room was successfully destroyed.'
-  rescue StandardError
-    redirect_to admin_meeting_room_management_index_path, notice: 'The meeting room was not destroyed because it had a reservation.'
+  rescue ActiveRecord::InvalidForeignKey => _e
+    redirect_to admin_meeting_room_management_index_path, notice: 'The meeting room was not destroyed because it had some reservations.'
   end
 
   private
