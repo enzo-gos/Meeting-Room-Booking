@@ -1,4 +1,8 @@
 module ScheduleHelper
+  def self.next_month(from:)
+    from + 1.month - 7.days
+  end
+
   def find_sidekiq_job(*args)
     kclass = args.shift
 

@@ -262,22 +262,11 @@ class MeetingReservation < ApplicationRecord
   def perform_to_update_history
     schedule_job&.reschedule(start_datetime_with_recurring)
 
-    update_monthly_reservation
+    monthly_job&.delete
+    MonthlyBookJob.perform_async(id) if recurring?
   end
 
   private
-
-  def update_monthly_reservation
-    if recurring?
-      if monthly_job.nil?
-        MonthlyBookJob.perform_async(id)
-      else
-        monthly_job.reschedule(start_datetime_with_recurring + 1.month - 7.days)
-      end
-    else
-      monthly_job&.delete
-    end
-  end
 
   def update_book_at
     self.book_at = start_datetime_with_recurring
