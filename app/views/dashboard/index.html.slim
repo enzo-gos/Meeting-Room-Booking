@@ -65,9 +65,7 @@
 							td.px-6.py-4.w-56 = reservation.rule_to_option.to_a.first
 							td.px-6.py-4
 								.flex.justify-end.gap-3
-									= button_to reservation_path(reservation.id), method: :delete, data: { turbo_frame: '_top', turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this reservation?" } do
-										= image_tag 'delete_icon.svg', class: 'h-6 w-6', alt: 'delete'
-									= link_to edit_reservation_path(reservation.id), data: { turbo_frame: '_top', turbo_prefetch: false } do
+									= link_to edit_reservation_path(reservation.recurring? ? { id: reservation.id, recurring: reservation.start_datetime.to_i } : { id: reservation.id }), data: { turbo_frame: '_top', turbo_prefetch: false } do
 										= image_tag 'edit_icon.svg', class: 'h-6 w-6', alt: 'edit'
 										
 					- if @reservations.empty? 
