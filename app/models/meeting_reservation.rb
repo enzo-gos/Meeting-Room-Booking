@@ -258,8 +258,8 @@ class MeetingReservation < ApplicationRecord
 
   def perform_to_update_history
     sidekiq = Sidekiq::ScheduledSet.new
-    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
-    schedules&.first&.reschedule(start_datetime_with_recurring)
+    schedules = sidekiq.find { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
+    schedules&.reschedule(start_datetime_with_recurring)
 
     update_monthly_reservation
   end
@@ -268,16 +268,16 @@ class MeetingReservation < ApplicationRecord
 
   def update_monthly_reservation
     sidekiq = Sidekiq::ScheduledSet.new
-    monthly_schedule = sidekiq.select { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
+    monthly_schedule = sidekiq.find { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
 
     if recurring?
-      if monthly_schedule&.first.nil?
+      if monthly_schedule.nil?
         MonthlyBookJob.perform_async(id)
       else
-        monthly_schedule.first.reschedule(start_datetime_with_recurring + 1.month - 7.days)
+        monthly_schedule.reschedule(start_datetime_with_recurring + 1.month - 7.days)
       end
     else
-      monthly_schedule&.first&.delete
+      monthly_schedule&.delete
     end
   end
 
@@ -295,12 +295,12 @@ class MeetingReservation < ApplicationRecord
   def perform_to_delete_history
     sidekiq = Sidekiq::ScheduledSet.new
 
-    schedules = sidekiq.select { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
-    schedules&.first&.delete
+    schedules = sidekiq.find { |schedule| schedule.klass == 'ReservationScheduleJob' && schedule.args[0] == id }
+    schedules&.delete
 
     if recurring?
-      schedules_monthly = sidekiq.select { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
-      schedules_monthly&.first&.delete
+      schedules_monthly = sidekiq.find { |schedule| schedule.klass == 'MonthlyBookJob' && schedule.args[0] == id }
+      schedules_monthly&.delete
     end
   end
 
