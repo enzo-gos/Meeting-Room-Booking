@@ -41,16 +41,15 @@ class MeetingReservation < ApplicationRecord
   validates :start_time, presence: { message: 'Start time must be provided' }
   validates :end_time, presence: { message: 'End time must be provided' }
 
-  validate :does_not_conflict, if: -> { (new_record? && !persisted?) || changed? }
   validate :start_time_less_than_end_time
   validate :time_difference_in_15_minutes
+  validate :invitation_required
+
+  validate :does_not_conflict, if: -> { (new_record? && !persisted?) || changed? }
   validate :does_not_overlap_single_recurring, if: -> { (new_record? && !persisted?) || changed? }
   validate :does_not_overlap_recurring, if: -> { (new_record? && !persisted?) || changed? }
 
-  validate :invitation_required
-
   scope :with_room_department, -> { includes(room: :department) }
-
   scope :by_title, ->(query) { where('meeting_reservations.title ilike ?', "%#{query}%") }
   scope :by_room, ->(room_id) { where(room_id: room_id) if room_id.present? }
   scope :by_book_by, ->(book_by_id) { where(book_by_id: book_by_id) if book_by_id.present? }
@@ -62,6 +61,7 @@ class MeetingReservation < ApplicationRecord
   after_create_commit :perform_to_create_history, unless: :_skip_callback
   after_destroy_commit :perform_to_delete_history, unless: :_skip_callback
   after_commit :real_time_notification
+
   before_save :update_book_at
 
   def self.filter(filters)
@@ -261,7 +261,6 @@ class MeetingReservation < ApplicationRecord
 
   def perform_to_update_history
     schedule_job(id)&.reschedule(start_datetime_with_recurring)
-
     monthly_job(id)&.delete
     MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
   end

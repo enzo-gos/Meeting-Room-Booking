@@ -72,38 +72,28 @@ class MeetingRoomsController < ApplicationController
   end
 
   def create
-    @user_list = User.where.not(id: current_user.id)
-    @meeting_reservation = MeetingReservation.create(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
+    @meeting_reservation = MeetingReservation.new(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
 
+    @user_list = User.where.not(id: current_user.id)
     @selected_rule = @meeting_reservation.rule_to_option
 
-    valid = @meeting_reservation.valid?
+    event = ReservationManager::Creator.new(@meeting_reservation).call
 
-    if valid
-      begin
-        start_date_time = @meeting_reservation.start_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
-        end_date_time = @meeting_reservation.end_datetime_with_recurring.strftime('%Y-%m-%dT%H:%M:%S%:z')
+    begin
+      google_event = GoogleCalendarManager::Creator.new(authorization: session[:authorization], event: event).call if event.present?
+    rescue Google::Apis::AuthorizationError => _e
+      client, _service = GoogleCalendarService::Initializer.new(session[:authorization]).call
+      session[:authorization] = session[:authorization].merge(client.refresh!)
+      retry
+    end
 
-        new_event = create_new_event(
-          title: @meeting_reservation.title,
-          start_date: start_date_time,
-          end_date: end_date_time,
-          members: @meeting_reservation.allmembers,
-          note: @meeting_reservation.note.body.to_s,
-          recurrence: @meeting_reservation.recurring? ? [@meeting_reservation.google_calendar_rule] : []
-        )
-
-        @meeting_reservation.calendar_event = new_event.id
-      rescue Google::Apis::AuthorizationError => _e
-        client = initialize_client
-        response = client.refresh!
-        session[:authorization] = session[:authorization].merge(response)
-        retry
-      end
+    if google_event.present?
+      @meeting_reservation.calendar_event = google_event.id
+      reservation = @meeting_reservation.save
     end
 
     respond_to do |format|
-      if @meeting_reservation.save
+      if reservation.present?
         format.html { redirect_to details_meeting_room_path(params[:id]), notice: 'Meeting reservation was successfully created.' }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update('modal-body', partial: 'book_form', locals: { data_controller: 'flatpickr' }), status: :unprocessable_entity }
