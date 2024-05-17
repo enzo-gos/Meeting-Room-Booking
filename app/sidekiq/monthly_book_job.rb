@@ -1,7 +1,11 @@
 class MonthlyBookJob
   include Sidekiq::Job
+  include ScheduleHelper
 
-  def perform(reservation_id)
+  def perform(reservation_id, from = -1)
+    from_datetime = from == -1 || !from.is_a?(Integer) ? Time.now : Time.at(from)
+    MonthlyBookJob.perform_at(ScheduleHelper.next_month(from: from_datetime), reservation_id)
+
     reservations = MeetingReservation.includes(:book_by, :room, :members).where.not(recurring: nil, outdated: true)
 
     meeting_reservations = reservations.flat_map do |e|
