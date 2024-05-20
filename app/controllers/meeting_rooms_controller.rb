@@ -58,7 +58,7 @@ class MeetingRoomsController < ApplicationController
     begin
       google_event = GoogleCalendarManager::Creator.new(authorization: session[:authorization], event: event).call if event.present?
     rescue Google::Apis::AuthorizationError => _e
-      client, _service = GoogleCalendarService::Initializer.new(session[:authorization]).call
+      client, _service = GoogleCalendarManager::Initializer.new(session[:authorization]).call
       session[:authorization] = session[:authorization].merge(client.refresh!)
       retry
     end
