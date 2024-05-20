@@ -15,6 +15,10 @@ GoMee is web application that simplifies the process of reserving and managing m
   <br />
   <br />
 
+# Architecture
+![Architecture](https://github.com/enzo-gos/Meeting-Room-Booking/assets/164119335/273898cb-fb02-40e7-8ff8-478516b1b331)
+
+
 # Tech Stack
 
 | Category                   | Technology                          |
@@ -71,7 +75,7 @@ GoMee is web application that simplifies the process of reserving and managing m
 │   │   ├── application_controller.rb
 │   │   ├── dashboard_controller.rb
 │   │   ├── meeting_rooms_controller.rb
-│   │   ├── reservation_controller.rb
+│   │   ├── reservations_controller.rb
 │   │   └── user_controller.rb
 │   ├── helpers
 │   │   ├── application_helper.rb
@@ -101,7 +105,7 @@ GoMee is web application that simplifies the process of reserving and managing m
 │       ├── devise
 │       ├── layouts
 │       ├── meeting_rooms
-│       ├── reservation
+│       ├── reservations
 │       └── user
 │
 ├── bin
