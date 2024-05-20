@@ -1,11 +1,14 @@
 class MeetingRoomsController < ApplicationController
   include Filterable
-  include GoogleCalendar
+  include ApplicationHelper
+  include MeetingRoomsHelper
+
+  before_action :authorize_user, except: [:index]
 
   before_action :init_breadcrumbs
-  before_action :init_meeting_room, only: [:schedule, :create, :book]
-  before_action :init_meeting_descriptions, only: [:create, :book]
-  before_action :authorize_user, only: [:schedule]
+  before_action :prepared_meeting_room, only: [:schedule, :create, :book]
+  before_action :prepared_meeting_reservation_data, only: [:create, :book]
+  before_action :prepared_meeting_reservation, only: [:schedule, :book]
 
   def index
     @filter_history, @departments_rooms = filter!(Room)
@@ -15,38 +18,14 @@ class MeetingRoomsController < ApplicationController
   def schedule
     add_breadcrumb params[:id]
     add_breadcrumb 'Schedule'
-
-    @meeting_reservation = MeetingReservation.new
   end
 
   def events
-    end_date = params[:end]
-
     @events = MeetingReservation.where('room_id = ?', params[:id])
-    @meeting_reservations = @events.flat_map do |e|
-      e.events(end_date)
-    end
+    @meeting_reservations = @events.flat_map { |event| event.events(params[:end]) }
 
     grouped_schedules = remove_overlap_events(@meeting_reservations)
-
-    formatted_meeting_reservations = grouped_schedules.values.flatten.map do |reservation|
-      start_datetime = reservation.start_datetime
-      end_datetime = reservation.end_datetime
-
-      view_params = reservation.recurring? ? { id: reservation.id, recurring: start_datetime.to_i } : { id: reservation.id }
-
-      color = 'grey'
-      color = 'green' if reservation.book_by_id == current_user.id && !reservation.outdated
-      color = 'sky' if reservation.book_by_id != current_user.id && !reservation.outdated
-
-      {
-        title: reservation.title,
-        start: start_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-        end: end_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-        color: color,
-        url: current_user.id == reservation.book_by_id && !reservation.outdated ? edit_reservation_path(view_params) : reservation_path(view_params)
-      }
-    end
+    formatted_meeting_reservations = response_reservations(grouped_schedules.values.flatten)
 
     respond_to do |format|
       format.json { render json: formatted_meeting_reservations }
@@ -57,7 +36,6 @@ class MeetingRoomsController < ApplicationController
     add_breadcrumb params[:id]
     add_breadcrumb 'Book'
 
-    @meeting_reservation = MeetingReservation.new
     @user_list = User.where.not(id: current_user.id)
 
     respond_to do |format|
@@ -73,8 +51,6 @@ class MeetingRoomsController < ApplicationController
 
   def create
     @meeting_reservation = MeetingReservation.new(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
-
-    @user_list = User.where.not(id: current_user.id)
     @selected_rule = @meeting_reservation.rule_to_option
 
     event = ReservationManager::Creator.new(@meeting_reservation).call
@@ -107,12 +83,17 @@ class MeetingRoomsController < ApplicationController
     add_breadcrumb 'Meeting Rooms'
   end
 
-  def init_meeting_room
+  def prepared_meeting_room
     @meeting_room = Room.includes(:department).find(params[:id])
   end
 
-  def init_meeting_descriptions
+  def prepared_meeting_reservation_data
+    @user_list = User.where.not(id: current_user.id)
     @meeting_description = "<p>You're warmly invited to a meeting at <strong>#{@meeting_room.name} - #{@meeting_room.department.address}</strong></strong>.<br /><br />Your input is highly appreciated, so please mark your calendar and endeavor to arrive on time.</p>"
+  end
+
+  def prepared_meeting_reservation
+    @meeting_reservation = MeetingReservation.new
   end
 
   def authorize_user
@@ -145,6 +126,18 @@ class MeetingRoomsController < ApplicationController
       end
 
       grouped_schedules[date] = non_overlapping_events
+    end
+  end
+
+  def response_reservations(reservations)
+    reservations.map do |reservation|
+      {
+        title: reservation.title,
+        start: format_datetime(reservation.start_datetime),
+        end: format_datetime(reservation.end_datetime),
+        color: determine_color(reservation, current_user),
+        url: determine_url(reservation, current_user)
+      }
     end
   end
 end
