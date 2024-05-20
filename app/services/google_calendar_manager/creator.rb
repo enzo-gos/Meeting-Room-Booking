@@ -24,11 +24,11 @@ module GoogleCalendarManager
         description: @event[:note],
         start: Google::Apis::CalendarV3::EventDateTime.new(
           date_time: @event[:start_date],
-          time_zone: 'Asia/Ho_Chi_Minh'
+          time_zone: TIME_ZONE
         ),
         end: Google::Apis::CalendarV3::EventDateTime.new(
           date_time: @event[:end_date],
-          time_zone: 'Asia/Ho_Chi_Minh'
+          time_zone: TIME_ZONE
         ),
         attendees: @event[:members],
         reminders: {

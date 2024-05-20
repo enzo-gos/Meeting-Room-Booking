@@ -1,4 +1,5 @@
 class ApplicationService
+  TIME_ZONE = 'Asia/Ho_Chi_Minh'.freeze
   class << self
     def call(*args, &block)
       new.call(*args, &block)

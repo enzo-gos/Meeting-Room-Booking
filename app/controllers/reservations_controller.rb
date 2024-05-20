@@ -39,7 +39,7 @@ class ReservationsController < ApplicationController
     deleted = delete_all? if !@meeting_reservation.recurring? || (@meeting_reservation.recurring? && params[:delete_option] == '0')
     deleted = delete_only? if @meeting_reservation.recurring? && params[:delete_option] == '1'
 
-    return redirect_to details_meeting_room_path(@meeting_reservation.room_id), notice: 'Meeting reservation was successfully destroyed.' if deleted == true
+    return redirect_to details_meeting_room_path(@meeting_reservation.room_id), notice: 'Meeting reservation was successfully destroyed.' if deleted
 
     render turbo_stream: turbo_stream.update('modal-body', partial: 'reservations/shared/delete_options', locals: { meeting_reservation: @meeting_reservation })
   end
@@ -60,7 +60,7 @@ class ReservationsController < ApplicationController
   end
 
   def reservation_params
-    params[:meeting_reservation][:member_ids] = params[:meeting_reservation][:member_ids].split(',').map(&:strip) || []
+    params[:meeting_reservation][:member_ids] = params[:meeting_reservation][:member_ids].split(',').map(&:strip)
     params.require(:meeting_reservation).permit(:title, :note, :recurring, :book_at, :start_time, :end_time, :team_id, member_ids: [])
   end
 

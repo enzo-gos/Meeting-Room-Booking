@@ -21,8 +21,8 @@ module GoogleCalendarManager
       google_event = service.get_event(@event[:calendar_id], @event[:event_id])
       google_event.summary = @event[:title]
       google_event.description = @event[:note]
-      google_event.start = Google::Apis::CalendarV3::EventDateTime.new(date_time: @event[:start_date], time_zone: 'Asia/Ho_Chi_Minh')
-      google_event.end = Google::Apis::CalendarV3::EventDateTime.new(date_time: @event[:end_date], time_zone: 'Asia/Ho_Chi_Minh')
+      google_event.start = Google::Apis::CalendarV3::EventDateTime.new(date_time: @event[:start_date], time_zone: TIME_ZONE)
+      google_event.end = Google::Apis::CalendarV3::EventDateTime.new(date_time: @event[:end_date], time_zone: TIME_ZONE)
       google_event.attendees = @event[:members]
       google_event.recurrence = @event[:recurrence]
 
