@@ -1,15 +1,13 @@
 class ReservationsController < ApplicationController
   before_action :init_breadcrumbs
-  before_action :init_reservation
+  before_action :prepared_reservation
   before_action :authorize_reservation, except: [:show]
-  before_action :init_userlist, only: [:edit, :update]
+  before_action :prepared_update_data, only: [:edit, :update]
   before_action :validate_recurring, only: [:show, :edit, :update]
 
   add_breadcrumb 'Edit', only: [:edit, :update]
 
-  def edit
-    @selected_rule = @meeting_reservation.rule_to_option
-  end
+  def edit; end
 
   def update
     event = @meeting_reservation.to_calendar_event if @meeting_reservation.update(reservation_params)
@@ -53,7 +51,7 @@ class ReservationsController < ApplicationController
     add_breadcrumb params[:id]
   end
 
-  def init_reservation
+  def prepared_reservation
     @meeting_reservation = MeetingReservation.find(params[:id])
   end
 
@@ -66,8 +64,9 @@ class ReservationsController < ApplicationController
     params.require(:meeting_reservation).permit(:title, :note, :recurring, :book_at, :start_time, :end_time, :team_id, member_ids: [])
   end
 
-  def init_userlist
+  def prepared_update_data
     @user_list = User.where.not(id: current_user.id)
+    @selected_rule = @meeting_reservation.rule_to_option
   end
 
   def validate_recurring
