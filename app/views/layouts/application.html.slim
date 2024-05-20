@@ -74,7 +74,7 @@ html[lang="en"]
                 = image_tag 'avatar.png', class: 'block', width: 50, height: 50, alt: 'avatar'
             
             .absolute.right-0.bg-white.border.rounded-md.min-w-44.shadow-md.top-full.mt-1 x-show="settingOpen" x-cloak="visible"
-              = link_to user_profile_path, class: 'flex items-center whitespace-nowrap p-4 gap-2 cursor-pointer hover:bg-gray-200/60'
+              = link_to profile_user_path, class: 'flex items-center whitespace-nowrap p-4 gap-2 cursor-pointer hover:bg-gray-200/60'
                 = mi.shape(:account_circle).outlined
                 | My Profile
 

@@ -1,47 +1,53 @@
 require 'sidekiq/web'
 
-#TODO: Refactor for clean routing
 Rails.application.routes.draw do
-  mount Sidekiq::Web => '/sidekiq'
+  # Mount Sidekiq Web UI
+  mount Sidekiq::Web => :sidekiq
 
+  # Admin namespace
   namespace :admin do
-    resources :meeting_room_management, path: 'rooms'
-    resources :user_management, path: 'users'
+    resources :meeting_room_management, path: :rooms
+    resources :user_management, path: :users
   end
 
-  devise_for :users, path: '/user', path_names: {
-    :sign_in => 'login',
-    :sign_out => 'logout',
-    :sign_up => 'register'
-  },
-  controllers: {
+  # Devise routes for users
+  devise_for :users, path: :user, path_names: {
+    sign_in: :login,
+    sign_out: :logout,
+    sign_up: :register
+  }, controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations'
   }
 
-  get 'up' => 'rails/health#show', as: :rails_health_check
+  # Health check endpoint
+  get :up, to: 'rails/health#show', as: :rails_health_check
 
-  get 'dashboard' => 'dashboard#index'
+  # Dashboard route
+  get :dashboard, to: 'dashboard#index'
 
-  # TODO: Refactor this
-  get 'user/profile' => 'user#index'
-  patch 'user/profile' => 'user#update'
-
-  resources :meeting_rooms, only: [:index] do
-    member do
-      get '/', to: 'meeting_rooms#schedule', as: 'details'
-      get 'book'
-      post 'book', to: 'meeting_rooms#create'
-      get 'events'
+  # User profile routes
+  resource :user, only: [] do
+    collection do
+      get :profile, to: 'user#index'
+      patch :profile, to: 'user#update'
     end
   end
 
-  resources :reservation
+  # Meeting rooms routes
+  resources :meeting_rooms, only: [:index] do
+    member do
+      get '', to: 'meeting_rooms#schedule', as: :details
+      get :book
+      post :book, to: 'meeting_rooms#create'
+      get :events
+    end
+  end
 
-  # TODO: Refactor this
-  get '/google/calendar' => 'calendars#redirect'
-  get '/google/calendar/callback' => 'calendars#callback'
+  # Reservations routes
+  resources :reservations
 
+  # Devise scope for user root paths
   devise_scope :user do
     authenticated :user do
       root 'dashboard#index', as: :authenticated_root

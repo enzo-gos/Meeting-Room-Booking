@@ -14,6 +14,7 @@ class ReservationScheduleJob
         old_event = event.dup
 
         old_event.book_at = old_book_at
+        old_event.note = event.note
         old_event.members = event.members.to_a
         old_event.outdated = true
         old_event.save
