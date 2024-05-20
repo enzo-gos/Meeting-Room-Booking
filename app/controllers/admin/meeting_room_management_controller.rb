@@ -45,7 +45,7 @@ class Admin::MeetingRoomManagementController < ApplicationController
   private
 
   def room_params
-    params[:room][:facility_ids] = params[:room][:facility_ids].split(',').map(&:strip) || []
+    params[:room][:facility_ids] = params[:room][:facility_ids].split(',').map(&:strip)
     params.required(:room).permit(:name, :max_capacity, :department_id, :description, :preview_image, facility_ids: [])
   end
 

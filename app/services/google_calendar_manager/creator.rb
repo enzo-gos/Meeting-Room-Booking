@@ -3,6 +3,11 @@ module GoogleCalendarManager
     def initialize(authorization:, event:)
       @authorization = authorization
       @event = event
+      @event[:calendar_id] ||= 'primary'
+      @event[:note] ||= ''
+      @event[:members] ||= []
+      @event[:recurrence] ||= []
+      @event[:reminder] ||= 30
     end
 
     def call
@@ -16,14 +21,14 @@ module GoogleCalendarManager
 
       google_event = Google::Apis::CalendarV3::Event.new(
         summary: @event[:title],
-        description: @event[:note] || '',
+        description: @event[:note],
         start: Google::Apis::CalendarV3::EventDateTime.new(
           date_time: @event[:start_date],
-          time_zone: 'Asia/Ho_Chi_Minh'
+          time_zone: TIME_ZONE
         ),
         end: Google::Apis::CalendarV3::EventDateTime.new(
           date_time: @event[:end_date],
-          time_zone: 'Asia/Ho_Chi_Minh'
+          time_zone: TIME_ZONE
         ),
         attendees: @event[:members],
         reminders: {
@@ -31,15 +36,15 @@ module GoogleCalendarManager
           overrides: [
             Google::Apis::CalendarV3::EventReminder.new(
               reminder_method: 'popup',
-              minutes: @event[:reminder] || 30
+              minutes: @event[:reminder]
             ),
             Google::Apis::CalendarV3::EventReminder.new(
               reminder_method: 'email',
-              minutes: @event[:reminder] || 30
+              minutes: @event[:reminder]
             )
           ]
         },
-        recurrence: @event[:recurrence] || [],
+        recurrence: @event[:recurrence],
         notification_settings: {
           notifications: [
             { type: 'event_creation', method: 'email' },
@@ -50,7 +55,7 @@ module GoogleCalendarManager
         }
       )
 
-      service.insert_event(@event[:calendar_id] || 'primary', google_event, send_updates: 'all')
+      service.insert_event(@event[:calendar_id], google_event, send_updates: 'all')
     end
   end
 end

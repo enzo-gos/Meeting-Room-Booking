@@ -60,9 +60,9 @@ class MeetingReservation < ApplicationRecord
 
   after_create_commit :perform_to_create_history, unless: :_skip_callback
   after_destroy_commit :perform_to_delete_history, unless: :_skip_callback
-  after_commit :real_time_notification
+  after_commit -> { SendEventJob.perform_async(to_json) }
 
-  before_save :update_book_at
+  before_save -> { self.book_at = start_datetime_with_recurring }
 
   def self.filter(filters)
     MeetingReservation
@@ -206,11 +206,20 @@ class MeetingReservation < ApplicationRecord
     return [self] if !recurring? || outdated
 
     end_date = end_date.to_date if end_date
-
     end_frequency = end_date || Date.today + 1.month
 
     schedule(book_at).occurrences(end_frequency).map do |date|
-      MeetingReservation.new(id: id, title: title, book_at: date, start_time: start_time, end_time: end_time, recurring: recurring, book_by_id: book_by_id, room_id: room_id, created_at: created_at)
+      MeetingReservation.new(
+        id: id,
+        title: title,
+        book_at: date,
+        start_time: start_time,
+        end_time: end_time,
+        recurring: recurring,
+        book_by_id: book_by_id,
+        room_id: room_id,
+        created_at: created_at
+      )
     end
   end
 
@@ -265,6 +274,10 @@ class MeetingReservation < ApplicationRecord
     MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
   end
 
+  def to_calendar_event
+    create_calendar_event.merge({ event_id: calendar_event })
+  end
+
   def create_calendar_event
     {
       title: title,
@@ -272,7 +285,8 @@ class MeetingReservation < ApplicationRecord
       end_date: iso_string(end_datetime_with_recurring),
       members: allmembers,
       note: note.body.to_s,
-      recurrence: recurring? ? [google_calendar_rule] : []
+      recurrence: recurring? ? [google_calendar_rule] : [],
+      calendar_id: 'primary'
     }
   end
 
@@ -280,10 +294,6 @@ class MeetingReservation < ApplicationRecord
 
   def iso_string(datetime)
     datetime.strftime('%Y-%m-%dT%H:%M:%S%:z')
-  end
-
-  def update_book_at
-    self.book_at = start_datetime_with_recurring
   end
 
   def perform_to_create_history
@@ -295,14 +305,7 @@ class MeetingReservation < ApplicationRecord
 
   def perform_to_delete_history
     schedule_job(id)&.delete
-
-    if recurring?
-      monthly_job(id)&.delete
-    end
-  end
-
-  def real_time_notification
-    SendEventJob.perform_async(to_json)
+    monthly_job(id)&.delete if recurring?
   end
 
   def find_overlapping_meeting

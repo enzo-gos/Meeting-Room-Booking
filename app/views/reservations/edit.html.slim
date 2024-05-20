@@ -10,5 +10,5 @@
         = button_to reservation_path, method: :delete, data: { action: 'click->reservation#openModal' }, class: 'flex items-center whitespace-nowrap p-2 gap-2 cursor-pointer hover:bg-red-700 w-full bg-red-500 rounded text-white' do
           = mi.shape(:delete)
    
-    = render 'reservation/shared/options_modal'
-    = render 'reservation/shared/edit_form', meeting_reservation: @meeting_reservation, data_controller: 'flatpickr'
+    = render 'reservations/shared/options_modal'
+    = render 'reservations/shared/edit_form', meeting_reservation: @meeting_reservation, data_controller: 'flatpickr'

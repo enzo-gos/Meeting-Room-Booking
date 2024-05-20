@@ -2,7 +2,7 @@
   .mt-2.text-sm.px-4
     . id='flat-booking-dates'
       = simple_form_for @meeting_reservation, url: reservation_path(@meeting_reservation, recurring: params[:recurring]), method: :patch, data: { controller: "tag #{ data_controller || '' }" }, defaults: { label_html: { class: 'form-label my-2 flex flex-row-reverse justify-end gap-1' }, error_html: { class: 'text-red-500 mt-1 block text-[13px] ml-1' } } do |f|
-        = render 'reservation/shared/error_message', resource: @meeting_reservation
+        = render 'reservations/shared/error_message', resource: @meeting_reservation
         .form-row-wrapper
           = f.input :title, input_html: { class: 'form-input w-full', placeholder: 'Enter meeting title', required: true }
         .mb-4.border-gray-200.border.rounded
