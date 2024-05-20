@@ -265,7 +265,22 @@ class MeetingReservation < ApplicationRecord
     MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
   end
 
+  def create_calendar_event
+    {
+      title: title,
+      start_date: iso_string(start_datetime_with_recurring),
+      end_date: iso_string(end_datetime_with_recurring),
+      members: allmembers,
+      note: note.body.to_s,
+      recurrence: recurring? ? [google_calendar_rule] : []
+    }
+  end
+
   private
+
+  def iso_string(datetime)
+    datetime.strftime('%Y-%m-%dT%H:%M:%S%:z')
+  end
 
   def update_book_at
     self.book_at = start_datetime_with_recurring

@@ -53,7 +53,7 @@ class MeetingRoomsController < ApplicationController
     @meeting_reservation = MeetingReservation.new(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
     @selected_rule = @meeting_reservation.rule_to_option
 
-    event = ReservationManager::Creator.new(@meeting_reservation).call
+    event = @meeting_reservation.create_calendar_event if @meeting_reservation.valid?
 
     begin
       google_event = GoogleCalendarManager::Creator.new(authorization: session[:authorization], event: event).call if event.present?
