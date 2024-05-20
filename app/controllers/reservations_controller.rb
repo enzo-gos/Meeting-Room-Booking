@@ -36,8 +36,8 @@ class ReservationsController < ApplicationController
 
   def destroy
     deleted = false
-    deleted = delete_all? if !@meeting_reservation.recurring? || (@meeting_reservation.recurring? && params[:delete_option] == '0')
-    deleted = delete_only? if @meeting_reservation.recurring? && params[:delete_option] == '1'
+    deleted = delete_all if !@meeting_reservation.recurring? || (@meeting_reservation.recurring? && params[:delete_option] == '0')
+    deleted = delete_only if @meeting_reservation.recurring? && params[:delete_option] == '1'
 
     return redirect_to details_meeting_room_path(@meeting_reservation.room_id), notice: 'Meeting reservation was successfully destroyed.' if deleted
 
@@ -82,7 +82,7 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def delete_all?
+  def delete_all
     reservation = @meeting_reservation.destroy
     begin
       GoogleCalendarManager::Destroyer.new(authorization: session[:authorization], event: @meeting_reservation.to_calendar_event).call
@@ -94,7 +94,7 @@ class ReservationsController < ApplicationController
     reservation.destroyed?
   end
 
-  def delete_only?
+  def delete_only
     extimes = @meeting_reservation.extimes + @meeting_reservation.except_date(params[:except_date])
     updated = @meeting_reservation.update(extimes: extimes)
 
