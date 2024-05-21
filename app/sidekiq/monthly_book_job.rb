@@ -12,14 +12,14 @@ class MonthlyBookJob
       e.events(Time.now.utc.end_of_month)
     end
 
-    overlaps = fetch_overlap(meeting_reservations)
+    overlaps, none_overlap = fetch_overlap(meeting_reservations)
 
     return if overlaps.empty?
 
-    overlaps.each do |evt|
-      if evt.id == reservation_id
-        BookSchedulerMailer.overlap_reservation_email(evt.to_json).deliver_later
-        break
+    overlaps.each do |event|
+      if event.id == reservation_id
+        overlap_with = none_overlap[event.book_at.strftime('%Y-%m-%d')].find { |overlap| (event.start_time < overlap.end_time) && (event.end_time > overlap.start_time) }
+        BookSchedulerMailer.overlap_reservation_email(event.to_json, overlap_with&.to_json).deliver_later
       end
     end
   end
@@ -43,6 +43,6 @@ class MonthlyBookJob
       grouped_schedules[date] = non_overlapping_events
     end
 
-    meeting_reservations - grouped_schedules.values.flatten
+    [meeting_reservations - grouped_schedules.values.flatten, grouped_schedules]
   end
 end

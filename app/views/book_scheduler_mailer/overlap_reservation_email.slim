@@ -14,9 +14,21 @@ html
       ul
         li Title: #{@reservation.title}
         li Room: #{@reservation.room.name}
+        li Department: #{@overlap_reservation.room.department.name}
         li Booked by: #{@reservation.book_by.email}
         li Start time: #{@reservation.start_datetime}
         li End time: #{@reservation.end_datetime}
+    br
+    p
+      | Overlap Details:
+      ul
+        li Title: #{@overlap_reservation.title}
+        li Room: #{@overlap_reservation.room.name}
+        li Department: #{@overlap_reservation.room.department.name}
+        li Booked by: #{@overlap_reservation.book_by.email}
+        li Start time: #{@overlap_reservation.start_datetime}
+        li End time: #{@overlap_reservation.end_datetime}
+        
     p
       | Please choose a different time slot or contact our support team for assistance.
     p
