@@ -6,8 +6,8 @@ Rails.application.routes.draw do
 
   # Admin namespace
   namespace :admin do
-    resources :meeting_room_management, path: :rooms
-    resources :user_management, path: :users
+    resources :rooms
+    resources :users
   end
 
   # Devise routes for users
@@ -27,10 +27,10 @@ Rails.application.routes.draw do
   get :dashboard, to: 'dashboard#index'
 
   # User profile routes
-  resource :user, only: [] do
+  resource :users, only: [] do
     collection do
-      get :profile, to: 'user#index'
-      patch :profile, to: 'user#update'
+      get :profile, to: 'users#index'
+      patch :profile, to: 'users#update'
     end
   end
 

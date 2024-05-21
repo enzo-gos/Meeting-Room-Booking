@@ -17,7 +17,7 @@
 class MeetingReservation < ApplicationRecord
   require 'ice_cube'
 
-  include ScheduleHelper
+  include SchedulesHelper
   include ReservationJobs
 
   attr_accessor :_skip_callback
@@ -43,6 +43,7 @@ class MeetingReservation < ApplicationRecord
 
   validate :start_time_less_than_end_time
   validate :time_difference_in_15_minutes
+  validate :booking_before_30min_started
   validate :invitation_required
 
   validate :does_not_conflict, if: -> { (new_record? && !persisted?) || changed? }
@@ -102,6 +103,17 @@ class MeetingReservation < ApplicationRecord
 
     if (end_time - start_time) < 15.minutes
       errors.add(:base, 'The meeting must last at least 15 minutes from the start time.')
+    end
+  end
+
+  def booking_before_30min_started
+    return unless start_time
+
+    begin_time = start_datetime_with_recurring.to_time
+    time_now = Time.now
+
+    if begin_time < time_now || begin_time - time_now < 30.minutes
+      errors.add(:base, 'The meeting must be booked at least 30 minutes before meeting start  .')
     end
   end
 

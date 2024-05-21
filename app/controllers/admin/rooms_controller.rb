@@ -1,4 +1,4 @@
-class Admin::MeetingRoomManagementController < ApplicationController
+class Admin::RoomsController < ApplicationController
   before_action :init_breadcrumbs
 
   before_action :prepare_meeting_rooms, only: [:index]
@@ -7,7 +7,7 @@ class Admin::MeetingRoomManagementController < ApplicationController
   def index; end
 
   def new
-    add_breadcrumb 'Create', new_admin_meeting_room_management_path
+    add_breadcrumb 'Create', new_admin_room_path
     @meeting_room = Room.new
   end
 
@@ -16,20 +16,20 @@ class Admin::MeetingRoomManagementController < ApplicationController
     authorize @meeting_room, policy_class: RoomManagementPolicy
 
     if @meeting_room.save
-      redirect_to admin_meeting_room_management_index_path, notice: 'Meeting room was successfully created.'
+      redirect_to admin_rooms_path, notice: 'Meeting room was successfully created.'
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    add_breadcrumb params[:id], edit_admin_meeting_room_management_path
-    add_breadcrumb 'Edit', edit_admin_meeting_room_management_path
+    add_breadcrumb params[:id], edit_admin_room_path
+    add_breadcrumb 'Edit', edit_admin_room_path
   end
 
   def update
     if @meeting_room.update(room_params)
-      redirect_to edit_admin_meeting_room_management_path, notice: 'Meeting room was successfully updated.'
+      redirect_to edit_admin_room_path, notice: 'Meeting room was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -37,9 +37,9 @@ class Admin::MeetingRoomManagementController < ApplicationController
 
   def destroy
     @meeting_room.destroy
-    redirect_to admin_meeting_room_management_index_path, notice: 'Meeting room was successfully destroyed.'
+    redirect_to admin_rooms_path, notice: 'Meeting room was successfully destroyed.'
   rescue ActiveRecord::InvalidForeignKey => _e
-    redirect_to admin_meeting_room_management_index_path, notice: 'The meeting room was not destroyed because it had some reservations.'
+    redirect_to admin_rooms_path, notice: 'The meeting room was not destroyed because it had some reservations.'
   end
 
   private

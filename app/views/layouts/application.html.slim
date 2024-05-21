@@ -26,7 +26,7 @@ html[lang="en"]
             = mi.shape(:space_dashboard).outlined
             span.whitespace-nowrap x-show="sidebarOpen" Dashboard
 
-          = link_to meeting_rooms_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_page?(meeting_rooms_path) ? ' navlink-active' : ''}"
+          = link_to meeting_rooms_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_controller?('reservations') || current_controller?('meeting_rooms') ? ' navlink-active' : ''}"
             = mi.shape(:meeting_room).outlined
             span.whitespace-nowrap x-show="sidebarOpen" Meeting Room
 
@@ -40,11 +40,11 @@ html[lang="en"]
           b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
         - if current_user.has_role?(:admin)
           .flex.flex-col.gap-2
-            = link_to admin_user_management_index_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_page?(admin_user_management_index_path) ? ' navlink-active' : ''}"
+            = link_to admin_users_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_page?(admin_users_path) ? ' navlink-active' : ''}"
               = mi.shape(:people).outlined
               span.whitespace-nowrap x-show="sidebarOpen" Employees
 
-            = link_to admin_meeting_room_management_index_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_controller?('admin/meeting_room_management') ? ' navlink-active' : ''}"
+            = link_to admin_rooms_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_controller?('admin/rooms') ? ' navlink-active' : ''}"
               = mi.shape(:room_preferences).outlined
               span.mr-auto.whitespace-nowrap x-show="sidebarOpen" Rooms
               span.whitespace-nowrap x-show="sidebarOpen"
@@ -74,7 +74,7 @@ html[lang="en"]
                 = image_tag 'avatar.png', class: 'block', width: 50, height: 50, alt: 'avatar'
             
             .absolute.right-0.bg-white.border.rounded-md.min-w-44.shadow-md.top-full.mt-1 x-show="settingOpen" x-cloak="visible"
-              = link_to profile_user_path, class: 'flex items-center whitespace-nowrap p-4 gap-2 cursor-pointer hover:bg-gray-200/60'
+              = link_to profile_users_path, class: 'flex items-center whitespace-nowrap p-4 gap-2 cursor-pointer hover:bg-gray-200/60'
                 = mi.shape(:account_circle).outlined
                 | My Profile
 
