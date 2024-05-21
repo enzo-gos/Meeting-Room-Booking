@@ -107,6 +107,7 @@ class MeetingReservation < ApplicationRecord
   end
 
   def booking_before_30min_started
+    return unless book_at
     return unless start_time
 
     begin_time = start_datetime_with_recurring.to_time
