@@ -1,6 +1,6 @@
 .flex.gap-4.items-start
 	.bg-white.p-8.w-full.border.border-gray-200
-		= simple_form_for @user_profile, url: profile_user_path, :method => :patch, defaults: { error_html: { class: 'text-red-500' }, label_html: { class: 'form-label mb-2' } } do |f|
+		= simple_form_for @user_profile, url: profile_users_path, :method => :patch, defaults: { error_html: { class: 'text-red-500' }, label_html: { class: 'form-label mb-2' } } do |f|
 			.flex.gap-10
 				.flex.flex-col.items-center 
 					span.mb-5 Avatar

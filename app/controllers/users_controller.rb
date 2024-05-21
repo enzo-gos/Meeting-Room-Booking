@@ -1,5 +1,5 @@
-class UserController < ApplicationController
-  add_breadcrumb 'User Profile', :profile_user_path
+class UsersController < ApplicationController
+  add_breadcrumb 'User Profile', :profile_users_path
 
   def index
     @user_profile = current_user

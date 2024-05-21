@@ -1,5 +1,5 @@
 .mx-auto.rounded-lg.bg-white.shadow-md.max-w-xl
 	.relative.p-6
 		h3.text-2xl.font-bold.text-primary-800
-			| Edit Room
-		= render 'room_manage_form', url: :admin_meeting_room_management, method: :patch
+			| Create A New Room
+		= render 'room_manage_form', url: :admin_rooms, method: :post

@@ -1,4 +1,4 @@
-class Admin::UserManagementController < ApplicationController
+class Admin::UsersController < ApplicationController
   before_action :init_breadcrumbs
   before_action :init_update_breadcrumb, only: [:edit, :update]
   before_action :prepare_employee_list, only: [:index]
@@ -13,7 +13,7 @@ class Admin::UserManagementController < ApplicationController
   def create
     @employee = User.create(employee_params.merge({ password: User.default_password }))
     if @employee.save
-      redirect_to admin_user_management_index_path, notice: 'Employee was successfully created.'
+      redirect_to admin_users_path, notice: 'Employee was successfully created.'
     else
       render :new, status: :unprocessable_entity
     end
@@ -23,7 +23,7 @@ class Admin::UserManagementController < ApplicationController
 
   def update
     if @employee.update(employee_params)
-      redirect_to admin_user_management_index_path, notice: 'Employee was successfully updated.'
+      redirect_to admin_users_path, notice: 'Employee was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -31,7 +31,7 @@ class Admin::UserManagementController < ApplicationController
 
   def destroy
     @employee.destroy
-    redirect_to admin_user_management_index_path, notice: 'Employee was successfully deleted.'
+    redirect_to admin_users_path, notice: 'Employee was successfully deleted.'
   end
 
   private

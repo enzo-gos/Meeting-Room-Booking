@@ -1,6 +1,6 @@
-# GoMee
+# GoMeeting
 
-GoMee is web application that simplifies the process of reserving and managing meeting spaces within an organization at Golden Owl. It allows users to easily schedule, book, and manage meetings, check room availability in real-time, integrate with calendars, send automated notifications, track room utilization, and customize booking rules to align with organizational policies.
+GoMeeting is web application that simplifies the process of reserving and managing meeting spaces within an organization at Golden Owl. It allows users to easily schedule, book, and manage meetings, check room availability in real-time, integrate with calendars, send automated notifications, track room utilization, and customize booking rules to align with organizational policies.
 <br />
 
 # Table of Contents
@@ -16,8 +16,8 @@ GoMee is web application that simplifies the process of reserving and managing m
   <br />
 
 # Architecture
-![Architecture](https://github.com/enzo-gos/Meeting-Room-Booking/assets/164119335/273898cb-fb02-40e7-8ff8-478516b1b331)
 
+![Architecture](https://github.com/enzo-gos/Meeting-Room-Booking/assets/164119335/273898cb-fb02-40e7-8ff8-478516b1b331)
 
 # Tech Stack
 
@@ -66,8 +66,8 @@ GoMee is web application that simplifies the process of reserving and managing m
 │   │   └── room_channel.rb
 │   ├── controllers
 │   │   ├── admin
-│   │   │   ├── user_management_controller.rb
-│   │   │   └── meeting_room_management_controller.rb
+│   │   │   ├── rooms_controller.rb
+│   │   │   └── users_controller.rb
 │   │   ├── concerns
 │   │   │   ├── filterable.rb
 │   │   │   └── google_calendar.rb
@@ -76,10 +76,21 @@ GoMee is web application that simplifies the process of reserving and managing m
 │   │   ├── dashboard_controller.rb
 │   │   ├── meeting_rooms_controller.rb
 │   │   ├── reservations_controller.rb
-│   │   └── user_controller.rb
+│   │   └── users_controller.rb
 │   ├── helpers
 │   │   ├── application_helper.rb
+│   │   ├── dashboard_helper.rb
+│   │   ├── meeting_rooms_helper.rb
+│   │   ├── reservations_helper.rb
+│   │   ├── schedules_helper.rb
+│   │   ├── users_helper.rb
 │   │   └── concerns
+│   ├── javascript
+│   │   ├── channels
+│   │   ├── controllers
+│   │   ├── helpers
+│   │   ├── recurring_select
+│   │   └── application.js
 │   ├── jobs
 │   ├── mailers
 │   ├── models
@@ -107,7 +118,6 @@ GoMee is web application that simplifies the process of reserving and managing m
 │       ├── meeting_rooms
 │       ├── reservations
 │       └── user
-│
 ├── bin
 ├── config
 ├── db
