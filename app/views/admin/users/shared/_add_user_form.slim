@@ -1,6 +1,6 @@
-.mt-2.text-sm
+.mt-2.text-sm.p-4.sm:p-0
 	= simple_form_for employee, url: url, method: method, defaults: { label_html: { class: 'form-label my-2 flex flex-row-reverse justify-end gap-1' }, error_html: { class: 'text-red-500 mt-1 block text-[13px] ml-1' } } do |f|
-		.form-row-wrapper
+		.form-row-wrapper.flex-wrap.sm:flex-nowrap
 			= f.input :email, input_html: { class: 'form-input w-full', placeholder: 'Enter user email', required: true }
 			= f.input :role_ids, collection: Role.all, label: "Role", label_method: :name, value_method: :id, prompt: "Select Role", input_html: { class: 'form-input w-full', required: true }
 			= f.input :team_ids, label: "Team", collection: Team.all, label_method: :name, value_method: :id, prompt: "Select Team", input_html: { class: "form-input w-full", required: true }
