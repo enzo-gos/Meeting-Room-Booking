@@ -15,54 +15,56 @@ html[lang="en"]
     script[src="https://unpkg.com/alpinejs@3.13.10/dist/cdn.min.js"]
     script[src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"]
   body.bg-slate-100/50
-    div x-data="{ sidebarOpen: false }"
-      .fixed.left-0.h-screen.bg-white.border-r.px-2.py-4.flex.flex-col.overflow-y-auto.border-gray-200/60 :class="{'w-64 transition-all': sidebarOpen, 'w-[72px]': !sidebarOpen}"
-        .py-2.pb-6
+    . x-data="{ sidebarOpen: false }"
+      .sidebar :class="{'lg:w-64 transition-all': sidebarOpen, 'lg:w-[72px]': !sidebarOpen}"
+        .py-2.pb-6.hidden.lg:block
           = image_tag 'logo.png', class: 'block mx-auto', alt: 'golden_owl_logo', ':class': "{'w-[80px]': sidebarOpen, 'w-[50px]': !sidebarOpen}"
-        b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Main menu
+        b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap.hidden.lg:inline x-show="sidebarOpen" Main menu
   
-        .flex.flex-col.gap-2
-          = link_to dashboard_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_page?(dashboard_path) || current_page?(authenticated_root_path) ? ' navlink-active' : ''}"
+        .sidebar-group
+          = link_to dashboard_path, class: "sidebar-button#{current_page?(dashboard_path) || current_page?(authenticated_root_path) ? ' navlink-active' : ''}"
             = mi.shape(:space_dashboard).outlined
-            span.whitespace-nowrap x-show="sidebarOpen" Dashboard
+            span.hidden.whitespace-nowrap.sm:inline :class="{'lg:inline': sidebarOpen, 'lg:hidden': !sidebarOpen}" Dashboard
 
-          = link_to meeting_rooms_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_controller?('reservations') || current_controller?('meeting_rooms') ? ' navlink-active' : ''}"
+          = link_to meeting_rooms_path, class: "sidebar-button#{current_controller?('reservations') || current_controller?('meeting_rooms') ? ' navlink-active' : ''}"
             = mi.shape(:meeting_room).outlined
-            span.whitespace-nowrap x-show="sidebarOpen" Meeting Room
+            span.hidden.whitespace-nowrap.sm:inline :class="{'lg:inline': sidebarOpen, 'lg:hidden': !sidebarOpen}" Booking
 
-          = link_to '#', class: 'px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer'
+          = link_to '#', class: 'sidebar-button'
             = mi.shape(:schedule).outlined
-            span.whitespace-nowrap x-show="sidebarOpen" Schedule
-        
+            span.hidden.whitespace-nowrap.sm:inline :class="{'lg:inline': sidebarOpen, 'lg:hidden': !sidebarOpen}" Schedule
+
         .border-t.my-2
 
         - if current_user.has_role?(:admin)
-          b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap x-show="sidebarOpen" Management
-        - if current_user.has_role?(:admin)
-          .flex.flex-col.gap-2
-            = link_to admin_users_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_page?(admin_users_path) ? ' navlink-active' : ''}"
-              = mi.shape(:people).outlined
-              span.whitespace-nowrap x-show="sidebarOpen" Employees
+          b.font-medium.text-sm.text-secondary-600.my-2.mx-1.whitespace-nowrap.hidden.lg:inline :class="{'lg:inline': sidebarOpen, 'lg:hidden': !sidebarOpen}" Management
 
-            = link_to admin_rooms_path, class: "px-4 py-3 rounded-sm flex gap-3 items-center hover:bg-gray-200/60 cursor-pointer#{current_controller?('admin/rooms') ? ' navlink-active' : ''}"
+        - if current_user.has_role?(:admin)
+          .sidebar-group
+            = link_to admin_users_path, class: "sidebar-button#{current_page?(admin_users_path) ? ' navlink-active' : ''}"
+              = mi.shape(:people).outlined
+              span.hidden.whitespace-nowrap.sm:inline :class="{'lg:inline': sidebarOpen, 'lg:hidden': !sidebarOpen}" Employees
+
+            = link_to admin_rooms_path, class: "sidebar-button#{current_controller?('admin/rooms') ? ' navlink-active' : ''}"
               = mi.shape(:room_preferences).outlined
-              span.mr-auto.whitespace-nowrap x-show="sidebarOpen" Rooms
-              span.whitespace-nowrap x-show="sidebarOpen"
-                = mi.shape(:keyboard_arrow_right).outlined
+              span.hidden.whitespace-nowrap.sm:inline :class="{'lg:inline': sidebarOpen, 'lg:hidden': !sidebarOpen}" Rooms
 
           .border-t.my-2
 
-        .flex.items-center.gap-1.justify-center.text-sm.mt-4.xl:mt-auto.whitespace-nowrap x-show="sidebarOpen"
+        .hidden.items-center.gap-1.justify-center.text-sm.mt-4.whitespace-nowrap :class="{'lg:flex': sidebarOpen, 'lg:hidden': !sidebarOpen}" x-show="sidebarOpen"
           | Copyright  
           = mi.shape(:copyright).outlined.md_18
           | 2024
    
-      .w-auto.left-0.right-0 :class="{'ml-64 transition-all': sidebarOpen, 'ml-[72px]': !sidebarOpen}"
+      .w-auto.left-0.right-0 :class="{'lg:ml-64 transition-all': sidebarOpen, 'lg:ml-[72px]': !sidebarOpen}"
         nav.flex.items-center.w-full.bg-white.p-2.px-4.border-b.sticky.top-0.z-max
-          button.flex.items-center.justify-center.border.rounded-full.p-2.hover:bg-gray-200/60.cursor-pointer @click="sidebarOpen = !sidebarOpen"
+          .block.w-12.lg:hidden
+            = image_tag 'logo.png', class: 'block mx-auto', alt: 'golden_owl_logo'
+
+          button.hidden.items-center.justify-center.border.rounded-full.p-2.lg:flex.hover:bg-gray-200/60.cursor-pointer @click="sidebarOpen = !sidebarOpen"
             = mi.shape(:menu).outlined.md_18
 
-          b.text-xl.font-semibold.ml-6.text-secondary-700.flex.items-center
+          b.text-xl.font-semibold.ml-6.text-secondary-700.items-center.whitespace-nowrap.hidden.md:flex
             = render_breadcrumbs :separator => mi.shape(:keyboard_arrow_right).round
           
           .relative.ml-auto x-data="{ settingOpen: false }" @click.away="settingOpen = false"
@@ -82,8 +84,8 @@ html[lang="en"]
                 = mi.shape(:exit_to_app).outlined
                 span Logout
 
-        .w-full.overflow-x-auto.overflow-y-hidden.py-2.min-h-screen
-          .main-content
+        .w-full.overflow-x-auto.overflow-y-hidden.py-2.min-h-screen.pb-24.lg:pb-0
+          .main-content class="#{current_controller?('admin/users') || current_controller?('admin/rooms') ? '' : 'min-w-[72rem]'}"
             .fixed.top-10.right-10.shadow-md.rounded-md.z-max
               - if notice
                 .flex.rounded-md.bg-primary-50.p-4.text-sm.text-primary-500 [x-cloak x-show="showAlert" x-data="{ showAlert: true }" x-init="setTimeout(() => showAlert = false, 2000)"]

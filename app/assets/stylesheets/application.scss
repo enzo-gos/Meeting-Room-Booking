@@ -56,3 +56,9 @@
 .rs_dialog_holder {
   z-index: 9999 !important;
 }
+
+@media (min-width: 640px) {
+  thead tr:not(:first-child) {
+    display: none;
+  }
+}

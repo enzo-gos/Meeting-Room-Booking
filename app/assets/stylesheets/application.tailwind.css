@@ -3,6 +3,55 @@
 @tailwind utilities;
 
 @layer components {
+  .sidebar {
+    @apply bg-white
+      fixed
+      p-2
+      flex
+      flex-row
+      z-max
+      border-gray-200/60
+      bottom-0
+      w-full
+      justify-center
+      border-t
+      lg:border-t-0
+      lg:py-4
+      lg:gap-0
+      lg:overflow-y-auto
+      lg:justify-start
+      lg:flex-col
+      lg:left-0
+      lg:h-screen
+      lg:border-r;
+  }
+
+  .sidebar-group {
+    @apply flex flex-row lg:flex-col gap-0 lg:gap-2;
+  }
+
+  .sidebar-button {
+    @apply px-3
+      py-3 
+      rounded-sm 
+      flex 
+      gap-2
+      items-center 
+      hover:bg-gray-200/60 
+      cursor-pointer 
+      mx-2
+      flex-col
+      text-xs
+      w-auto
+      md:px-4
+      md:w-20
+      lg:text-sm
+      lg:w-auto
+      lg:flex-row 
+      lg:gap-3 
+      lg:mx-0;
+  }
+
   .form-label {
     @apply mb-1 block font-semibold text-secondary-700;
   }
@@ -111,7 +160,7 @@
   }
 
   .main-content {
-    @apply p-4 max-w-6xl min-w-[72rem] mx-auto 2xl:min-w-max;
+    @apply sm:p-4 max-w-6xl mx-auto 2xl:min-w-max;
   }
 
   a.navlink-active {
@@ -231,6 +280,58 @@
 
   .room-card:hover img {
     scale: 1.1;
+  }
+
+  .management-table {
+    @apply flex
+      bg-white 
+      flex-row 
+      overflow-hidden 
+      text-left 
+      text-sm 
+      text-secondary-700 
+      sm:inline-table;
+  }
+
+  .table-heading,
+  .table-body {
+    @apply divide-y divide-gray-100 border-gray-100;
+  }
+
+  .table-heading {
+    @apply bg-gray-50;
+  }
+
+  .table-heading th {
+    @apply font-medium text-secondary-900;
+  }
+
+  .table-body {
+    @apply border-t
+      flex-1 
+      sm:flex-none;
+  }
+
+  .table-body tr {
+    @apply hover:bg-gray-50/80;
+  }
+
+  .table-heading > tr > th:last-child,
+  .table-body > tr > td:last-child {
+    @apply h-11 sm:h-auto;
+  }
+
+  .table-heading > tr > th:last-child {
+    @apply flex items-center;
+  }
+
+  .management-table tr {
+    @apply flex flex-col flex-nowrap sm:table-row mb-4;
+  }
+
+  .management-table tr td,
+  .management-table tr th {
+    @apply px-4 py-2 lg:px-6 sm:py-4;
   }
 
   .trix-editor {
