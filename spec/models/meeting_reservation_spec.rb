@@ -91,27 +91,27 @@ RSpec.describe MeetingReservation, type: :model do
 
   describe 'scopes' do
     it 'filters by title' do
-      expect(MeetingReservation.filter({ 'title' => 'Strategy Meeting', 'book_by' => '', 'book_at' => '', 'start_time' => '', 'room_id' => '' }).count).to eq(1)
+      expect(ReservationsQuery.new.call({ 'title' => 'Strategy Meeting', 'book_by' => '', 'book_at' => '', 'start_time' => '', 'room_id' => '' }).count).to eq(1)
     end
 
     it 'filters by book_by' do
-      expect(MeetingReservation.filter({ 'title' => '', 'book_by' => user, 'book_at' => '', 'start_time' => '', 'room_id' => '' }).count).to eq(1)
+      expect(ReservationsQuery.new.call({ 'title' => '', 'book_by' => user, 'book_at' => '', 'start_time' => '', 'room_id' => '' }).count).to eq(1)
     end
 
     it 'filters by book_at' do
-      expect(MeetingReservation.filter({ 'title' => '', 'book_by' => '', 'book_at' => Date.today, 'start_time' => '', 'room_id' => '' }).count).to eq(1)
+      expect(ReservationsQuery.new.call({ 'title' => '', 'book_by' => '', 'book_at' => Date.today, 'start_time' => '', 'room_id' => '' }).count).to eq(1)
     end
 
     it 'filters by start_time' do
-      expect(MeetingReservation.filter({ 'title' => '', 'book_by' => '', 'book_at' => '', 'start_time' => start_time, 'room_id' => '' }).count).to eq(1)
+      expect(ReservationsQuery.new.call({ 'title' => '', 'book_by' => '', 'book_at' => '', 'start_time' => start_time, 'room_id' => '' }).count).to eq(1)
     end
 
     it 'filters by room' do
-      expect(MeetingReservation.filter({ 'title' => '', 'book_by' => '', 'book_at' => '', 'start_time' => '', 'room_id' => room.id }).count).to eq(1)
+      expect(ReservationsQuery.new.call({ 'title' => '', 'book_by' => '', 'book_at' => '', 'start_time' => '', 'room_id' => room.id }).count).to eq(1)
     end
 
     it 'full filters' do
-      expect(MeetingReservation.filter({ 'title' => 'Strategy Meeting', 'book_by' => user, 'book_at' => Date.today, 'start_time' => start_time, 'room_id' => room.id }).count).to eq(1)
+      expect(ReservationsQuery.new.call({ 'title' => 'Strategy Meeting', 'book_by' => user, 'book_at' => Date.today, 'start_time' => start_time, 'room_id' => room.id }).count).to eq(1)
     end
   end
 

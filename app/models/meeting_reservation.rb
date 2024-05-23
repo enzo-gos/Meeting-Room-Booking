@@ -19,8 +19,6 @@ class MeetingReservation < ApplicationRecord
   include DateTimeMethods
   include SchedulesHelper
   include ReservationJobs
-  include BookTimeValidator
-  include OverlapValidator
 
   attr_accessor :_skip_callback
 
@@ -42,6 +40,14 @@ class MeetingReservation < ApplicationRecord
   validates :end_time, presence: { message: 'End time must be provided' }
   validate -> { errors.add(:base, 'Invitation must be included.') if members.empty? && team_id.nil? }
 
+  validate :start_time_less_than_end_time
+  validate :time_difference_in_15_minutes
+  validate :booking_before_30min_started
+
+  validate :does_not_conflict, if: :new_or_changed
+  validate :does_not_overlap_single_recurring, if: :new_or_changed
+  validate :does_not_overlap_recurring, if: :new_or_changed
+
   scope :with_room_department, -> { includes(room: :department) }
   scope :by_book_by, ->(book_by_id) { where(book_by_id: book_by_id) if book_by_id.present? }
   scope :by_schedule, -> { where(outdated: false) }
@@ -49,9 +55,79 @@ class MeetingReservation < ApplicationRecord
 
   after_create_commit :perform_to_create_history, unless: :_skip_callback
   after_destroy_commit :perform_to_delete_history, unless: :_skip_callback
+  after_update_commit :perform_to_update_history, unless: :_skip_callback
   after_commit -> { SendEventJob.perform_async(to_json) }
 
   before_save -> { self.book_at = start_datetime_with_recurring }
+
+  # check overlap single event - single event
+  def does_not_conflict
+    return if recurring?
+
+    book_at_str = book_at&.strftime('%Y-%m-%d')
+
+    overlapping_events = MeetingReservation.where('room_id = ? AND start_time < ? AND end_time > ? AND book_at = ?', room_id, end_time, start_time, book_at_str).where(recurring: nil)
+    overlapping_events = overlapping_events.where.not(id: id) unless id.nil?
+
+    if overlapping_events.exists?
+      errors.add(:base, 'A meeting has already been booked at this time.')
+    end
+  end
+
+  # check overlap recurring - recurring
+  def does_not_overlap_recurring
+    return if outdated == true
+    return unless recurring?
+    return unless start_time && end_time
+
+    overlapping_events = MeetingReservation.where('room_id = ? AND start_time < ? AND end_time > ? AND recurring = ? AND outdated = false', room_id, end_time, start_time, recurring.to_json)
+    overlapping_events = overlapping_events.where.not(id: id) unless id.nil?
+
+    if overlapping_events.exists?
+      errors.add(:base, 'A meeting has already been booked at this time.')
+    end
+  end
+
+  # check overlap single - recurring
+  def does_not_overlap_single_recurring
+    return if outdated == true
+    return unless recurring.empty?
+    return unless start_time && end_time
+
+    overlapping_meeting = find_overlapping_meeting
+
+    if overlapping_meeting
+      errors.add(:base, 'A meeting has already been booked at this time.')
+    end
+  end
+
+  def start_time_less_than_end_time
+    return unless start_time && end_time
+
+    if start_time >= end_time
+      errors.add(:start_time, 'Start time must be less than end time')
+    end
+  end
+
+  def time_difference_in_15_minutes
+    return unless start_time && end_time
+
+    if (end_time - start_time) < 15.minutes
+      errors.add(:base, 'The meeting must last at least 15 minutes from the start time.')
+    end
+  end
+
+  def booking_before_30min_started
+    return unless book_at
+    return unless start_time
+
+    begin_time = start_datetime_with_recurring.to_time
+    time_now = Time.now
+
+    if begin_time < time_now || begin_time - time_now < 30.minutes
+      errors.add(:base, 'The meeting must be booked at least 30 minutes before meeting start  .')
+    end
+  end
 
   def start_datetime_with_recurring
     return start_datetime unless recurring?
@@ -163,12 +239,6 @@ class MeetingReservation < ApplicationRecord
     rule.extimes
   end
 
-  def perform_to_update_history
-    schedule_job(id)&.reschedule(start_datetime_with_recurring)
-    monthly_job(id)&.delete
-    MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
-  end
-
   def to_calendar_event
     create_calendar_event.merge({ event_id: calendar_event })
   end
@@ -186,6 +256,30 @@ class MeetingReservation < ApplicationRecord
   end
 
   private
+
+  def new_or_changed
+    (new_record? && !persisted?) || changed?
+  end
+
+  def find_overlapping_meeting
+    reservations = MeetingReservation.where('room_id = ? AND outdated = false', room_id)
+    reservations = reservations.where.not(id: id) unless id.nil?
+
+    recurring_meetings = reservations.flat_map { |e| e.events(end_datetime) }
+    recurring_meetings.find do |e|
+      overlap?(e)
+    end
+  end
+
+  def overlap?(meeting)
+    meeting.book_at == book_at && meeting.start_time < end_time && meeting.end_time > start_time
+  end
+
+  def perform_to_update_history
+    schedule_job(id)&.reschedule(start_datetime_with_recurring)
+    monthly_job(id)&.delete
+    MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
+  end
 
   def perform_to_create_history
     return if outdated
