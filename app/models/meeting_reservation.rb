@@ -42,7 +42,7 @@ class MeetingReservation < ApplicationRecord
 
   validate :start_time_less_than_end_time
   validate :time_difference_in_15_minutes
-  validate :booking_before_30min_started
+  # validate :booking_before_30min_started
 
   validate :does_not_conflict, if: :new_or_changed
   validate :does_not_overlap_single_recurring, if: :new_or_changed
