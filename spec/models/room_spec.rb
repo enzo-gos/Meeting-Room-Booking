@@ -65,23 +65,23 @@ RSpec.describe Room, type: :model do
 
   describe 'scopes' do
     it 'filters by name' do
-      expect(Room.filter({ 'name' => 'Conference Room', 'department_id' => '', 'facility_ids' => '', 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
+      expect(RoomsQuery.new.call({ 'name' => 'Conference Room', 'department_id' => '', 'facility_ids' => '', 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
     end
 
     it 'filters by department' do
-      expect(Room.filter({ 'name' => '', 'department_id' => department.id, 'facility_ids' => '', 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
+      expect(RoomsQuery.new.call({ 'name' => '', 'department_id' => department.id, 'facility_ids' => '', 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
     end
 
     it 'filters by facilities' do
-      expect(Room.filter({ 'name' => '', 'department_id' => '', 'facility_ids' => facility.id.to_s, 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
+      expect(RoomsQuery.new.call({ 'name' => '', 'department_id' => '', 'facility_ids' => facility.id.to_s, 'min_capacity' => '', 'max_capacity' => '' }).count).to eq(1)
     end
 
     it 'filters by capacity' do
-      expect(Room.filter({ 'name' => '', 'department_id' => '', 'facility_ids' => '', 'min_capacity' => 10, 'max_capacity' => 20 }).count).to eq(1)
+      expect(RoomsQuery.new.call({ 'name' => '', 'department_id' => '', 'facility_ids' => '', 'min_capacity' => 10, 'max_capacity' => 20 }).count).to eq(1)
     end
 
     it 'full filters' do
-      expect(Room.filter({ 'name' => 'Conference Room', 'department_id' => department.id, 'facility_ids' => facility.id.to_s, 'min_capacity' => 10, 'max_capacity' => 20 }).count).to eq(1)
+      expect(RoomsQuery.new.call({ 'name' => 'Conference Room', 'department_id' => department.id, 'facility_ids' => facility.id.to_s, 'min_capacity' => 10, 'max_capacity' => 20 }).count).to eq(1)
     end
   end
 end

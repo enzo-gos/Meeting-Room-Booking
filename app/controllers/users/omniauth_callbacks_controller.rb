@@ -52,7 +52,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       'expires_in' => auth.credentials.expires_at,
       'refresh_token' => auth.credentials.refresh_token,
       'token_type' => 'Bearer',
-      'granted_scopes' => auth.credentials.scope
+      'granted_scopes' => '[https://www.googleapis.com/auth/calendar]'
     }
   end
 
