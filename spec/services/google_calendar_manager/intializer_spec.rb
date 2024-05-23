@@ -3,7 +3,7 @@ require 'rails_helper'
 require 'google/apis/calendar_v3'
 require 'signet/oauth_2/client'
 
-RSpec.describe 'Google Calendar Service' do
+RSpec.describe GoogleCalendarManager::Initializer do
   let(:client_options) do
     {
       client_id: 'test_client_id',
@@ -33,7 +33,7 @@ RSpec.describe 'Google Calendar Service' do
       allow(Google::Apis::CalendarV3::CalendarService).to receive(:new).and_return(mock_calendar_service)
       allow(mock_calendar_service).to receive(:authorization=).with(mock_oauth2_client)
 
-      client, service = GoogleCalendarManager::Initializer.new(authorization).call
+      client, service = described_class.new(authorization).call
 
       expect(client).to eq(mock_oauth2_client)
       expect(service).to eq(mock_calendar_service)

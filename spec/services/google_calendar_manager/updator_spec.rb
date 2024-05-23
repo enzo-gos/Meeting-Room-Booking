@@ -1,14 +1,15 @@
-RSpec.describe 'Updater' do
+RSpec.describe GoogleCalendarManager::Updater do
   let(:mock_authorization) { 'mock_authorization_token' }
   let(:mock_event) do
     {
-      event_id: 'mock_event_id',
-      title: 'Updated Event Title',
-      note: 'Updated Event Note',
+      event_id: Faker::Alphanumeric.alphanumeric(number: 10),
+      title: Faker::Lorem.sentence(word_count: 3),
+      note: Faker::Lorem.paragraph(sentence_count: 2),
       start_date: DateTime.new(2024, 5, 23, 13, 30, 0),
       end_date: DateTime.new(2024, 5, 23, 16, 30, 0),
       members: [
-        Google::Apis::CalendarV3::EventAttendee.new(email: 'enzo.nguyen.gos@gmail.com', response_status: 'needsAction')
+        Google::Apis::CalendarV3::EventAttendee.new(email: Faker::Internet.email(name: 'Enzo Nguyen'), response_status: 'needsAction'),
+        Google::Apis::CalendarV3::EventAttendee.new(email: Faker::Internet.email(name: 'User1 Tran'), response_status: 'needsAction')
       ],
       recurrence: ['RRULE:FREQ=DAILY;COUNT=2']
     }
@@ -17,7 +18,7 @@ RSpec.describe 'Updater' do
   let(:mock_service) { instance_double(Google::Apis::CalendarV3::CalendarService) }
   let(:mock_client) { instance_double(Signet::OAuth2::Client) }
   let(:mock_initializer) { instance_double(GoogleCalendarManager::Initializer, call: [mock_client, mock_service]) }
-  let(:updater) { GoogleCalendarManager::Updater.new(authorization: mock_authorization, event: mock_event) }
+  let(:updater) { described_class.new(authorization: mock_authorization, event: mock_event) }
 
   describe '#call' do
     it 'updates the specified event' do
