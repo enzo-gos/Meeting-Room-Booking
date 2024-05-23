@@ -1,0 +1,7 @@
+one:
+  title: "Test Event"
+  note: "This is a test event."
+  start_date: "Thu, 23 May 2024 13:30:00 +0700"
+  end_date: "Thu, 23 May 2024 16:30:00 +0700"
+  recurring: []
+  members: [{ email: "enzo.nguyen.gos@gmail.com" }]
