@@ -1,12 +1,14 @@
 RSpec.describe GoogleCalendarManager::Updater do
   let(:mock_authorization) { 'mock_authorization_token' }
+  let(:start_time) { DateTime.current + 1.day }
+  let(:end_time) { start_time + 1.hour }
   let(:mock_event) do
     {
       event_id: Faker::Alphanumeric.alphanumeric(number: 10),
       title: Faker::Lorem.sentence(word_count: 3),
       note: Faker::Lorem.paragraph(sentence_count: 2),
-      start_date: DateTime.new(2024, 5, 23, 13, 30, 0),
-      end_date: DateTime.new(2024, 5, 23, 16, 30, 0),
+      start_date: start_time,
+      end_date: end_time,
       members: [
         Google::Apis::CalendarV3::EventAttendee.new(email: Faker::Internet.email(name: 'Enzo Nguyen'), response_status: 'needsAction'),
         Google::Apis::CalendarV3::EventAttendee.new(email: Faker::Internet.email(name: 'User1 Tran'), response_status: 'needsAction')

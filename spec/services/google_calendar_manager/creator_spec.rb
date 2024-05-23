@@ -2,12 +2,14 @@ require 'rails_helper'
 
 RSpec.describe GoogleCalendarManager::Creator do
   let(:mock_authorization) { 'mock_authorization_token' }
+  let(:start_time) { DateTime.current + 1.day }
+  let(:end_time) { start_time + 1.hour }
   let(:mock_event) do
     {
       title: Faker::Lorem.sentence(word_count: 3),
       note: "<div class=\"trix-content\">\n  <div>You're warmly invited to a meeting at <strong>Meeting Room 1 - Level 7th, 538 Cach Mang Thang Tam, Ward 11, District 3, HCMC</strong>.<br><br>Your input is highly appreciated, so please mark your calendar and endeavor to arrive on time.</div>\n</div>\n",
-      start_date: DateTime.new(2024, 5, 23, 13, 30, 0),
-      end_date: DateTime.new(2024, 5, 23, 16, 30, 0),
+      start_date: start_time,
+      end_date: end_time,
       members: [
         Google::Apis::CalendarV3::EventAttendee.new(email: Faker::Internet.email(name: 'Enzo Nguyen'), response_status: 'needsAction'),
         Google::Apis::CalendarV3::EventAttendee.new(email: Faker::Internet.email(name: 'User1 Tran'), response_status: 'needsAction')
