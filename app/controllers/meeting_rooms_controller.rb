@@ -2,6 +2,7 @@ class MeetingRoomsController < ApplicationController
   include Filterable
   include ApplicationHelper
   include MeetingRoomsHelper
+  include ReservationsHelper
 
   before_action :authorize_user, except: [:index]
 
@@ -11,7 +12,7 @@ class MeetingRoomsController < ApplicationController
   before_action :prepared_meeting_reservation, only: [:schedule, :book]
 
   def index
-    @filter_history, @departments_rooms = filter!(Room)
+    @filter_history, @departments_rooms = filter!(RoomsQuery.new)
     @departments_rooms = @departments_rooms.group_by(&:department)
   end
 
@@ -51,7 +52,7 @@ class MeetingRoomsController < ApplicationController
 
   def create
     @meeting_reservation = MeetingReservation.new(meeting_reservation_params.merge(room_id: params[:id], book_by: current_user))
-    @selected_rule = @meeting_reservation.rule_to_option
+    @selected_rule = option_from_rule(@meeting_reservation)
 
     event = @meeting_reservation.create_calendar_event if @meeting_reservation.valid?
 
@@ -108,9 +109,21 @@ class MeetingRoomsController < ApplicationController
     params.require(:meeting_reservation).permit(:title, :note, :recurring, :book_at, :start_time, :end_time, :team_id, member_ids: [])
   end
 
+  def filter_history(meeting_reservations)
+    reservation_by_calendar = meeting_reservations.group_by { |e| [e.calendar_event, e.book_at, e.start_time] }
+    selected_reservations = []
+
+    reservation_by_calendar.each do |_key, events|
+      selected_reservations += events.count == 1 ? events : events.select { |e| e.outdated == true }
+    end
+
+    selected_reservations
+  end
+
   def remove_overlap_events(meeting_reservations)
     # handle Calendar overlap recurring - recurring UI show
-    grouped_schedules = meeting_reservations.group_by { |schedule| schedule.book_at.strftime('%Y-%m-%d') }
+    selected_reservations = filter_history(meeting_reservations)
+    grouped_schedules = selected_reservations.group_by { |schedule| schedule.book_at.strftime('%Y-%m-%d') }
 
     grouped_schedules.each do |date, events|
       events.sort_by!(&:created_at)

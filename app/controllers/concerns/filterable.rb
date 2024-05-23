@@ -14,10 +14,10 @@ module Filterable
 
   def filter_params_for(resource)
     filter_params = params.transform_values { |value| value.is_a?(Array) ? value.reject(&:empty?).join(',') : value }
-    filter_params.permit(resource::FILTER_PARAMS)
+    filter_params.permit(resource.class.const_get(:FILTER_PARAMS))
   end
 
   def apply_filters(resource)
-    resource.filter(session["#{resource.to_s.underscore}_filters"])
+    resource.call(session["#{resource.to_s.underscore}_filters"])
   end
 end

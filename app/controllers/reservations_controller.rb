@@ -1,8 +1,11 @@
 class ReservationsController < ApplicationController
+  include ReservationsHelper
+
   before_action :init_breadcrumbs
   before_action :prepared_reservation
   before_action :authorize_reservation, except: [:show]
   before_action :prepared_update_data, only: [:edit, :update]
+  before_action :prepared_recurring_rules, only: [:show, :edit, :update]
   before_action :validate_recurring, only: [:show, :edit, :update]
 
   add_breadcrumb 'Edit', only: [:edit, :update]
@@ -31,7 +34,7 @@ class ReservationsController < ApplicationController
   def show
     @meeting_room = @meeting_reservation.room
     @members = @meeting_reservation.members
-    @selected_rule = @meeting_reservation.rule_to_option
+    @selected_rule = option_from_rule(@meeting_reservation)
   end
 
   def destroy
@@ -55,6 +58,10 @@ class ReservationsController < ApplicationController
     @meeting_reservation = MeetingReservation.find(params[:id])
   end
 
+  def prepared_recurring_rules
+    @selected_rule = option_from_rule(@meeting_reservation)
+  end
+
   def authorize_reservation
     authorize @meeting_reservation, policy_class: ReservationPolicy
   end
@@ -66,7 +73,6 @@ class ReservationsController < ApplicationController
 
   def prepared_update_data
     @user_list = User.where.not(id: current_user.id)
-    @selected_rule = @meeting_reservation.rule_to_option
   end
 
   def validate_recurring
