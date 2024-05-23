@@ -62,7 +62,7 @@
 							td.px-6.py-4.whitespace-nowrap = reservation.recurring? ? '' : reservation.book_at.strftime('%Y-%m-%d')
 							td.px-6.py-4.whitespace-nowrap = reservation.start_time.strftime('%H:%M')
 							td.px-6.py-4.whitespace-nowrap = reservation.end_time.strftime('%H:%M')
-							td.px-6.py-4.w-56 = option_from_rule(reservation).first
+							td.px-6.py-4.w-56 = option_from_rule(reservation)&.first
 							td.px-6.py-4
 								.flex.justify-end.gap-3
 									= link_to edit_reservation_path(reservation.recurring? ? { id: reservation.id, recurring: reservation.start_datetime.to_i } : { id: reservation.id }), data: { turbo_frame: '_top', turbo_prefetch: false } do
