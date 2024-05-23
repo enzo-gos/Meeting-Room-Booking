@@ -24,6 +24,7 @@ class ReservationsController < ApplicationController
     end
 
     if google_event.present?
+      @meeting_reservation.perform_to_update_history
       redirect_to details_meeting_room_path(@meeting_reservation.room_id), notice: 'Meeting reservation was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
@@ -110,6 +111,7 @@ class ReservationsController < ApplicationController
       session[:authorization] = session[:authorization].merge(client.refresh!)
       retry
     end
+    @meeting_reservation.perform_to_update_history if google_event.present?
     google_event.present?
   end
 end

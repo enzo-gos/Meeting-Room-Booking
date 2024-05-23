@@ -55,7 +55,6 @@ class MeetingReservation < ApplicationRecord
 
   after_create_commit :perform_to_create_history, unless: :_skip_callback
   after_destroy_commit :perform_to_delete_history, unless: :_skip_callback
-  after_update_commit :perform_to_update_history, unless: :_skip_callback
   after_commit -> { SendEventJob.perform_async(to_json) }
 
   before_save -> { self.book_at = start_datetime_with_recurring }
@@ -255,6 +254,12 @@ class MeetingReservation < ApplicationRecord
     }
   end
 
+  def perform_to_update_history
+    schedule_job(id)&.reschedule(start_datetime_with_recurring)
+    monthly_job(id)&.delete
+    MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
+  end
+
   private
 
   def new_or_changed
@@ -273,12 +278,6 @@ class MeetingReservation < ApplicationRecord
 
   def overlap?(meeting)
     meeting.book_at == book_at && meeting.start_time < end_time && meeting.end_time > start_time
-  end
-
-  def perform_to_update_history
-    schedule_job(id)&.reschedule(start_datetime_with_recurring)
-    monthly_job(id)&.delete
-    MonthlyBookJob.perform_async(id, start_datetime_with_recurring.to_i) if recurring?
   end
 
   def perform_to_create_history
