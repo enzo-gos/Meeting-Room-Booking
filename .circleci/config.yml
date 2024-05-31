@@ -46,7 +46,8 @@ jobs:
       - run:
           name: Setup Code Climate test-reporter
           command: |
-            ./cc-test-reporter format-coverage -t simplecov coverage/.resultset.json
+            ./cc-test-reporter format-coverage -t simplecov $CIRCLE_ARTIFACTS/coverage/.resultset.json
+            ./cc-test-reporter upload-coverage
 
   deploy:
     docker:
