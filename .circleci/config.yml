@@ -49,6 +49,11 @@ jobs:
             ./cc-test-reporter format-coverage -t simplecov $CIRCLE_ARTIFACTS/coverage/.resultset.json
             ./cc-test-reporter upload-coverage
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
   published-golden-meeting-staging-version:
     docker:
       - image: cimg/base:current-22.04
@@ -105,8 +110,12 @@ workflows:
           type: 'approval'
           requires:
             - build-test-rails
-      - published-golden-meeting-staging-version
-      - deploy-golden-meeting-staging
+      - published-golden-meeting-staging-version:
+          requires:
+            - hold
+      - deploy-golden-meeting-staging:
+          requires:
+            - published-golden-meeting-staging-version
     # - deploy:
     #     requires:
     #       - test-ruby
