@@ -36,6 +36,17 @@ jobs:
       - store_artifacts:
           path: coverage
 
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            ./cc-test-reporter format-coverage -t simplecov coverage/.resultset.json
+
   deploy:
     docker:
       - image: cimg/base:stable
