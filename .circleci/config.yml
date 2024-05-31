@@ -13,7 +13,7 @@ jobs:
           POSTGRES_USER: gomeeting
           POSTGRES_DB: gomeeting_test
 
-      - image: cimg/redis
+      - image: cimg/redis:6.2.6
 
     steps:
       - checkout
