@@ -9,6 +9,7 @@ jobs:
           RAILS_ENV: test
           MEETING_ROOM_DATABASE_URL: postgres://gomeeting@localhost/gomeeting_test
           REDIS_URL: 'redis://localhost:6379'
+          CC_TEST_REPORTER_ID: 3bc6b33ff8487e6acdd97135f7dc33dab87a7e22c2d24632dd86ad1b769a7f42
 
       - image: cimg/postgres:9.6.22
         environment:
