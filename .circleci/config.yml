@@ -1,0 +1,50 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@2.0.1
+jobs:
+  build-test-rails:
+    docker:
+      - image: cimg/ruby:3.3.0-node
+        environment:
+          RAILS_ENV: test
+
+      - image: cimg/postgres:9.6.22
+        environment:
+          POSTGRES_USER: gomeeting
+          POSTGRES_DB: gomeeting_test
+
+      - image: cimg/redis:6.0.6
+
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run:
+          name: Wait for database
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Wait for redis
+          command: dockerize -wait tcp://localhost:6379 -timeout 1m
+      - run:
+          name: Repair database for test env
+          command: bundle exec rake db:test:prepare
+      - run:
+          name: Run rspec
+          command: bundle exec rspec
+
+      - store_artifacts:
+          path: coverage
+
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: deploy
+          command: '#e.g. ./deploy.sh'
+workflows:
+  build-and-test:
+    jobs:
+      - build-test-rails
+    # - deploy:
+    #     requires:
+    #       - test-ruby
