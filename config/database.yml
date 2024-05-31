@@ -20,6 +20,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: goldenmeeting
   password: goldenmeeting2024
+  url: <%= ENV.fetch("MEETING_ROOM_DATABASE_URL") { '' } %>
 
 development:
   <<: *default
@@ -61,9 +62,6 @@ development:
 test:
   <<: *default
   database: meeting_room_test
-  host: localhost
-  username: goldenmeeting
-  password: goldenmeeting2024
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -88,7 +86,4 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
   database: meeting_room_production
-  username: meeting_room
-  password: <%= ENV["MEETING_ROOM_DATABASE_PASSWORD"] %>
