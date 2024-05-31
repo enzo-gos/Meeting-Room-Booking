@@ -49,17 +49,64 @@ jobs:
             ./cc-test-reporter format-coverage -t simplecov $CIRCLE_ARTIFACTS/coverage/.resultset.json
             ./cc-test-reporter upload-coverage
 
-  deploy:
+  published-golden-meeting-staging-version:
+    docker:
+      - image: cimg/base:current-22.04
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - setup_remote_docker
+
+      - run:
+          name: Build staging image
+          command: |
+            echo MEETING_ROOM_DATABASE_URL=${DATABASE_URL} > .env
+            echo REDIS_URL=${MEETING_ROOM_REDIS_URL} >> .env
+            echo RAILS_MASTER_KEY=${RAILS_MASTER_KEY} >> .env
+            docker network create proxy
+            docker-compose -f docker-compose.prod.yml build --pull
+
+      - run:
+          name: Published staging image
+          command: |
+            docker login -u ${DOCKER_ACCOUNT} -p ${DOCKER_TOKEN}
+            docker-compose -f docker-compose.prod.yml push
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  deploy-golden-meeting-staging:
     docker:
       - image: cimg/base:stable
     steps:
+      - attach_workspace:
+          at: .
+
+      - add_ssh_keys:
+          fingerprints:
+            - ${VPS_FINGERPRINT}
+
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Deploy to staging cloud
+          command: |
+            ssh -o StrictHostKeyChecking=no -v root@mtech.id.vn -p 24700 "chmod +x ~/deploy.sh && ~/deploy.sh --service goldenmeeting --service-path goldenmeeting-app --mode init"
+            scp -P 24700 -o StrictHostKeyChecking=no -v docker-compose.prod.yml root@mtech.id.vn:goldenmeeting-app/goldenmeeting
+            scp -P 24700 -o StrictHostKeyChecking=no -v .env root@mtech.id.vn:goldenmeeting-app/goldenmeeting
+            ssh -o StrictHostKeyChecking=no -v root@mtech.id.vn -p 24700 "chmod +x ~/deploy.sh && ~/deploy.sh --service goldenmeeting --service-path goldenmeeting-app --mode all"
 workflows:
   build-and-test:
     jobs:
       - build-test-rails
+      - hold:
+          type: 'approval'
+          requires:
+            - build-test-rails
+      - published-golden-meeting-staging-version
+      - deploy-golden-meeting-staging
     # - deploy:
     #     requires:
     #       - test-ruby

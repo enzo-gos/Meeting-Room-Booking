@@ -1,0 +1,44 @@
+version: '3'
+
+x-webservice: &webservice
+  build:
+    context: .
+  hostname: localhost
+  networks:
+    - proxy
+  env_file:
+    - .env
+  environment:
+    FORCE_COLOR: 1
+    DEBUG_COLORS: 'true'
+    TERM: xterm-256color
+    COLORTERM: truecolor
+  restart: on-failure:3
+  tty: true
+
+services:
+  goldenmeeting:
+    <<: *webservice
+    image: wgmin/goldenmeeting
+    container_name: goldenmeeting
+    ports:
+      - 3002:3000
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.goldenmeeting.rule=Host(`goldenmeeting.mtech.id.vn`)
+      - traefik.http.routers.goldenmeeting.entrypoints=websecure
+      - traefik.http.routers.goldenmeeting.tls=true
+      - traefik.http.routers.goldenmeeting.tls.certresolver=letsencrypt
+
+  goldenmeeting-sidekiq:
+    <<: *webservice
+    image: wgmin/goldenmeeting-sidekiq
+    container_name: goldenmeeting-sidekiq
+    command: bundle exec sidekiq
+    depends_on:
+      - goldenmeeting
+
+networks:
+  proxy:
+    external: true
